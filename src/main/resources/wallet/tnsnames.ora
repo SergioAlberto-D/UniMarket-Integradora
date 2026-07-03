@@ -1,0 +1,12 @@
+bdalumnos_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g96eed7c4ef4d02_bdalumnos_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+bdalumnos_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g96eed7c4ef4d02_bdalumnos_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+bdalumnos_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g96eed7c4ef4d02_bdalumnos_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+bdalumnos_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g96eed7c4ef4d02_bdalumnos_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+bdalumnos_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g96eed7c4ef4d02_bdalumnos_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+
