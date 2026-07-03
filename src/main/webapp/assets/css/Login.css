@@ -1,0 +1,34 @@
+/* Colores personalizados de acuerdo al diseno */
+body {
+    background-color: #F7EDE7;
+}
+.btn-brown {
+    background-color: #753618;
+    color: white;
+    border: none;
+}
+.btn-brown:hover {
+    background-color: #753618;
+    color: white;
+}
+.input-custom {
+    background-color: #F3ECE8;
+    border: none;
+    border-radius: 6px;
+}
+.input-custom:focus {
+    background-color: #F3ECE8;
+    box-shadow: none;
+    border: 1px solid #753618;
+}
+.card-custom {
+    border-radius: 1rem;
+}
+.bg-image-side {
+    background-image: url('../../static/img/aguilaMUA.png');
+    background-size: cover;
+    background-position: right center;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    min-height: 500px;
+}

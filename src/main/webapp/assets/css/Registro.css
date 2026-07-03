@@ -1,0 +1,45 @@
+/* Limita el ancho de la tarjeta solo en la pantalla de registro */
+.card-registro {
+    max-width: 550px;
+    width: 100%;
+}
+
+/* Estilos de las etiquetas (labels) pequeños sobre los inputs */
+.form-label-custom {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+/* Contenedores con borde para agrupar Datos Personales y Correo/Contraseña */
+.section-box {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #ffffff;
+}
+
+/* Título de cada sección ("Datos Personales", etc.) */
+.section-title {
+    font-weight: 600;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: #000;
+}
+
+/* Cuadrito gris detrás de los iconos de las secciones */
+.icon-box {
+    background-color: #F3ECE8;
+    border-radius: 0.4rem;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 1.1rem;
+}
