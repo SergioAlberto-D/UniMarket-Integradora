@@ -65,12 +65,12 @@
 
                 <!-- Recuperar Contraseña -->
                 <div class="text-end mb-4 mt-2">
-                    <a href="recuperar-contra.jsp" class="text-decoration-none text-muted" style="font-size: 0.75rem;">¿Olvidaste tu contraseña?</a>
+                    <a href="recuperar-password.jsp" class="text-decoration-none text-muted" style="font-size: 0.75rem;">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 <!-- Botón Iniciar Sesión -->
                 <button class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3" type="submit">
-                    Iniciales
+                    Iniciar Sesion
                 </button>
 
                 <!-- Registro -->

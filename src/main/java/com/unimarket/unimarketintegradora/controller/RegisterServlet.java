@@ -56,7 +56,7 @@ public class RegisterServlet extends HttpServlet {
             }
 
             Usuario usuario = new Usuario(nombre, apellidoPaterno, apellidoMaterno, telefono, carrera, correo, contra1);
-            boolean registrado = usuarioDao.registrar(usuario);
+            boolean registrado = usuarioDao.create(usuario);
 
             if (registrado) {
                 request.setAttribute("mensaje", "Cuenta creada correctamente. Ahora inicia sesión.");
