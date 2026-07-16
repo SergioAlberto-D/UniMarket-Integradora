@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/3/26
-  Time: 7:00 PM
+  Time: 7:00 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -18,17 +18,22 @@
     <link rel="stylesheet" href="assets/css/bi_s/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/Login.css">
 </head>
-<body class="d-flex flex-column align-items-center justify-content-center vh-100">
+<body class="login-page d-flex flex-column align-items-center justify-content-center">
 
-<div class="container" style="max-width: 950px;">
-    <div class="card shadow-lg border-0 card-custom flex-row flex-wrap flex-md-nowrap">
+<div class="container login-container px-0 px-sm-2">
+    <div class="card shadow-lg border-0 card-custom login-card flex-row flex-wrap flex-md-nowrap">
 
-        <div class="col-12 col-md-6 p-4 p-md-5 bg-white" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">
+        <!-- Imagen superior en móvil -->
+        <div class="col-12 d-md-none login-image-mobile"></div>
 
-            <img src="static/img/logoMUA.png" alt="Logo MUA" class="mb-4 shadow-sm" style="width: 75px; height: 75px; background-color: #C28455; border-radius: 14px; padding: 2px; object-fit: cover;">
+        <!-- Columna Izquierda: Formulario -->
+        <div class="col-12 col-md-6 p-4 p-md-5 bg-white login-form-column">
+
+            <!-- LOGO MUA -->
+            <img src="static/img/logoMUA.png" alt="Logo MUA" class="login-logo mb-4 shadow-sm">
 
             <h2 class="fw-bold text-dark mb-1">Recuperar cuenta</h2>
-            <p class="text-muted mb-4" style="font-size: 0.95rem;">Ingresa tu correo institucional para recibir un código.</p>
+            <p class="text-muted mb-4 login-subtitle">Ingresa tu correo institucional para recibir un código.</p>
 
             <c:if test="${not empty error}">
                 <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
@@ -40,24 +45,28 @@
             <form action="SolicitarRecuperacionServlet" method="post">
                 <div class="mb-4">
                     <label for="txtCorreo" class="form-label text-muted small mb-1">Correo institucional</label>
-                    <input type="email" class="form-control input-custom py-2" id="txtCorreo" name="correo" value="${param.correo}" placeholder="usuario@utez.edu.mx" required>
+                    <input type="email" class="form-control input-custom py-2" id="txtCorreo" name="correo" value="${param.correo}" placeholder="matricula@utez.edu.mx" required>
                 </div>
 
+                <!-- Botón Enviar -->
                 <button class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3" type="submit">
                     Enviar Código <i class="bi bi-send ms-1"></i>
                 </button>
 
-                <div class="text-center small mt-2">
-                    <a href="login.jsp" class="text-muted text-decoration-underline"><i class="bi bi-arrow-left"></i> Volver al inicio de sesión</a>
+                <!-- Enlace Regresar -->
+                <div class="text-center mt-2 login-register-text">
+                    <a href="login.jsp" class="login-link"><i class="bi bi-arrow-left"></i> Volver al inicio de sesión</a>
                 </div>
             </form>
         </div>
 
+        <!-- Columna Derecha: Imagen del Águila -->
         <div class="col-12 col-md-6 d-none d-md-block bg-image-side"></div>
     </div>
 
-    <div class="text-center mt-4 px-3">
-        <p class="text-dark m-0" style="font-size: 0.9rem;">
+    <!-- Texto inferior fuera de la tarjeta -->
+    <div class="text-center mt-3 mt-md-4 px-2 px-sm-3">
+        <p class="text-dark m-0 login-footer-text">
             Al continuar, aceptas usar MUA como marketplace universitario responsablemente.
         </p>
     </div>

@@ -19,20 +19,22 @@
     <link rel="stylesheet" href="assets/css/bi_s/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/Login.css">
 </head>
-<body class="d-flex flex-column align-items-center justify-content-center vh-100">
+<body class="login-page d-flex flex-column align-items-center justify-content-center">
 
-<div class="container" style="max-width: 950px;">
-    <div class="card shadow-lg border-0 card-custom flex-row flex-wrap flex-md-nowrap">
+<div class="container login-container px-0 px-sm-2">
+    <div class="card shadow-lg border-0 card-custom login-card flex-row flex-wrap flex-md-nowrap">
+
+        <!-- Imagen superior en movil -->
+        <div class="col-12 d-md-none login-image-mobile"></div>
 
         <!-- Columna Izquierda: Formulario -->
-        <div class="col-12 col-md-6 p-4 p-md-5 bg-white" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">
+        <div class="col-12 col-md-6 p-4 p-md-5 bg-white login-form-column">
 
             <!-- LOGO MUA -->
-            <img src="static/img/logoMUA.png" alt="Logo MUA" class="mb-4 shadow-sm"
-                 style="width: 75px; height: 75px; background-color: #C28455; border-radius: 14px; padding: 2px; object-fit: cover;">
+            <img src="static/img/logoMUA.png" alt="Logo MUA" class="login-logo mb-4 shadow-sm">
 
             <h2 class="fw-bold text-dark mb-1">Bienvenidos</h2>
-            <p class="text-muted mb-4" style="font-size: 0.95rem;">Inicia sesión con tu correo institucional</p>
+            <p class="text-muted mb-4 login-subtitle">Inicia sesión con tu correo institucional</p>
 
             <c:if test="${not empty error}">
                 <div class="alert alert-danger d-flex align-items-center py-2" role="alert">
@@ -52,20 +54,23 @@
                 <!-- Correo Institucional -->
                 <div class="mb-3">
                     <label for="txtUsuario" class="form-label text-muted small mb-1">Correo institucional</label>
-                    <input type="text" class="form-control input-custom py-2" id="txtUsuario" name="email" placeholder="usuario@utez.edu.mx" required>
+                    <input type="text" class="form-control input-custom py-2" id="txtUsuario" name="email" placeholder="matricula@utez.edu.mx" required>
                 </div>
 
                 <!-- Contraseña -->
                 <div class="mb-1">
                     <label for="txtPassword" class="form-label text-muted small mb-1">Contraseña</label>
-                    <input type="password" class="form-control input-custom py-2" id="txtPassword" name="contra" placeholder="12345678" required>
+                    <div class="position-relative">
+                        <input type="password" class="form-control input-custom py-2 pe-5" id="txtPassword" name="contra" placeholder="***********" required>
+                        <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password" data-target="txtPassword"></i>
+                    </div>
                 </div>
 
 
 
                 <!-- Recuperar Contraseña -->
                 <div class="text-end mb-4 mt-2">
-                    <a href="recuperar-password.jsp" class="text-decoration-none text-muted" style="font-size: 0.75rem;">¿Olvidaste tu contraseña?</a>
+                    <a href="recuperar-password.jsp" class="login-link login-forgot-link">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 <!-- Botón Iniciar Sesión -->
@@ -74,9 +79,9 @@
                 </button>
 
                 <!-- Registro -->
-                <div class="text-center small mt-2">
+                <div class="text-center login-register-text mt-2">
                     <span class="text-muted">¿No tienes cuenta?</span>
-                    <a href="registro.jsp" class="text-muted text-decoration-underline">Regístrate</a>
+                    <a href="registro.jsp" class="login-link ms-1">Regístrate</a>
                 </div>
             </form>
         </div>
@@ -87,13 +92,14 @@
     </div>
 
     <!-- Texto inferior fuera de la tarjeta -->
-    <div class="text-center mt-4 px-3">
-        <p class="text-dark m-0" style="font-size: 0.9rem;">
+    <div class="text-center mt-3 mt-md-4 px-2 px-sm-3">
+        <p class="text-dark m-0 login-footer-text">
             Al continuar, aceptas usar MUA como marketplace universitario responsablemente.
         </p>
     </div>
 </div>
 
 <script src="assets/js/bootstrap.js"></script>
+<script src="static/js/login.js"></script>
 </body>
 </html>

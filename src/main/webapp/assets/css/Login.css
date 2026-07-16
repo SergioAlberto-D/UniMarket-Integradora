@@ -2,33 +2,313 @@
 body {
     background-color: #F7EDE7;
 }
+/* ---  
+        Botones personalizados 
+--- */
+/* --- Botón Principal (Estado Normal) --- */
 .btn-brown {
-    background-color: #753618;
-    color: white;
-    border: none;
+    background-color: #753618 !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
 }
+
+/* --- Efecto al pasar el cursor (Hover) --- */
 .btn-brown:hover {
-    background-color: #753618;
-    color: white;
+    background-color: #753618 !important;
+    color: white !important;
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.45) !important;
+    transform: translateY(-4px) !important;
 }
+
+/* --- Efecto al dar clic  --- */
+.btn-brown:active, 
+.btn-brown:focus,
+.btn-brown:focus-visible {
+    background-color: #753618 !important; /* Evita que Bootstrap lo ponga blanco */
+    color: white !important;
+    /* Sombra interna para el efecto hundido */
+    box-shadow: inset 3px 6px 12px rgba(0, 0, 0, 0.7) !important;
+    transform: translateY(2px) !important;
+    /* Quita el borde azul/blanco que Bootstrap pone al hacer clic */
+    outline: none !important; 
+    border-color: transparent !important;
+}
+
+/* --- Botón Secundario (Atrás) --- */
+.btn-peach {
+    background-color: #FAD4CB !important; /* Tono durazno claro basado en tu imagen */
+    color: #753618 !important; /* Texto café oscuro */
+    border: none !important;
+    box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* --- Efecto Hover (Flotando) --- */
+.btn-peach:hover {
+    background-color: #FAD4CB !important; 
+    color: #753618 !important;
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.45) !important;
+    transform: translateY(-4px) !important;
+}
+
+/* --- Efecto Clic (Hundido) --- */
+.btn-peach:active {
+    background-color: #FAD4CB !important; 
+    color: #753618 !important;
+    box-shadow: inset 3px 6px 12px rgba(0, 0, 0, 0.4) !important; 
+    transform: translateY(2px) !important;
+    outline: none !important; 
+    border-color: transparent !important;
+}
+
+/* --- Efecto Focus (Retiene foco tras soltar el clic) --- */
+.btn-peach:focus,
+.btn-peach:focus-visible {
+    background-color: #FAD4CB !important;
+    color: #753618 !important;
+    box-shadow: 3px 5px 10px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(0) !important;
+    outline: none !important;
+    border-color: transparent !important;
+}
+/* --- Efecto cuando el botón está deshabilitado 
+.btn-brown:disabled,
+.btn-brown:disabled:hover,
+.btn-brown:disabled:active {
+    background-color: #bfa396 !important; 
+    color: #f0f0f0 !important;
+    box-shadow: none !important; 
+    transform: none !important; 
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}--- */
+/* --- Login responsivo --- */
+.login-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 1rem 0.75rem;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 950px;
+}
+
 .input-custom {
     background-color: #F3ECE8;
     border: none;
     border-radius: 6px;
 }
+
 .input-custom:focus {
     background-color: #F3ECE8;
     box-shadow: none;
     border: 1px solid #753618;
 }
+
 .card-custom {
     border-radius: 1rem;
 }
+
+.login-card {
+    width: 100%;
+    overflow: hidden;
+}
+
+.login-form-column {
+    border-radius: 1rem;
+}
+
+.login-logo {
+    width: 75px;
+    height: 75px;
+    background-color: #C28455;
+    border-radius: 14px;
+    padding: 2px;
+    object-fit: cover;
+}
+
+.login-subtitle {
+    font-size: 0.95rem;
+}
+
+.login-forgot-link {
+    font-size: 0.75rem;
+}
+
+.login-register-text {
+    font-size: 0.875rem;
+}
+
+/* Enlaces del login: azul con oscurecido suave al hover */
+.login-form-column a.login-link {
+    color: #0d6efd !important;
+    text-decoration: none !important;
+    display: inline-block;
+    transition: color 0.25s ease;
+}
+
+.login-form-column a.login-link:hover,
+.login-form-column a.login-link:focus-visible {
+    color: #084298 !important;
+}
+
+.login-link:focus-visible {
+    outline: 2px solid rgba(13, 110, 253, 0.35);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+.login-footer-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* --- CORRECCIÓN DE LA IMAGEN DEL ÁGUILA --- */
+
+/* Alineación para escritorio y tablets grandes (columna lateral) */
 .bg-image-side {
     background-image: url('../../static/img/aguilaMUA.png');
     background-size: cover;
-    background-position: right center;
+    /* Antes: left center (mostraba el ala izquierda). Ahora: right center (muestra la cara) */
+    background-position: right center; 
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     min-height: 500px;
+}
+
+/* Alineación para móviles (banner superior) */
+.login-image-mobile {
+    background-image: url('../../static/img/aguilaMUA.png');
+    background-size: cover;
+    /* Antes: center top (mostraba el centro). Ahora: right top (muestra la cara) */
+    background-position: right top;
+    min-height: 140px;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+/* --- Icono de Mostrar/Ocultar contraseña --- */
+.cursor-pointer {
+    cursor: pointer;
+    color: #6c757d; /* Color gris sutil */
+    transition: color 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.cursor-pointer:hover {
+    color: #753618; /* Cambia a tu color café al pasar el mouse */
+}
+
+/* --- Resto del código responsive --- */
+
+/* Tablets y pantallas medianas */
+@media (max-width: 991.98px) {
+    .bg-image-side {
+        min-height: 320px;
+    }
+}
+
+/* Moviles */
+@media (max-width: 767.98px) {
+    .login-page {
+        padding: 0.75rem;
+        justify-content: flex-start !important;
+        padding-top: 1.25rem;
+    }
+
+    .login-container {
+        max-width: 100%;
+    }
+
+    .login-card {
+        border-radius: 0.875rem;
+    }
+
+    .login-form-column {
+        border-radius: 0 0 0.875rem 0.875rem;
+        padding: 1.25rem !important;
+    }
+
+    .login-logo {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+    }
+
+    .login-form-column h2 {
+        font-size: 1.5rem;
+    }
+
+    .login-subtitle {
+        font-size: 0.875rem;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .login-forgot-link {
+        font-size: 0.7rem;
+    }
+
+    .login-register-text {
+        font-size: 0.8rem;
+    }
+
+    .login-footer-text {
+        font-size: 0.8rem;
+        padding: 0 0.25rem;
+    }
+
+    .login-image-mobile {
+        min-height: 120px;
+    }
+}
+
+/* Pantallas muy pequenas */
+@media (max-width: 575.98px) {
+    .login-page {
+        padding: 0.5rem;
+        padding-top: 1rem;
+    }
+
+    .login-form-column {
+        padding: 1rem !important;
+    }
+
+    .login-logo {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 1rem !important;
+    }
+
+    .login-form-column h2 {
+        font-size: 1.35rem;
+    }
+
+    .login-forgot-link {
+        font-size: 0.65rem;
+    }
+
+    .login-register-text {
+        font-size: 0.75rem;
+    }
+
+    .login-image-mobile {
+        min-height: 100px;
+    }
+}
+
+/* Escritorio grande */
+@media (min-width: 768px) {
+    .login-page {
+        padding: 1.5rem;
+    }
+
+    .login-form-column {
+        border-top-left-radius: 1rem;
+        border-bottom-left-radius: 1rem;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }

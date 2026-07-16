@@ -30,6 +30,8 @@
       <p class="text-muted mb-4" style="font-size: 0.95rem;">Crea una nueva contraseña segura para tu cuenta.</p>
 
       <form action="ActualizarPasswordServlet" method="post">
+        <input type="hidden" name="correo" value="${param.correo}">
+        <input type="hidden" name="token" value="${param.token}">
 
         <div class="mb-3">
           <label for="txtPassword1" class="form-label text-muted small mb-1">Nueva contraseña</label>

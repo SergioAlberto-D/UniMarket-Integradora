@@ -9,9 +9,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class UsuarioDao implements Dao<Usuario,Integer> {
 
+private String convertirSHA256(String contrasena) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = md.digest(contrasena.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al hashear la contraseña", e);
+        }
+    }
     public boolean create(Usuario usuario) {
         String sql = "INSERT INTO usuarios (nombres, apellido_paterno, apellido_materno, telefono, carrera, correo_institucional, contrasena) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -25,7 +40,7 @@ public class UsuarioDao implements Dao<Usuario,Integer> {
             ps.setString(4, usuario.getTelefono());
             ps.setString(5, usuario.getCarrera());
             ps.setString(6, usuario.getCorreoInstitucional());
-            ps.setString(7, usuario.getContrasena());
+            ps.setString(7, convertirSHA256(usuario.getContrasena()));
 
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -96,7 +111,7 @@ public class UsuarioDao implements Dao<Usuario,Integer> {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, correoInstitucional);
-            ps.setString(2, contrasena);
+            ps.setString(2, convertirSHA256(contrasena));
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -108,12 +123,69 @@ public class UsuarioDao implements Dao<Usuario,Integer> {
                     usuario.setTelefono(rs.getString("telefono"));
                     usuario.setCarrera(rs.getString("carrera"));
                     usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
-                    usuario.setContrasena(rs.getString("contrasena"));
+                    usuario.setContrasena(convertirSHA256(rs.getString("contrasena")));
                     return usuario;
                 }
             }
         }
 
         return null;
+    }
+    // Guarda el token y le da una vigencia de 15 minutos
+    public boolean guardarTokenRecuperacion(String correo, String token) {
+        String sql = "UPDATE usuarios SET token_recuperacion = ?, expiracion_token = SYSTIMESTAMP + INTERVAL '15' MINUTE WHERE correo_institucional = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ps.setString(2, correo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al guardar token: " + e.getMessage());
+            return false;
+        }
+    }
+    // Verifica si el token existe, le pertenece a ese correo y no ha caducado
+    public boolean validarToken(String correo, String token) {
+        String sql = "SELECT id_usuario FROM usuarios WHERE correo_institucional = ? AND token_recuperacion = ? AND expiracion_token > SYSTIMESTAMP";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, correo);
+            ps.setString(2, token);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); 
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al validar token: " + e.getMessage());
+            return false;
+        }
+    }
+
+    // Limpia el token después de cambiar la contraseña con éxito
+    public boolean limpiarTokenYActualizarPassword(String correo, String nuevaPasswordHasheada) {
+        String sql = "UPDATE usuarios SET contrasena = ?, token_recuperacion = NULL, expiracion_token = NULL WHERE correo_institucional = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nuevaPasswordHasheada);
+            ps.setString(2, correo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar contraseña: " + e.getMessage());
+            return false;
+        }
+    }
+    // Método para hacer Rollback si falla el envío de correo
+    public boolean eliminarPorCorreo(String correo) {
+        String sql = "DELETE FROM usuarios WHERE correo_institucional = ?";
+        
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+             
+            ps.setString(1, correo);
+            return ps.executeUpdate() > 0;
+            
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar usuario por rollback: " + e.getMessage());
+            return false;
+        }
     }
 }

@@ -30,10 +30,32 @@ btnNext.addEventListener('click', () => {
     }
 });
 
+// Función para validar en tiempo real y habilitar/deshabilitar el botón
+const checkStep1Validity = () => {
+    const step1Elements = step1.querySelectorAll('input[required], select[required]');
+    let allValid = true;
+
+    step1Elements.forEach(element => {
+        if (element.value.trim() === "") {
+            allValid = false;
+        }
+    });
+    btnNext.disabled = !allValid;
+};
+
 step1.querySelectorAll('input[required], select[required]').forEach(element => {
-    element.addEventListener('input', () => element.classList.remove('is-invalid'));
-    element.addEventListener('change', () => element.classList.remove('is-invalid'));
+    element.addEventListener('input', () => {
+        element.classList.remove('is-invalid');
+        checkStep1Validity();
+    });
+    element.addEventListener('change', () => {
+        element.classList.remove('is-invalid');
+        checkStep1Validity();
+    });
 });
+
+
+checkStep1Validity();
 
 // Regresar al Paso 1
 btnBack.addEventListener('click', () => {
@@ -64,6 +86,43 @@ progressInputs.forEach(input => {
     input.addEventListener('input', updateProgress);
     input.addEventListener('change', updateProgress);
 });
+
+// ==========================================
+// MÁSCARA PARA NÚMERO DE TELÉFONO: (XXX)-XXX-XXXX
+// ==========================================
+const formatearTelefono = (event) => {
+    let input = event.target;
+    // 1. Elimina todo lo que no sea un número (letras, espacios, símbolos)
+    let valor = input.value.replace(/\D/g, ''); 
+
+    // 2. Limita a un máximo de 10 números
+    if (valor.length > 10) {
+        valor = valor.substring(0, 10);
+    }
+
+    // 3. Construye el formato paso a paso según la cantidad de números
+    let valorFormateado = '';
+    
+    if (valor.length > 0) {
+        valorFormateado = '(' + valor.substring(0, 3);
+    }
+    if (valor.length >= 4) {
+        valorFormateado += ')-' + valor.substring(3, 6);
+    }
+    if (valor.length >= 7) {
+        valorFormateado += '-' + valor.substring(6, 10);
+    }
+
+    // 4. Asigna el valor formateado de vuelta al input
+    input.value = valorFormateado;
+};
+
+// Selecciona el input de teléfono del registro y le asigna el evento
+const inputTelefono = document.getElementById('txtTel');
+if (inputTelefono) {
+    // Escucha cada vez que el usuario escribe, borra o pega algo
+    inputTelefono.addEventListener('input', formatearTelefono);
+}
 
 updateProgress(); // Llamada inicial
 
@@ -133,3 +192,27 @@ const validateMatch = () => {
 };
 
 passwordInput2.addEventListener('input', validateMatch);
+
+// ==========================================
+// MOSTRAR / OCULTAR CONTRASEÑA
+// ==========================================
+document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function() {
+        // Encontrar el input relacionado a este icono a través de su data-target
+        const targetId = this.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        
+        // Alternar el tipo de input (texto/password)
+        if (input.type === 'password') {
+            input.type = 'text';
+            // Alternar iconos
+            this.classList.remove('bi-eye-slash');
+            this.classList.add('bi-eye');
+        } else {
+            input.type = 'password';
+            // Alternar iconos
+            this.classList.remove('bi-eye');
+            this.classList.add('bi-eye-slash');
+        }
+    });
+});
