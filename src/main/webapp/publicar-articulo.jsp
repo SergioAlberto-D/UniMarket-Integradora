@@ -15,8 +15,8 @@
 
   String iniciales = "";
 
-  if (usuario.getNombres() != null && !usuario.getNombres().isEmpty()) {
-    iniciales += usuario.getNombres().substring(0, 1).toUpperCase();
+  if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
+    iniciales += usuario.getNombre().substring(0, 1).toUpperCase();
   }
 
   if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
@@ -37,7 +37,7 @@
   <title>Publicar artículo - MUA</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bootstrap.css">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bi_s/bootstrap-icons.css">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/publicar-articulo.css">
@@ -215,14 +215,15 @@
 
         <div class="form-group">
           <label for="categoria">Categoría</label>
-          <select id="categoria" name="categoria" required>
+          <select id="categoria" name="idCategoria" required>
             <option value="">Selecciona una categoría</option>
-            <option value="Electrónica y Gadgets">Electrónica y Gadgets</option>
-            <option value="Libros">Libros</option>
-            <option value="Ropa">Ropa</option>
-            <option value="Accesorios">Accesorios</option>
-            <option value="Material escolar">Material escolar</option>
-            <option value="Otros">Otros</option>
+            <!-- Los values ahora son números simulando los IDs de tu tabla CATEGORIA -->
+            <option value="1">Electrónica y Gadgets</option>
+            <option value="2">Libros</option>
+            <option value="3">Ropa</option>
+            <option value="4">Accesorios</option>
+            <option value="5">Material escolar</option>
+            <option value="6">Otros</option>
           </select>
         </div>
       </div>

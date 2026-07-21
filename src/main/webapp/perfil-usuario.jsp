@@ -48,7 +48,7 @@
     <meta charset="UTF-8">
     <title>Perfil de usuario - MUA</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bootstrap.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bi_s/bootstrap-icons.css">
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/perfil-usuario.css?v=3">

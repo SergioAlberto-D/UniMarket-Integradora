@@ -2,189 +2,233 @@ package com.unimarket.unimarketintegradora.model.dao;
 
 import com.unimarket.unimarketintegradora.model.Usuario;
 import com.unimarket.unimarketintegradora.utils.SQLConnector;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
-public class UsuarioDao implements Dao<Usuario,Integer> {
+public class UsuarioDao implements Dao<Usuario, String> {
 
-private String convertirSHA256(String contrasena) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = md.digest(contrasena.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error al hashear la contraseña", e);
-        }
-    }
-    public boolean create(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nombres, apellido_paterno, apellido_materno, telefono, carrera, correo_institucional, contrasena) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection con = SQLConnector.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, usuario.getNombres());
-            ps.setString(2, usuario.getApellidoPaterno());
-            ps.setString(3, usuario.getApellidoMaterno());
-            ps.setString(4, usuario.getTelefono());
-            ps.setString(5, usuario.getCarrera());
-            ps.setString(6, usuario.getCorreoInstitucional());
-            ps.setString(7, convertirSHA256(usuario.getContrasena()));
-
+    @Override
+    public boolean create(Usuario entidad) {
+        String sql = "INSERT INTO usuario (MATRICULA,nombre, apellido_paterno, apellido_materno, numero_celular, id_division_academica_fk, fecha_registro, correo_institucional, id_rol_fk, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, entidad.getIdUsuario()); // Asegúrate de pasar la matrícula aquí si es el primer parámetro
+            ps.setString(2, entidad.getNombre());
+            ps.setString(3, entidad.getApellidoPaterno());
+            ps.setString(4, entidad.getApellidoMaterno());
+            ps.setString(5, entidad.getNumeroCelular());
+            ps.setInt(6, entidad.getIdDivisionAcademicaFk());
+            ps.setDate(7, entidad.getFechaRegistro());
+            ps.setString(8, entidad.getCorreoInstitucional());
+            ps.setInt(9, entidad.getIdRolFk());
+            ps.setString(10, "unverificado"); // <--- ESTADO POR DEFECTO CORREGIDO
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("error al registrar alumno: " + e.getMessage());
+            System.out.println("Error al crear usuario: " + e.getMessage());
             return false;
         }
     }
 
     @Override
     public List<Usuario> getAll() {
-        List<Usuario> datos = new ArrayList<>();
-        try (Connection con = SQLConnector.getConnection();
-             PreparedStatement ps = con.prepareStatement("SELECT * FROM usuarios");
-             ResultSet rs = ps.executeQuery()) {
-
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuario";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                Usuario usuario = new Usuario();
-                usuario.setIdUsuario(rs.getInt("id_usuario"));
-                usuario.setNombres(rs.getString("nombres"));
-                usuario.setApellidoPaterno(rs.getString("apellido_paterno"));
-                usuario.setApellidoMaterno(rs.getString("apellido_materno"));
-                usuario.setTelefono(rs.getString("telefono"));
-                usuario.setCarrera(rs.getString("carrera"));
-                usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
-                usuario.setContrasena(rs.getString("contrasena"));
-                datos.add(usuario);
+                Usuario u = new Usuario(rs.getString("nombre"), rs.getString("apellido_paterno"), rs.getString("apellido_materno"), rs.getString("numero_celular"), rs.getInt("id_division_academica_fk"), rs.getDate("fecha_registro"), rs.getString("correo_institucional"), rs.getInt("id_rol_fk"), rs.getString("estado"));
+                u.setIdUsuario(rs.getString("id_usuario"));
+                lista.add(u);
             }
         } catch (SQLException e) {
-            System.out.println("fallo"+e.getMessage());
+            System.out.println("Error al obtener usuarios: " + e.getMessage());
         }
-        return datos;
+        return lista;
     }
 
     @Override
-    public Usuario getById(Integer id) {
+    public Usuario getById(String id) {
+        String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario(rs.getString("nombre"), rs.getString("apellido_paterno"), rs.getString("apellido_materno"), rs.getString("numero_celular"), rs.getInt("id_division_academica_fk"), rs.getDate("fecha_registro"), rs.getString("correo_institucional"), rs.getInt("id_rol_fk"), rs.getString("estado"));
+                    u.setIdUsuario(rs.getString("id_usuario"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar usuario: " + e.getMessage());
+        }
         return null;
     }
 
     @Override
     public boolean update(Usuario entidad) {
-        return false;
+        String sql = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, numero_celular = ?, id_division_academica_fk = ?, id_rol_fk = ?, estado = ? WHERE id_usuario = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, entidad.getNombre());
+            ps.setString(2, entidad.getApellidoPaterno());
+            ps.setString(3, entidad.getApellidoMaterno());
+            ps.setString(4, entidad.getNumeroCelular());
+            ps.setInt(5, entidad.getIdDivisionAcademicaFk());
+            ps.setInt(6, entidad.getIdRolFk());
+            ps.setString(7, entidad.getEstado());
+            ps.setString(8, entidad.getIdUsuario());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar usuario: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(String id) {
+        String sql = "UPDATE usuario SET estado = 'inactivo' WHERE MATRICULA = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean activarCuenta(String correo) {
+        boolean actualizado = false;
+        // Se corrigió el nombre de la tabla a 'usuarios' y el estado a 'verificado'
+        String sql = "UPDATE usuario SET estado = 'verificado' WHERE correo_institucional = ?";
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, correo);
+            int filasAfectadas = ps.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                actualizado = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return actualizado;
+    }
+    // 1. Verifica si el correo ya existe en la base de datos
+    public boolean existeCorreo(String correo) {
+        String sql = "SELECT COUNT(*) FROM usuario WHERE correo_institucional = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, correo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Si el conteo es mayor a 0, devuelve true
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia de correo: " + e.getMessage());
+        }
         return false;
     }
 
-    public boolean existeCorreo(String correoInstitucional) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM usuarios WHERE correo_institucional = ?";
-
+    // 2. Busca y devuelve un Usuario completo usando su correo
+    public Usuario buscarPorCorreo(String correo) {
+        String sql = "SELECT * FROM usuario WHERE correo_institucional = ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, correoInstitucional);
-
+            ps.setString(1, correo);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() && rs.getInt(1) > 0;
+                if (rs.next()) {
+                    Usuario u = new Usuario(
+                            rs.getString("nombre"),
+                            rs.getString("apellido_paterno"),
+                            rs.getString("apellido_materno"),
+                            rs.getString("numero_celular"),
+                            rs.getInt("id_division_academica_fk"),
+                            rs.getDate("fecha_registro"),
+                            rs.getString("correo_institucional"),
+                            rs.getInt("id_rol_fk"),
+                            rs.getString("estado")
+                    );
+                    // IMPORTANTE: Recuerda que la columna ahora se llama 'matricula' en Oracle
+                    u.setIdUsuario(rs.getString("matricula"));
+                    return u;
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar usuario por correo: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // 3. Elimina a un usuario por su correo (Útil si falla el envío del token)
+    public boolean eliminarPorCorreo(String correo) {
+        String sql = "DELETE FROM usuario WHERE correo_institucional = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, correo);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar usuario por correo: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean guardarTokenRecuperacion(String correo, String token) {
+        String sql = "UPDATE usuario SET token_recuperacion = ?, token_expiracion = ? WHERE correo_institucional = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // Calculamos 15 minutos en el futuro (15 mins * 60 segs * 1000 milisegundos)
+            long quinceMinutos = System.currentTimeMillis() + (15 * 60 * 1000);
+            Timestamp expiracion = new Timestamp(quinceMinutos);
+
+            ps.setString(1, token);
+            ps.setTimestamp(2, expiracion);
+            ps.setString(3, correo);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al guardar token de recuperación: " + e.getMessage());
+            return false;
         }
     }
 
-    public Usuario buscarPorCorreoYContrasena(String correoInstitucional, String contrasena) throws SQLException {
-        String sql = "SELECT id_usuario, nombres, apellido_paterno, apellido_materno, telefono, carrera, correo_institucional, contrasena " +
-                "FROM usuarios WHERE correo_institucional = ? AND contrasena = ?";
-
+    // 2. Valida que el código coincida Y que no haya caducado
+    public boolean validarToken(String correo, String token) {
+        // Se añade "AND token_expiracion > ?" para validar que siga vivo
+        String sql = "SELECT COUNT(*) FROM usuario WHERE correo_institucional = ? AND token_recuperacion = ? AND token_expiracion > ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setString(1, correoInstitucional);
-            ps.setString(2, convertirSHA256(contrasena));
+            ps.setString(1, correo);
+            ps.setString(2, token);
+            // Mandamos la hora actual, si es mayor a la expiración, la consulta devolverá 0
+            ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Usuario usuario = new Usuario();
-                    usuario.setIdUsuario(rs.getInt("id_usuario"));
-                    usuario.setNombres(rs.getString("nombres"));
-                    usuario.setApellidoPaterno(rs.getString("apellido_paterno"));
-                    usuario.setApellidoMaterno(rs.getString("apellido_materno"));
-                    usuario.setTelefono(rs.getString("telefono"));
-                    usuario.setCarrera(rs.getString("carrera"));
-                    usuario.setCorreoInstitucional(rs.getString("correo_institucional"));
-                    usuario.setContrasena(convertirSHA256(rs.getString("contrasena")));
-                    return usuario;
+                    return rs.getInt(1) > 0;
                 }
-            }
-        }
-
-        return null;
-    }
-    // Guarda el token y le da una vigencia de 15 minutos
-    public boolean guardarTokenRecuperacion(String correo, String token) {
-        String sql = "UPDATE usuarios SET token_recuperacion = ?, expiracion_token = SYSTIMESTAMP + INTERVAL '15' MINUTE WHERE correo_institucional = ?";
-        try (Connection con = SQLConnector.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, token);
-            ps.setString(2, correo);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error al guardar token: " + e.getMessage());
-            return false;
-        }
-    }
-    // Verifica si el token existe, le pertenece a ese correo y no ha caducado
-    public boolean validarToken(String correo, String token) {
-        String sql = "SELECT id_usuario FROM usuarios WHERE correo_institucional = ? AND token_recuperacion = ? AND expiracion_token > SYSTIMESTAMP";
-        try (Connection con = SQLConnector.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, correo);
-            ps.setString(2, token);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); 
             }
         } catch (SQLException e) {
             System.out.println("Error al validar token: " + e.getMessage());
-            return false;
         }
+        return false;
     }
 
-    // Limpia el token después de cambiar la contraseña con éxito
-    public boolean limpiarTokenYActualizarPassword(String correo, String nuevaPasswordHasheada) {
-        String sql = "UPDATE usuarios SET contrasena = ?, token_recuperacion = NULL, expiracion_token = NULL WHERE correo_institucional = ?";
+    // 3. Borra el token y su expiración por seguridad una vez que se usó
+    public boolean limpiarToken(String correo) {
+        String sql = "UPDATE usuario SET token_recuperacion = NULL, token_expiracion = NULL WHERE correo_institucional = ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, nuevaPasswordHasheada);
-            ps.setString(2, correo);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error al actualizar contraseña: " + e.getMessage());
-            return false;
-        }
-    }
-    // Método para hacer Rollback si falla el envío de correo
-    public boolean eliminarPorCorreo(String correo) {
-        String sql = "DELETE FROM usuarios WHERE correo_institucional = ?";
-        
-        try (Connection con = SQLConnector.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-             
+
             ps.setString(1, correo);
+
             return ps.executeUpdate() > 0;
-            
         } catch (SQLException e) {
-            System.out.println("Error al eliminar usuario por rollback: " + e.getMessage());
+            System.out.println("Error al limpiar el token: " + e.getMessage());
             return false;
         }
     }

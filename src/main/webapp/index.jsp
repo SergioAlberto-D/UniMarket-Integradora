@@ -47,7 +47,7 @@
         content="width=device-width, initial-scale=1.0">
 
   <title>Inicio - MUA</title>
-
+  <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bootstrap.css">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/bi_s/bootstrap-icons.css">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/index.css">
@@ -152,7 +152,7 @@
 
           <img class="product-img"
                src="<%= textoSeguro(imagen) %>"
-               alt="<%= textoSeguro(articulo.getTitulo()) %>">
+               alt="<%= textoSeguro(articulo.getNombre()) %>">
 
           <% } else { %>
 
@@ -163,10 +163,12 @@
           <% } %>
 
           <div class="product-info">
-            <h3><%= textoSeguro(articulo.getTitulo()) %></h3>
+            <!-- Cambiamos getTitulo() por getNombre() -->
+            <h3><%= textoSeguro(articulo.getNombre()) %></h3>
 
             <p>
-              <%= textoSeguro(articulo.getCarrera()) %>
+              <!-- Como el artículo ya no trae la carrera, podemos mostrar el ID del vendedor o quitar esto -->
+              Vendedor ID: <%= articulo.getIdUsuarioFk() %>
             </p>
 
             <strong>

@@ -35,9 +35,10 @@ public class FiltroAutenticacion extends HttpFilter {
                 requestURI.endsWith("verificar-token.jsp") ||
                 requestURI.endsWith("/VerificarTokenServlet") ||
                 requestURI.endsWith("nueva-password.jsp") ||
-                requestURI.endsWith("/ActualizarPasswordServlet");
+                requestURI.endsWith("/ActualizarPasswordServlet") ||
+                requestURI.endsWith("/verificar-cuenta");
 
-        // 3. Permitir el paso a los recursos estáticos (CSS, JS, imágenes)[cite: 9, 14]
+        // 3. Permitir el paso a los recursos estáticos (CSS, JS, imágenes)[
         boolean isResource = requestURI.contains("/assets/") || requestURI.contains("/static/");
 
         if (loggedIn) {

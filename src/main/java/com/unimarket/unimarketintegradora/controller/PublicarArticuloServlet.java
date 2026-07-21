@@ -1,13 +1,15 @@
 package com.unimarket.unimarketintegradora.controller;
 
 import com.unimarket.unimarketintegradora.model.Articulo;
+import com.unimarket.unimarketintegradora.model.ImagenArticulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
 import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
+import com.unimarket.unimarketintegradora.model.dao.ImagenArticuloDao;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -16,22 +18,15 @@ import java.util.List;
 import java.util.UUID;
 
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024,
-        maxFileSize = 5 * 1024 * 1024,
-        maxRequestSize = 20 * 1024 * 1024
-)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
 public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
+    private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-
         HttpSession session = request.getSession(false);
-
         if (session == null || session.getAttribute("usuario") == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -40,46 +35,40 @@ public class PublicarArticuloServlet extends HttpServlet {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
         String titulo = limpiar(request.getParameter("titulo"));
-        String precioTexto = limpiar(request.getParameter("precio"));
-        String categoria = limpiar(request.getParameter("categoria"));
         String descripcion = limpiar(request.getParameter("descripcion"));
-        String lugarEncuentro = limpiar(request.getParameter("lugarEncuentro"));
+        String precioTexto = limpiar(request.getParameter("precio"));
+        
+        int idCategoria = 1; // Asumiendo categoría por defecto si no viene mapeada
+        try { idCategoria = Integer.parseInt(request.getParameter("idCategoria")); } catch(Exception ignored){}
 
-        if (titulo.isEmpty() || precioTexto.isEmpty() || categoria.isEmpty() || descripcion.isEmpty() || lugarEncuentro.isEmpty()) {
+        if (titulo.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
             enviarError(request, response, "Completa todos los campos del artículo.");
             return;
         }
 
         BigDecimal precio;
-
         try {
             precio = new BigDecimal(precioTexto);
-
-            if (precio.compareTo(BigDecimal.ZERO) < 0) {
-                enviarError(request, response, "El precio no puede ser negativo.");
-                return;
-            }
-
+            if (precio.compareTo(BigDecimal.ZERO) < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             enviarError(request, response, "Ingresa un precio válido.");
             return;
         }
 
-        List<String> rutasImagenes = guardarImagenes(request);
-
-        Articulo articulo = new Articulo(
-                usuario.getIdUsuario(),
-                titulo,
-                descripcion,
-                precio,
-                categoria,
-                usuario.getCarrera(),
-                lugarEncuentro
-        );
-
-        boolean publicado = articuloDao.crearConImagenes(articulo, rutasImagenes);
+        // 1. Guardar el artículo
+        Articulo articulo = new Articulo(titulo, precio, idCategoria, descripcion, usuario.getIdUsuario());
+        boolean publicado = articuloDao.create(articulo);
 
         if (publicado) {
+            // 2. Obtener el ID del artículo recién creado (Requiere un método obtenerUltimoArticuloPorUsuario en ArticuloDao)
+            int idArticuloGenerado = articuloDao.obtenerUltimoIdPorUsuario(usuario.getIdUsuario());
+
+            // 3. Subir las imágenes y guardarlas en base de datos
+            List<String> rutas = guardarImagenes(request);
+            for (String ruta : rutas) {
+                imagenDao.create(new ImagenArticulo(idArticuloGenerado, ruta));
+            }
+
             response.sendRedirect("publicar-articulo.jsp?exito=true");
         } else {
             enviarError(request, response, "No se pudo publicar el artículo.");
@@ -172,7 +161,8 @@ public class PublicarArticuloServlet extends HttpServlet {
     }
 
     private void enviarError(HttpServletRequest request, HttpServletResponse response, String mensaje) throws ServletException, IOException {
-        request.setAttribute("error", mensaje);
-        request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
+            request.setAttribute("error", mensaje);
+            request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
     }
+
 }

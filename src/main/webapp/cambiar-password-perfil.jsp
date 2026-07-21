@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <title>Cambiar contraseña - MUA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
   <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/cambiar-password-perfil.css?v=4">
 </head>
 
