@@ -16,6 +16,7 @@ public class Usuario {
     private String estado;
     private String tokenRecuperacion;
     private Timestamp tokenExpiracion;
+    private String fotoPerfil;
 
     public Usuario() {}
 
@@ -55,7 +56,13 @@ public class Usuario {
     public void setEstado(String estado) { this.estado = estado; }
     public String getTokenRecuperacion() { return tokenRecuperacion; }
     public void setTokenRecuperacion(String tokenRecuperacion) { this.tokenRecuperacion = tokenRecuperacion; }
-
     public Timestamp getTokenExpiracion() { return tokenExpiracion; }
     public void setTokenExpiracion(Timestamp tokenExpiracion) { this.tokenExpiracion = tokenExpiracion; }
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
 }

@@ -10,7 +10,8 @@ public class ImagenArticuloDao implements Dao<ImagenArticulo, Integer> {
 
     @Override
     public boolean create(ImagenArticulo entidad) {
-        String sql = "INSERT INTO imagen_articulo (id_articulo_fk, url_imagen) VALUES (?, ?)";
+        // Añadimos id_imagen y usamos SEQ_IMAGEN_ARTICULO.NEXTVAL
+        String sql = "INSERT INTO imagen_articulo (id_imagen, id_articulo_fk, url_imagen) VALUES (SEQ_IMAGEN_ARTICULO.NEXTVAL, ?, ?)";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, entidad.getIdArticuloFk());
             ps.setString(2, entidad.getUrlImagen());
@@ -57,5 +58,22 @@ public class ImagenArticuloDao implements Dao<ImagenArticulo, Integer> {
             System.out.println("Error al eliminar imagen: " + e.getMessage());
             return false;
         }
+    }
+    public List<ImagenArticulo> obtenerPorArticulo(int idArticulo) {
+        List<ImagenArticulo> lista = new ArrayList<>();
+        String sql = "SELECT * FROM imagen_articulo WHERE id_articulo_fk = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ImagenArticulo img = new ImagenArticulo(rs.getInt("id_articulo_fk"), rs.getString("url_imagen"));
+                    img.setIdImagen(rs.getInt("id_imagen"));
+                    lista.add(img);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener imágenes: " + e.getMessage());
+        }
+        return lista;
     }
 }

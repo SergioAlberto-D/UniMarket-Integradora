@@ -48,20 +48,11 @@ public class LoginServlet extends HttpServlet {
                     // 3. Comparar hashes
                     String hashIngresado = HashUtils.convertirSHA256(contraPlana);
 
-                    // === INICIO DE DEBUG (Ver en la consola de IntelliJ) ===
-                    if (passModel == null) {
-                        System.out.println("¡ALERTA! No se encontró ninguna contraseña en la BD para el usuario: " + usuario.getIdUsuario());
-                    } else {
-                        System.out.println("Hash BD    : [" + passModel.getContrasenaHash() + "]");
-                        System.out.println("Hash Login : [" + hashIngresado + "]");
-                    }
-                    // === FIN DE DEBUG ===
-
                     // 4. Validación blindada (ignora espacios y mayúsculas/minúsculas)
                     if (passModel != null && passModel.getContrasenaHash().trim().equalsIgnoreCase(hashIngresado.trim())) {
                         HttpSession session = request.getSession();
                         session.setAttribute("usuario", usuario);
-                        response.sendRedirect("index.jsp");
+                        response.sendRedirect("inicio");
                         return;
                     }
                 }

@@ -1,0 +1,309 @@
+body {
+    background-color: #f4e9e2;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #121212;
+}
+
+.profile-container {
+    width: 94%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 20px 0 60px;
+}
+
+.profile-header h1 { font-size: 28px; font-weight: 800; margin: 0 0 4px; }
+.profile-header p { font-size: 15px; color: #444; margin-bottom: 25px; }
+
+/* --- TARJETA DE RESUMEN DEL USUARIO --- */
+.user-summary-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px 35px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.user-info-section { display: flex; align-items: center; gap: 24px; }
+.user-avatar {
+    width: 110px; height: 110px; border-radius: 50%; background: #7c3f1d;
+    color: #fff; font-size: 38px; font-weight: bold; display: flex;
+    align-items: center; justify-content: center; overflow: hidden;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-details h2 { margin: 0 0 10px; font-size: 26px; font-weight: 800; }
+.user-details ul { list-style: none; padding: 0; margin: 0 0 12px; color: #555; font-size: 14px; }
+.user-details ul li { margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+
+.rating-badge {
+    display: inline-block; background: #e8cdbd; color: #111;
+    padding: 4px 14px; border-radius: 15px; font-size: 13px; font-weight: bold;
+}
+
+.stats-grid { display: flex; gap: 15px; }
+.stat-box {
+    background: #f6e9e4; border-radius: 14px; padding: 18px 22px;
+    text-align: left; min-width: 130px;
+}
+.stat-box i { font-size: 18px; color: #111; display: block; margin-bottom: 8px; }
+.stat-num { font-size: 24px; font-weight: 800; color: #111; display: block; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: #555; line-height: 1.2; }
+
+/* --- GRILLA DE 2 COLUMNAS --- */
+.dashboard-columns {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.panel-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f0e6e0;
+    padding-bottom: 16px;
+}
+
+.header-title { display: flex; align-items: center; gap: 14px; }
+.header-title i { font-size: 22px; color: #111; }
+.header-title h2 { font-size: 20px; font-weight: 800; margin: 0 0 3px; }
+.header-title p { font-size: 13px; color: #666; margin: 0; }
+
+/* PESTAÑAS (TABS) */
+.tab-buttons { display: flex; gap: 8px; background: #f6e9e4; padding: 4px; border-radius: 12px; }
+.tab-btn {
+    border: none; background: transparent; padding: 6px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 700; color: #555; cursor: pointer; transition: all 0.2s;
+}
+.tab-btn.active { background: #7c3f1d; color: #fff; }
+
+/* LISTA DE OFERTAS */
+.ofertas-list { display: flex; flex-direction: column; gap: 15px; }
+.oferta-item {
+    background: #f7efe9; border-radius: 16px; padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: transform 0.1s;
+}
+.oferta-item:hover { transform: translateY(-1px); }
+
+.oferta-img {
+    width: 65px; height: 65px; border-radius: 12px; background: #e8cdbd;
+    overflow: hidden; flex-shrink: 0;
+}
+.oferta-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.oferta-info { display: flex; flex-direction: column; gap: 3px; flex-grow: 1; margin: 0 15px; }
+.oferta-info strong { font-size: 16px; color: #111; }
+.oferta-info span { font-size: 13px; color: #555; }
+.oferta-info .monto { font-size: 16px; font-weight: 800; color: #9a3d1e; }
+
+.oferta-actions { display: flex; align-items: center; gap: 10px; }
+.btn-group-vertical { display: flex; flex-direction: column; gap: 6px; }
+.btn-primary-action, .btn-secondary-action {
+    border: none; border-radius: 8px; padding: 6px 18px; font-size: 13px;
+    font-weight: 700; cursor: pointer; transition: background 0.2s;
+}
+.btn-primary-action { background: #7c3f1d; color: #fff; }
+.btn-primary-action:hover { background: #5c2d13; }
+.btn-secondary-action { background: #ebd6ce; color: #111; }
+.btn-secondary-action:hover { background: #e2c3b8; }
+
+/* MENÚ HAMBURGUESA FLOTANTE CON ANIMACIÓN INTELIGENTE */
+.dropdown-hamburguesa { position: relative; }
+.btn-icon-hamburguesa {
+    width: 38px; height: 38px; border-radius: 50%; border: none;
+    background: #7c3f1d; color: #fff; font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+}
+.btn-icon-hamburguesa:hover { background: #5c2d13; transform: scale(1.05); }
+
+.menu-flotante {
+    position: absolute; right: 0; top: 45px; background: #623015;
+    border-radius: 14px; width: 130px; box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column; padding: 6px 0; z-index: 100;
+    opacity: 0; visibility: hidden; transform: translateY(-10px) scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+}
+.menu-flotante.show {
+    opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+}
+.menu-flotante a {
+    color: #ffffff; text-decoration: none; padding: 8px 16px;
+    font-size: 13px; font-weight: 600; display: flex; align-items: center;
+    gap: 8px; transition: background 0.15s;
+}
+.menu-flotante a:hover { background: rgba(255,255,255,0.15); }
+.menu-flotante a.text-danger { color: #ff8b8b; }
+
+/* CONFIGURACIÓN DE CUENTA */
+.config-list { display: flex; flex-direction: column; gap: 12px; }
+.config-item {
+    background: #f7efe9; border-radius: 16px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px; text-decoration: none !important;
+    color: #111; transition: background 0.2s, transform 0.1s;
+}
+.config-item:hover { background: #ebdcd3; transform: translateY(-1px); }
+.config-item i:first-child { font-size: 22px; color: #111; }
+.config-item div { flex-grow: 1; }
+.config-item strong { display: block; font-size: 15px; margin-bottom: 2px; }
+.config-item span { font-size: 13px; color: #555; }
+.arrow-icon { font-size: 18px; color: #111; }
+
+.danger-item { background: #fbdada; }
+.danger-item:hover { background: #f8c5c5; }
+.danger-item strong, .danger-item i { color: #b71c1c; }
+
+@media (max-width: 1100px) {
+    .dashboard-columns { grid-template-columns: 1fr; }
+    .user-summary-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .stats-grid { width: 100%; justify-content: space-between; }
+}
+
+/* ==========================================
+   ESTILOS PARA MODALES FLOTANTES (AGREGADO)
+   ========================================== */
+
+/* Fondo oscuro que cubre toda la pantalla (oculto por defecto) */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Clase que activa el JavaScript para mostrar el modal */
+.modal-overlay.show-modal {
+    display: flex;
+}
+
+/* Caja blanca flotante del modal */
+.floating-modal {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.floating-modal h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111111;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.floating-modal p {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+/* Formulario interno del modal de teléfono */
+.phone-modal form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 6px;
+}
+
+.phone-modal form input[type="tel"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.phone-modal form input[type="tel"]:focus {
+    border-color: #7c3f1d;
+}
+
+/* Botones dentro del modal */
+.modal-actions,
+.phone-modal-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.modal-actions .btn,
+.phone-modal-actions .btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary {
+    background-color: #eaeaea;
+    color: #444444;
+}
+
+.btn-secondary:hover {
+    background-color: #dcdcdc;
+}
+
+.btn-primary {
+    background-color: #7c3f1d;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #633014;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+}

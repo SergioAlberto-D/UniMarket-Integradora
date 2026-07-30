@@ -4,9 +4,11 @@ public class Comentario {
     private int idComentario;
     private String comentario;
     private int calificacion;
-    private Integer idArticuloFk; // Se usa Integer para permitir nulos (NULL)
+    private Integer idArticuloFk;
     private String idUsuarioRemitenteFk;
     private String idUsuarioReceptorFk;
+    private String nombreRemitente;
+    private String fotoRemitente;
 
     public Comentario() {}
 
@@ -18,7 +20,6 @@ public class Comentario {
         this.idUsuarioReceptorFk = idUsuarioReceptorFk;
     }
 
-    // Getters y Setters (Asegúrate de que get/setIdArticuloFk utilicen Integer)
     public int getIdComentario() { return idComentario; }
     public void setIdComentario(int idComentario) { this.idComentario = idComentario; }
     public String getComentario() { return comentario; }
@@ -31,4 +32,8 @@ public class Comentario {
     public void setIdUsuarioRemitenteFk(String idUsuarioRemitenteFk) { this.idUsuarioRemitenteFk = idUsuarioRemitenteFk; }
     public String getIdUsuarioReceptorFk() { return idUsuarioReceptorFk; }
     public void setIdUsuarioReceptorFk(String idUsuarioReceptorFk) { this.idUsuarioReceptorFk = idUsuarioReceptorFk; }
+    public String getNombreRemitente() { return nombreRemitente; }
+    public void setNombreRemitente(String nombreRemitente) { this.nombreRemitente = nombreRemitente; }
+    public String getFotoRemitente() { return fotoRemitente; }
+    public void setFotoRemitente(String fotoRemitente) { this.fotoRemitente = fotoRemitente; }
 }

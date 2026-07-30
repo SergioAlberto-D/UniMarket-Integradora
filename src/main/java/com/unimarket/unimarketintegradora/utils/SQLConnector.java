@@ -87,9 +87,10 @@ public class SQLConnector {
         return dataSource.getConnection();
     }
 
-    public static void closeConnection() {
-        if(dataSource != null && !dataSource.isClosed()) {
+    public static void cerrarPool() {
+        if (dataSource != null && !dataSource.isClosed()) {
             dataSource.close();
+            System.out.println("HikariPool cerrado correctamente.");
         }
     }
 }

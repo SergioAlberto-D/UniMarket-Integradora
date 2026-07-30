@@ -46,14 +46,23 @@ public class UsuarioDao implements Dao<Usuario, String> {
     }
 
     @Override
-    public Usuario getById(String id) {
+    public Usuario getById(String matricula) {
         String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
+
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, id);
+            ps.setString(1, matricula);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Usuario u = new Usuario(rs.getString("nombre"), rs.getString("apellido_paterno"), rs.getString("apellido_materno"), rs.getString("numero_celular"), rs.getInt("id_division_academica_fk"), rs.getDate("fecha_registro"), rs.getString("correo_institucional"), rs.getInt("id_rol_fk"), rs.getString("estado"));
-                    u.setIdUsuario(rs.getString("id_usuario"));
+                    Usuario u = new Usuario();
+                    u.setIdUsuario(rs.getString("MATRICULA"));
+                    u.setNombre(rs.getString("NOMBRE"));
+                    u.setCorreoInstitucional(rs.getString("CORREO_INSTITUCIONAL"));
+                    u.setNumeroCelular(rs.getString("NUMERO_CELULAR"));
+                    u.setEstado(rs.getString("ESTADO"));
+                    u.setIdRolFk(rs.getInt("ID_ROL_FK"));
+                    u.setFotoPerfil(rs.getString("FOTO_PERFIL"));
+                    u.setIdDivisionAcademicaFk(rs.getInt("ID_DIVISION_ACADEMICA_FK"));
+
                     return u;
                 }
             }
@@ -65,7 +74,8 @@ public class UsuarioDao implements Dao<Usuario, String> {
 
     @Override
     public boolean update(Usuario entidad) {
-        String sql = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, numero_celular = ?, id_division_academica_fk = ?, id_rol_fk = ?, estado = ? WHERE id_usuario = ?";
+        // Se corrigió 'WHERE id_usuario = ?' por 'WHERE MATRICULA = ?'
+        String sql = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, numero_celular = ?, id_division_academica_fk = ?, id_rol_fk = ?, estado = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, entidad.getNombre());
             ps.setString(2, entidad.getApellidoPaterno());
@@ -74,6 +84,7 @@ public class UsuarioDao implements Dao<Usuario, String> {
             ps.setInt(5, entidad.getIdDivisionAcademicaFk());
             ps.setInt(6, entidad.getIdRolFk());
             ps.setString(7, entidad.getEstado());
+            // Se pasa el ID (que almacena la matrícula) al parámetro 8
             ps.setString(8, entidad.getIdUsuario());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -152,6 +163,10 @@ public class UsuarioDao implements Dao<Usuario, String> {
                     );
                     // IMPORTANTE: Recuerda que la columna ahora se llama 'matricula' en Oracle
                     u.setIdUsuario(rs.getString("matricula"));
+
+                    // ¡NUEVA LÍNEA PARA LA FOTO!
+                    u.setFotoPerfil(rs.getString("foto_perfil"));
+
                     return u;
                 }
             }
@@ -229,6 +244,50 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error al limpiar el token: " + e.getMessage());
+            return false;
+        }
+    }
+    // 4. Actualiza únicamente la foto de perfil del usuario
+    public boolean actualizarFotoPerfil(String matricula, String rutaFoto) {
+        String sql = "UPDATE usuario SET foto_perfil = ? WHERE matricula = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, rutaFoto);
+            ps.setString(2, matricula);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar foto de perfil: " + e.getMessage());
+            return false;
+        }
+    }
+    // 5. Actualiza únicamente el teléfono del usuario
+    public boolean actualizarTelefono(String matricula, String nuevoTelefono) {
+        String sql = "UPDATE usuario SET numero_celular = ? WHERE matricula = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nuevoTelefono);
+            ps.setString(2, matricula);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el teléfono: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean actualizarRol(String matricula, int nuevoRol) {
+        String sql = "UPDATE usuario SET id_rol_fk = ? WHERE matricula = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, nuevoRol);
+            ps.setString(2, matricula);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el rol: " + e.getMessage());
             return false;
         }
     }

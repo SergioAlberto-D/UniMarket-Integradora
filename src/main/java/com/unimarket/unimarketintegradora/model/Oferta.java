@@ -5,31 +5,39 @@ import java.math.BigDecimal;
 public class Oferta {
     private int idOferta;
     private int idArticuloFk;
-    private String idUsuarioFk;
+    private String matriculaUsuarioFk;
     private BigDecimal monto;
-    private String estado;
+    private String estado; // Ejemplo: 'PENDIENTE', 'ACEPTADA', 'RECHAZADA'
+
+    // Atributos auxiliares para la interfaz gráfica
+    private String nombreArticulo;
+    private String imagenArticulo;
+    private String nombreUsuario; // Nombre de quien hizo la oferta o dueño del artículo
 
     public Oferta() {}
 
-    public Oferta(int idArticuloFk, String idUsuarioFk, BigDecimal monto, String estado) {
+    public Oferta(int idArticuloFk, String matriculaUsuarioFk, BigDecimal monto, String estado) {
         this.idArticuloFk = idArticuloFk;
-        this.idUsuarioFk = idUsuarioFk;
+        this.matriculaUsuarioFk = matriculaUsuarioFk;
         this.monto = monto;
         this.estado = estado;
     }
 
+    // Getters y Setters
     public int getIdOferta() { return idOferta; }
     public void setIdOferta(int idOferta) { this.idOferta = idOferta; }
-
     public int getIdArticuloFk() { return idArticuloFk; }
     public void setIdArticuloFk(int idArticuloFk) { this.idArticuloFk = idArticuloFk; }
-
-    public String getIdUsuarioFk() { return idUsuarioFk; }
-    public void setIdUsuarioFk(String idUsuarioFk) { this.idUsuarioFk = idUsuarioFk; }
-
+    public String getMatriculaUsuarioFk() { return matriculaUsuarioFk; }
+    public void setMatriculaUsuarioFk(String matriculaUsuarioFk) { this.matriculaUsuarioFk = matriculaUsuarioFk; }
     public BigDecimal getMonto() { return monto; }
     public void setMonto(BigDecimal monto) { this.monto = monto; }
-
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+    public String getNombreArticulo() { return nombreArticulo; }
+    public void setNombreArticulo(String nombreArticulo) { this.nombreArticulo = nombreArticulo; }
+    public String getImagenArticulo() { return imagenArticulo; }
+    public void setImagenArticulo(String imagenArticulo) { this.imagenArticulo = imagenArticulo; }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 }

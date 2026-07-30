@@ -5,6 +5,7 @@ import com.unimarket.unimarketintegradora.model.ImagenArticulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
 import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
 import com.unimarket.unimarketintegradora.model.dao.ImagenArticuloDao;
+import com.unimarket.unimarketintegradora.model.dao.UsuarioDao; // Importante para poder actualizar el rol
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -23,6 +24,7 @@ public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
+    private final UsuarioDao usuarioDao = new UsuarioDao(); // Instancia para manejar al usuario
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +39,7 @@ public class PublicarArticuloServlet extends HttpServlet {
         String titulo = limpiar(request.getParameter("titulo"));
         String descripcion = limpiar(request.getParameter("descripcion"));
         String precioTexto = limpiar(request.getParameter("precio"));
-        
+
         int idCategoria = 1; // Asumiendo categoría por defecto si no viene mapeada
         try { idCategoria = Integer.parseInt(request.getParameter("idCategoria")); } catch(Exception ignored){}
 
@@ -60,16 +62,26 @@ public class PublicarArticuloServlet extends HttpServlet {
         boolean publicado = articuloDao.create(articulo);
 
         if (publicado) {
-            // 2. Obtener el ID del artículo recién creado (Requiere un método obtenerUltimoArticuloPorUsuario en ArticuloDao)
+            // 2. Obtener el ID del artículo recién creado
             int idArticuloGenerado = articuloDao.obtenerUltimoIdPorUsuario(usuario.getIdUsuario());
 
-            // 3. Subir las imágenes y guardarlas en base de datos
+            // 3. Subir las imágenes y guardarlas en la base de datos
             List<String> rutas = guardarImagenes(request);
             for (String ruta : rutas) {
                 imagenDao.create(new ImagenArticulo(idArticuloGenerado, ruta));
             }
 
-            response.sendRedirect("publicar-articulo.jsp?exito=true");
+            // 4. --- ASCENSO A VENDEDOR (ROL 3) ---
+            if (usuario.getIdRolFk() != 3) {
+                usuario.setIdRolFk(3);
+                usuarioDao.update(usuario);
+                session.setAttribute("usuario", usuario);
+            }
+
+            // 5. --- REDIRECCIÓN AUTOMÁTICA AL INDEX ---
+            // Asegúrate de que "/inicio" o "/index.jsp" sea la ruta correcta según tu mapeo
+            response.sendRedirect(request.getContextPath() + "/inicio");
+
         } else {
             enviarError(request, response, "No se pudo publicar el artículo.");
         }
@@ -78,17 +90,20 @@ public class PublicarArticuloServlet extends HttpServlet {
     private List<String> guardarImagenes(HttpServletRequest request) throws IOException, ServletException {
         List<String> rutas = new ArrayList<>();
 
-        String rutaReal = getServletContext().getRealPath("/uploads/articulos");
-
-        if (rutaReal == null) {
-            return rutas;
+        // --- NUEVA LÓGICA DE RUTA EXTERNA MULTIPLATAFORMA ---
+        String uploadPath = System.getenv("MUA_UPLOAD_PATH");
+        if (uploadPath == null || uploadPath.trim().isEmpty()) {
+            uploadPath = System.getProperty("user.home") + File.separator + "mua_uploads";
         }
 
-        File carpeta = new File(rutaReal);
+        // Creamos una subcarpeta dedicada a los artículos
+        uploadPath = uploadPath + File.separator + "articulos";
 
+        File carpeta = new File(uploadPath);
         if (!carpeta.exists()) {
             carpeta.mkdirs();
         }
+        // ----------------------------------------------------
 
         for (Part part : request.getParts()) {
             if (!"imagenes".equals(part.getName())) {
@@ -115,11 +130,14 @@ public class PublicarArticuloServlet extends HttpServlet {
                 continue;
             }
 
+            // Generar nombre único para la imagen
             String nombreFinal = UUID.randomUUID() + extension;
-            String rutaArchivo = rutaReal + File.separator + nombreFinal;
+            String rutaArchivo = uploadPath + File.separator + nombreFinal;
 
+            // Escribir el archivo físicamente en el disco duro externo
             part.write(rutaArchivo);
 
+            // Añadir la ruta relativa para la base de datos
             rutas.add("uploads/articulos/" + nombreFinal);
         }
 
@@ -161,8 +179,7 @@ public class PublicarArticuloServlet extends HttpServlet {
     }
 
     private void enviarError(HttpServletRequest request, HttpServletResponse response, String mensaje) throws ServletException, IOException {
-            request.setAttribute("error", mensaje);
-            request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
+        request.setAttribute("error", mensaje);
+        request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
     }
-
 }

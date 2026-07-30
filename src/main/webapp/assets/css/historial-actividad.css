@@ -10,14 +10,31 @@ body {
 }
 
 .history-page {
-    width: 76%;
-    max-width: 1280px;
+    width: 92%; /* Aumentamos el porcentaje para que se expanda a los lados */
+    max-width: 1400px; /* Le damos mucho más límite en monitores grandes */
     margin: 0 auto;
     padding: 42px 0 70px;
 }
 
 .history-title {
     margin-bottom: 24px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #843916;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease;
+}
+
+.back-link:hover {
+    transform: translateX(-5px);
+    color: #5a240d;
 }
 
 .history-title h1 {
@@ -34,14 +51,15 @@ body {
 .history-list {
     width: 100%;
     background: #ffffff;
-    border-radius: 8px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 16px;
     min-height: 570px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 .empty-history {
     width: 100%;
-    min-height: 550px;
+    min-height: 538px;
     background: #fffaf7;
     border: 2px dashed #ead6ca;
     border-radius: 8px;
@@ -74,42 +92,108 @@ body {
     color: #5f4a40;
 }
 
-/* Por si después agregan historial real */
+/* HISTORIAL REAL (TARJETAS) */
 .history-item {
-    min-height: 58px;
-    background: #fae9de;
-    border-radius: 7px;
-    margin-bottom: 10px;
-    padding: 12px 22px;
+    min-height: 75px;
+    background: #ffffff;
+    border: 1px solid #f0e6e1;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    padding: 14px 22px;
     display: grid;
-    grid-template-columns: 40px 1fr 260px 110px;
+    grid-template-columns: 46px 1fr 100px 120px;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.history-item i {
-    color: #843916;
-    font-size: 25px;
+.history-item:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
 }
 
-.history-item h3 {
+/* Cajas de iconos para compras vs ventas */
+.icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-compra {
+    background: #e6f7e8;
+    color: #28a745;
+}
+
+.bg-venta {
+    background: #fff3ed;
+    color: #ff7a2b;
+}
+
+.icon-box i {
+    font-size: 22px;
+}
+
+/* Detalles del producto */
+.item-details h3 {
     margin: 0;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 700;
+    color: #111111;
 }
 
-.history-item p {
-    margin: 2px 0 0;
-    font-size: 10px;
+.item-details p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: #666666;
 }
 
-.history-item span {
+.item-details strong {
+    color: #333333;
+}
+
+/* Etiquetas (Badges) */
+.item-type {
+    text-align: center;
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.badge-compra {
+    background: #e6f7e8;
+    color: #1e7e34;
+}
+
+.badge-venta {
+    background: #fff3ed;
+    color: #d15617;
+}
+
+/* Precios y Fechas */
+.item-price-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.item-price-date .price {
+    font-size: 17px;
+    font-weight: 800;
+    color: #111111;
+}
+
+.item-price-date small {
     font-size: 12px;
-}
-
-.history-item small {
-    font-size: 10px;
-    text-align: right;
+    color: #888888;
 }
 
 @media (max-width: 1300px) {
@@ -123,11 +207,27 @@ body {
         width: 92%;
     }
 
+    .history-item {
+        grid-template-columns: 46px 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    .item-type {
+        grid-column: 2;
+        text-align: left;
+    }
+
+    .item-price-date {
+        grid-column: 2;
+        align-items: flex-start;
+        margin-top: 5px;
+    }
+
     .history-list {
         min-height: 480px;
     }
 
     .empty-history {
-        min-height: 460px;
+        min-height: 448px;
     }
 }

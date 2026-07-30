@@ -103,11 +103,12 @@ body {
     font-weight: 800;
 }
 
+/* Ampliamos el contenedor principal para aprovechar mejor el espacio y dejar de sentirse céntrico */
 .publish-page {
-    width: 82%;
-    max-width: 1160px;
+    width: 92%;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 70px 0 90px;
+    padding: 50px 0 90px;
     position: relative;
 }
 
@@ -115,7 +116,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 48px;
+    margin-bottom: 38px;
 }
 
 .title-icon {
@@ -144,16 +145,16 @@ body {
 
 .tip-card {
     position: absolute;
-    top: 70px;
+    top: 50px;
     right: 0;
-    width: 560px;
+    width: 500px;
     min-height: 82px;
     background: #ffffff;
     border-radius: 14px;
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 16px 38px;
+    padding: 16px 28px;
 }
 
 .tip-icon {
@@ -184,7 +185,7 @@ body {
 .info-card {
     background: #ffffff;
     border-radius: 16px;
-    padding: 12px;
+    padding: 24px;
 }
 
 .images-card {
@@ -193,14 +194,14 @@ body {
 
 .info-card {
     min-height: 690px;
-    padding: 42px 22px 32px;
+    padding: 32px 28px 32px;
 }
 
 .card-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 72px;
+    margin-bottom: 35px;
 }
 
 .info-title {
@@ -223,35 +224,45 @@ body {
 
 .card-title h2 {
     margin: 0;
-    font-size: 29px;
+    font-size: 26px;
     font-weight: 800;
 }
 
 .card-title p {
     margin: 4px 0 0;
-    font-size: 20px;
+    font-size: 17px;
 }
 
+/* Zona de arrastre expandida para ocupar todo el ancho blanco disponible */
 .upload-zone {
-    min-height: 200px;
-    border: 1.7px dashed #ff7a2b;
-    border-radius: 10px;
+    width: 100%;
+    min-height: 260px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #333333;
+    border: 2px dashed #f5b998;
+    border-radius: 12px;
+    background-color: #ffffff;
     cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 25px;
     text-align: center;
-    margin-bottom: 44px;
+    margin-bottom: 30px;
+}
+
+.upload-zone.drag-over {
+    background-color: #fff6f2;
+    border-color: #9a3d1e;
+    transform: scale(1.01);
 }
 
 .upload-icon {
     width: 58px;
     height: 58px;
     border-radius: 50%;
-    background: #dddddd;
-    color: #ff7a2b;
+    background: #faede6;
+    color: #9a3d1e;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -262,20 +273,29 @@ body {
 .upload-zone h3 {
     margin: 0 0 9px;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 600;
+    color: #333;
 }
 
 .upload-zone p {
-    margin: 0 0 13px;
-    font-size: 12px;
+    margin: 0 0 15px;
+    font-size: 13px;
+    color: #666;
 }
 
-.upload-zone span {
-    background: #843916;
+.btn-seleccionar {
+    background-color: #9a3d1e;
     color: #ffffff;
-    padding: 10px 28px;
+    padding: 10px 24px;
     border-radius: 8px;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease;
+}
+
+.upload-zone:hover .btn-seleccionar {
+    background-color: #7a2d14;
 }
 
 .hidden-file {
@@ -283,32 +303,33 @@ body {
 }
 
 .image-help {
-    margin-bottom: 34px;
+    margin-bottom: 25px;
 }
 
 .image-help h3 {
     margin: 0 0 3px;
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 500;
 }
 
 .image-help p {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
+    color: #666;
 }
 
 .preview-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 13px;
+    gap: 15px;
 }
 
 .preview-item,
 .preview-empty {
-    height: 104px;
+    height: 110px;
     border-radius: 10px;
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* Permitir que la X sobresalga ligeramente sin recortarse */
     background: #ffd2c8;
     display: flex;
     align-items: center;
@@ -319,31 +340,57 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 .preview-item span,
 .preview-empty span {
     position: absolute;
-    bottom: -31px;
+    bottom: -28px;
     left: 50%;
     transform: translateX(-50%);
     background: #f2e7e0;
     color: #111111;
     min-width: 28px;
-    padding: 5px 13px;
+    padding: 3px 10px;
     border-radius: 18px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
 }
 
-.preview-item,
-.preview-empty {
-    margin-bottom: 35px;
+.preview-empty i {
+    font-size: 30px;
+    color: #8a3d1a;
 }
 
-.preview-empty i {
-    font-size: 34px;
-    color: #8a3d1a;
+/* --- CORRECCIÓN DEL BOTÓN ELIMINAR FOTO (LA 'X') --- */
+.preview-item {
+    position: relative;
+}
+
+.btn-eliminar-foto {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: #ffffff;
+    border: 2px solid #ffffff; /* Borde blanco para separarlo de la foto */
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 20;
+}
+
+.btn-eliminar-foto:hover {
+    background-color: #c82333;
+    transform: scale(1.15);
 }
 
 .form-section-title {
@@ -354,14 +401,15 @@ body {
 }
 
 .form-group {
-    margin-bottom: 23px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: #3d3d3d;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .form-group input,
@@ -379,7 +427,7 @@ body {
 }
 
 .form-group textarea {
-    min-height: 76px;
+    min-height: 85px;
     resize: none;
     padding-top: 12px;
 }
@@ -393,19 +441,19 @@ body {
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1.1fr;
-    gap: 52px;
+    gap: 20px;
 }
 
 .form-actions {
-    margin-top: 34px;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 112px;
+    gap: 30px;
 }
 
 .cancel-button,
 .publish-button {
-    height: 38px;
+    height: 42px;
     border: none;
     border-radius: 8px;
     text-decoration: none;
@@ -413,7 +461,8 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 15px;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+    font-weight: 600;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
     cursor: pointer;
 }
 

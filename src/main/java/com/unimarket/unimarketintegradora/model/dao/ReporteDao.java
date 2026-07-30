@@ -1,6 +1,7 @@
 package com.unimarket.unimarketintegradora.model.dao;
 
 import com.unimarket.unimarketintegradora.model.Reporte;
+import com.unimarket.unimarketintegradora.model.TransaccionDTO;
 import com.unimarket.unimarketintegradora.utils.SQLConnector;
 import java.sql.*;
 import java.util.ArrayList;
@@ -72,4 +73,6 @@ public class ReporteDao implements Dao<Reporte, String> {
 
     @Override
     public boolean delete(String id) { return false; } // Los reportes no se borran por auditoría de administradores
+
+
 }

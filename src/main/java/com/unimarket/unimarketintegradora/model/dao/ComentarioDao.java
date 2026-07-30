@@ -6,89 +6,49 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComentarioDao implements Dao<Comentario, String> {
-
-    @Override
-    public boolean create(Comentario entidad) {
-        String sql = "INSERT INTO comentario (comentario, calificacion, id_articulo_fk, MATRICULA_remitente_fk, MATRICULA_receptor_fk) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, entidad.getComentario());
-            ps.setInt(2, entidad.getCalificacion());
-            if (entidad.getIdArticuloFk() != null) {
-                ps.setInt(3, entidad.getIdArticuloFk());
-            } else {
-                ps.setNull(3, Types.INTEGER); // Permite nulos como pediste
-            }
-            ps.setString(4, entidad.getIdUsuarioRemitenteFk());
-            ps.setString(5, entidad.getIdUsuarioReceptorFk());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error al registrar comentario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public List<Comentario> getAll() {
+public class ComentarioDao {
+    public List<Comentario> obtenerPorVendedor(String matriculaVendedor) {
         List<Comentario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM comentario";
-        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Integer idArt = rs.getInt("id_articulo_fk");
-                if (rs.wasNull()) idArt = null;
-                Comentario c = new Comentario(rs.getString("comentario"), rs.getInt("calificacion"), idArt, rs.getString("id_usuario_remitente_fk"), rs.getString("id_usuario_receptor_fk"));
-                c.setIdComentario(rs.getInt("id_comentario"));
-                lista.add(c);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al listar comentarios: " + e.getMessage());
-        }
-        return lista;
-    }
+        String sql = "SELECT c.*, u.nombre AS nombre_remitente, u.foto_perfil AS foto_remitente " +
+                "FROM comentario c " +
+                "JOIN usuario u ON c.MATRICULA_REMITENTE_FK = u.matricula " +
+                "WHERE c.MATRICULA_RECEPTOR_FK = ? ORDER BY c.id_comentario DESC";
 
-    @Override
-    public Comentario getById(String id) {
-        String sql = "SELECT * FROM comentario WHERE id_comentario = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, id);
+            ps.setString(1, matriculaVendedor);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    Integer idArt = rs.getInt("id_articulo_fk");
-                    if (rs.wasNull()) idArt = null;
-                    Comentario c = new Comentario(rs.getString("comentario"), rs.getInt("calificacion"), idArt, rs.getString("id_usuario_remitente_fk"), rs.getString("id_usuario_receptor_fk"));
+                while (rs.next()) {
+                    Comentario c = new Comentario(
+                            rs.getString("comentario"),
+                            rs.getInt("calificacion"),
+                            rs.getObject("id_articulo_fk") != null ? rs.getInt("id_articulo_fk") : null,
+                            rs.getString("MATRICULA_REMITENTE_FK"),
+                            rs.getString("MATRICULA_RECEPTOR_FK")
+                    );
                     c.setIdComentario(rs.getInt("id_comentario"));
-                    return c;
+                    c.setNombreRemitente(rs.getString("nombre_remitente"));
+                    c.setFotoRemitente(rs.getString("foto_remitente"));
+                    lista.add(c);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error al buscar comentario: " + e.getMessage());
+            System.out.println("Error al obtener comentarios: " + e.getMessage());
         }
-        return null;
+        return lista;
     }
-
-    @Override
-    public boolean update(Comentario entidad) {
-        String sql = "UPDATE comentario SET comentario = ?, calificacion = ? WHERE id_comentario = ?";
-        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, entidad.getComentario());
-            ps.setInt(2, entidad.getCalificacion());
-            ps.setInt(3, entidad.getIdComentario());
-            return ps.executeUpdate() > 0;
+    public int contarComentariosRealizados(String matriculaRemitente) {
+        String sql = "SELECT COUNT(*) FROM comentario WHERE matricula_remitente_fk = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matriculaRemitente);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Error al actualizar comentario: " + e.getMessage());
-            return false;
+            System.out.println("Error en contarComentariosRealizados: " + e.getMessage());
         }
-    }
-
-    @Override
-    public boolean delete(String id) {
-        String sql = "DELETE FROM comentario WHERE id_comentario = ?";
-        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, id);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error al borrar comentario: " + e.getMessage());
-            return false;
-        }
+        return 0;
     }
 }

@@ -1,6 +1,7 @@
 package com.unimarket.unimarketintegradora.model.dao;
 
 import com.unimarket.unimarketintegradora.model.Transaccion;
+import com.unimarket.unimarketintegradora.model.TransaccionDTO;
 import com.unimarket.unimarketintegradora.utils.SQLConnector;
 import java.sql.*;
 import java.util.ArrayList;
@@ -63,4 +64,52 @@ public class TransaccionDao implements Dao<Transaccion, String> {
 
     @Override
     public boolean delete(String id) { return false; } // Por auditoría, no se suelen borrar.
+
+    // Método para obtener el historial mezclado de compras y ventas
+    public List<TransaccionDTO> obtenerHistorialActividad(String matriculaUsuario) {
+        List<TransaccionDTO> historial = new ArrayList<>();
+
+        String sql =
+                // 1. OBTENER LAS COMPRAS DEL USUARIO
+                "SELECT 'COMPRA' AS tipo, a.nombre AS tituloArticulo, t.monto_final AS precio, t.fecha_transaccion AS fecha, u.nombre AS contraparte " +
+                        "FROM transaccion t " +
+                        "JOIN articulo a ON t.id_articulo_fk = a.id_articulo " +
+                        "JOIN usuario u ON t.MATRICULA_vendedor_fk = u.MATRICULA " +
+                        "WHERE t.MATRICULA_comprador_fk = ? " +
+                        "UNION ALL " +
+                        // 2. OBTENER LAS VENTAS DEL USUARIO
+                        "SELECT 'VENTA' AS tipo, a.nombre AS tituloArticulo, t.monto_final AS precio, t.fecha_transaccion AS fecha, u.nombre AS contraparte " +
+                        "FROM transaccion t " +
+                        "JOIN articulo a ON t.id_articulo_fk = a.id_articulo " +
+                        "JOIN usuario u ON t.MATRICULA_comprador_fk = u.MATRICULA " +
+                        "WHERE t.MATRICULA_vendedor_fk = ? " +
+                        "ORDER BY fecha DESC";
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            // Asignamos la matrícula para la consulta de COMPRAS
+            ps.setString(1, matriculaUsuario);
+            // Asignamos la misma matrícula para la consulta de VENTAS
+            ps.setString(2, matriculaUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    TransaccionDTO transaccion = new TransaccionDTO(
+                            rs.getString("tipo"),
+                            rs.getString("tituloArticulo"),
+                            rs.getBigDecimal("precio"),
+                            rs.getTimestamp("fecha"),
+                            rs.getString("contraparte")
+                    );
+                    historial.add(transaccion);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener historial de actividad: " + e.getMessage());
+        }
+
+        return historial;
+    }
+
 }

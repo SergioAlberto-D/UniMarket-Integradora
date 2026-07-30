@@ -10,7 +10,8 @@ public class Articulo {
     private String descripcion;
     private String idUsuarioFk;
     private String imagenPrincipal;
-
+    private String nombreUsuario;
+    private String fotoVendedor;
     public Articulo() {}
 
     public Articulo(String nombre, BigDecimal precio, int idCategoriaFk, String descripcion, String idUsuarioFk) {
@@ -34,10 +35,10 @@ public class Articulo {
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
     public String getIdUsuarioFk() { return idUsuarioFk; }
     public void setIdUsuarioFk(String idUsuarioFk) { this.idUsuarioFk = idUsuarioFk; }
-    public String getImagenPrincipal() {
-        return imagenPrincipal;
-    }
-    public void setImagenPrincipal(String imagenPrincipal) {
-        this.imagenPrincipal = imagenPrincipal;
-    }
+    public String getImagenPrincipal() { return imagenPrincipal; }
+    public void setImagenPrincipal(String imagenPrincipal) { this.imagenPrincipal = imagenPrincipal; }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public String getFotoVendedor() { return fotoVendedor; }
+    public void setFotoVendedor(String fotoVendedor) { this.fotoVendedor = fotoVendedor; }
 }

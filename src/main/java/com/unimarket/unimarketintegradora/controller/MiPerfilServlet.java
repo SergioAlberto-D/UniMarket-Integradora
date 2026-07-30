@@ -1,0 +1,83 @@
+package com.unimarket.unimarketintegradora.controller;
+
+import com.unimarket.unimarketintegradora.model.Comentario;
+import com.unimarket.unimarketintegradora.model.Oferta;
+import com.unimarket.unimarketintegradora.model.Usuario;
+import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
+import com.unimarket.unimarketintegradora.model.dao.ComentarioDao;
+import com.unimarket.unimarketintegradora.model.dao.OfertaDao;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet(name = "MiPerfilServlet", value = "/mi-perfil")
+public class MiPerfilServlet extends HttpServlet {
+    private final ArticuloDao articuloDao = new ArticuloDao();
+    private final ComentarioDao comentarioDao = new ComentarioDao();
+    private final OfertaDao ofertaDao = new OfertaDao();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Usuario usuarioLogueado = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
+
+        if (usuarioLogueado == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        String matricula = usuarioLogueado.getIdUsuario(); // O getCorreoInstitucional()
+
+        // 1. Cargar Ofertas (Hechas por mí y Recibidas)
+        List<Oferta> ofertasHechas = ofertaDao.obtenerOfertasHechasPorUsuario(matricula);
+        List<Oferta> ofertasRecibidas = ofertaDao.obtenerOfertasRecibidas(matricula);
+
+        // 2. CÁLCULO PARA VENDEDOR (Rol 3)
+        int articulosPublicados = articuloDao.contarPorUsuario(matricula);
+        List<Comentario> comentariosRecibidos = comentarioDao.obtenerPorVendedor(matricula);
+        int totalComentariosRecibidos = comentariosRecibidos.size();
+
+        double sumaCalificaciones = 0;
+        for (Comentario c : comentariosRecibidos) {
+            sumaCalificaciones += c.getCalificacion();
+        }
+        double promedio = (totalComentariosRecibidos > 0) ? (sumaCalificaciones / totalComentariosRecibidos) : 0.0;
+
+        long transaccionesVenta = ofertasRecibidas.stream()
+                .filter(o -> "ACEPTADA".equalsIgnoreCase(o.getEstado()) || "VENDIDO".equalsIgnoreCase(o.getEstado()))
+                .count();
+
+        // 3. CÁLCULO PARA COMPRADOR (Rol 2 y también contable para el Vendedor)
+        int comentariosRealizados = comentarioDao.contarComentariosRealizados(matricula);
+
+        long transaccionesCompra = ofertasHechas.stream()
+                .filter(o -> "ACEPTADA".equalsIgnoreCase(o.getEstado()) || "VENDIDO".equalsIgnoreCase(o.getEstado()))
+                .count();
+
+        // 4. Traducir División Académica
+        String nombreDivision = "DATID";
+        int divisionId = usuarioLogueado.getIdDivisionAcademicaFk();
+        if (divisionId == 2) nombreDivision = "DAMI";
+        else if (divisionId == 3) nombreDivision = "DACEA";
+        else if (divisionId == 4) nombreDivision = "DATEFI";
+
+        // 5. Mandar atributos a la vista
+        request.setAttribute("articulosPublicados", articulosPublicados);
+        request.setAttribute("totalComentariosRecibidos", totalComentariosRecibidos);
+        request.setAttribute("comentariosRealizados", comentariosRealizados);
+        request.setAttribute("promedioCalificacion", String.format("%.1f", promedio).replace(",", "."));
+
+        // Si es vendedor mostramos ventas cerradas; si es comprador mostramos compras cerradas
+        long transaccionesMostrar = (usuarioLogueado.getIdRolFk() == 3) ? transaccionesVenta : transaccionesCompra;
+        request.setAttribute("transaccionesCompletadas", transaccionesMostrar);
+
+        request.setAttribute("nombreDivision", nombreDivision);
+        request.setAttribute("ofertasHechas", ofertasHechas);
+        request.setAttribute("ofertasRecibidas", ofertasRecibidas);
+
+        request.getRequestDispatcher("mi-perfil.jsp").forward(request, response);
+    }
+}
