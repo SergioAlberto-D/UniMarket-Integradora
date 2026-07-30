@@ -38,16 +38,26 @@
     <%-- TARJETA DE RESUMEN DEL USUARIO --%>
     <section class="user-summary-card">
         <div class="user-info-section">
-            <div class="user-avatar">
-                <c:choose>
-                    <c:when test="${not empty sessionScope.usuario.fotoPerfil}">
-                        <img src="${pageContext.request.contextPath}/${sessionScope.usuario.fotoPerfil}" alt="Avatar">
-                    </c:when>
-                    <c:otherwise>
-                        ${fn:substring(sessionScope.usuario.nombre, 0, 2)}
-                    </c:otherwise>
-                </c:choose>
+            <%-- AVATAR CON BOTÓN DE LÁPIZ ESTILO WHATSAPP --%>
+            <div class="avatar-container-profile">
+                <div class="user-avatar" id="avatarPreviewBox">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.usuario.fotoPerfil}">
+                            <img src="${pageContext.request.contextPath}/${sessionScope.usuario.fotoPerfil}" alt="Avatar">
+                        </c:when>
+                        <c:otherwise>
+                            ${fn:substring(sessionScope.usuario.nombre, 0, 2)}
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                <%-- Botón flotante del lápiz en la esquina inferior izquierda --%>
+                <button type="button" class="btn-edit-avatar" onclick="document.getElementById('inputFotoPerfil').click()" title="Cambiar foto de perfil">
+                    <i class="bi bi-pencil-fill"></i>
+                </button>
+                <%-- Input oculto que abre el explorador de archivos --%>
+                <input type="file" id="inputFotoPerfil" accept="image/png, image/jpeg, image/jpg" style="display: none;" onchange="abrirEditorFoto(this)">
             </div>
+
             <div class="user-details">
                 <h2>${fn:escapeXml(sessionScope.usuario.nombre)} ${fn:escapeXml(sessionScope.usuario.apellidoPaterno)}</h2>
                 <ul>
@@ -307,6 +317,33 @@
     </div>
 </div>
 
+<!-- Modal: Editor de Foto Estilo WhatsApp -->
+<div class="modal-overlay" id="modalEditorFoto">
+    <div class="floating-modal photo-editor-modal">
+        <div class="editor-header">
+            <button type="button" class="btn-close-editor" onclick="cerrarModal('modalEditorFoto')"><i class="bi bi-x-lg"></i></button>
+            <span>Arrastra la imagen para ajustarla.</span>
+            <button type="button" class="btn-change-photo" onclick="document.getElementById('inputFotoPerfil').click()"><i class="bi bi-arrow-counterclockwise"></i> Subir otra</button>
+        </div>
+
+        <div class="editor-canvas-area" id="editorArea">
+            <canvas id="canvasEditor"></canvas>
+            <%-- Máscara redonda para simular cómo quedará el corte --%>
+            <div class="circular-overlay"></div>
+            <%-- Controles flotantes de Zoom --%>
+            <div class="zoom-controls">
+                <button type="button" onclick="cambiarZoom(0.1)"><i class="bi bi-plus-lg"></i></button>
+                <button type="button" onclick="cambiarZoom(-0.1)"><i class="bi bi-dash-lg"></i></button>
+            </div>
+        </div>
+
+        <div class="editor-footer">
+            <button type="button" class="btn-confirm-photo" onclick="guardarFotoPerfil()">
+                <i class="bi bi-check-lg"></i>
+            </button>
+        </div>
+    </div>
+</div>
 <!-- ==========================================
      SCRIPTS DE FUNCIONAMIENTO Y FORMATEO
      ========================================== -->
@@ -392,6 +429,97 @@
     const inputTelefono = document.getElementById('telefonoNuevo');
     if (inputTelefono) {
         inputTelefono.addEventListener('input', formatearTelefono);
+    }
+</script>
+<script>
+    // --- LÓGICA DEL EDITOR DE FOTOS ESTILO WHATSAPP ---
+    let imagenActual = new Image();
+    let zoomLevel = 1.0;
+    let offsetX = 0, offsetY = 0;
+    let isDragging = false, startX = 0, startY = 0;
+
+    function abrirEditorFoto(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagenActual.onload = function() {
+                    zoomLevel = 1.0;
+                    offsetX = 0;
+                    offsetY = 0;
+                    dibujarCanvas();
+                    abrirModal('modalEditorFoto');
+                }
+                imagenActual.src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function dibujarCanvas() {
+        const canvas = document.getElementById('canvasEditor');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 300;
+        canvas.height = 300;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+
+        // Centrar y dibujar imagen con zoom y arrastre
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        ctx.translate(cx + offsetX, cy + offsetY);
+        ctx.scale(zoomLevel, zoomLevel);
+
+        // Mantener proporción cubriendo el área
+        let ratio = Math.max(canvas.width / imagenActual.width, canvas.height / imagenActual.height);
+        let dw = imagenActual.width * ratio;
+        let dh = imagenActual.height * ratio;
+
+        ctx.drawImage(imagenActual, -dw / 2, -dh / 2, dw, dh);
+        ctx.restore();
+    }
+
+    function cambiarZoom(delta) {
+        zoomLevel = Math.max(0.5, Math.min(3.0, zoomLevel + delta));
+        dibujarCanvas();
+    }
+
+    // Eventos de arrastre en el canvas
+    const editorArea = document.getElementById('editorArea');
+    if (editorArea) {
+        editorArea.addEventListener('mousedown', e => {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+        });
+        window.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            dibujarCanvas();
+        });
+        window.addEventListener('mouseup', () => isDragging = false);
+    }
+
+    function guardarFotoPerfil() {
+        const canvas = document.getElementById('canvasEditor');
+        // Exportar como imagen Base64 para enviar por AJAX
+        const base64Image = canvas.toDataURL('image/jpeg', 0.9);
+
+        fetch('${pageContext.request.contextPath}/actualizar-foto-perfil', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'fotoBase64=' + encodeURIComponent(base64Image)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exito) {
+                    location.reload(); // Recarga para mostrar la foto nueva en el header y perfil
+                } else {
+                    alert('No se pudo actualizar la foto de perfil.');
+                }
+            })
+            .catch(error => console.error('Error al subir la foto:', error));
     }
 </script>
 
