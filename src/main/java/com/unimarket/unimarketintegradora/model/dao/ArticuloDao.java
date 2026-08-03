@@ -27,12 +27,14 @@ public class ArticuloDao implements Dao<Articulo, String> {
     @Override
     public List<Articulo> getAll() {
         List<Articulo> lista = new ArrayList<>();
-        // MODIFICACIÓN: Agregamos el JOIN con la tabla USUARIO para traer el nombre
+        // Ocultamos artículos que tengan una transacción activa en estado 'PENDIENTE'
         String sql = "SELECT a.*, \n" +
                 "       u.nombre AS nombre_vendedor, \n" +
                 "       (SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada \n" +
                 "FROM ARTICULO a \n" +
-                "JOIN USUARIO u ON a.matricula_usuario_fk = u.matricula";
+                "JOIN USUARIO u ON a.matricula_usuario_fk = u.matricula \n" +
+                "WHERE a.id_articulo NOT IN (SELECT id_articulo_fk FROM transaccion WHERE estado = 'PENDIENTE') " +
+                "AND a.estado != 'ELIMINADO'";
 
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -45,8 +47,6 @@ public class ArticuloDao implements Dao<Articulo, String> {
                 );
                 a.setIdArticulo(rs.getInt("id_articulo"));
                 a.setImagenPrincipal(rs.getString("portada"));
-
-                // NUEVO: Guardamos el nombre extraído de la base de datos en el objeto
                 a.setNombreUsuario(rs.getString("nombre_vendedor"));
 
                 lista.add(a);
@@ -99,7 +99,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
 
     @Override
     public boolean delete(String id) {
-        String sql = "DELETE FROM articulo WHERE id_articulo = ?";
+        String sql = "UPDATE articulo SET estado = 'ELIMINADO' WHERE id_articulo = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, id);
             return ps.executeUpdate() > 0;
@@ -166,4 +166,119 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return 0;
     }
+
+    public List<Articulo> filtrarArticulos(String orden, Integer idCategoria, Integer idDivision, java.math.BigDecimal minPrecio, java.math.BigDecimal maxPrecio) {
+        List<Articulo> lista = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT a.*, u.nombre AS nombre_vendedor, " +
+                        "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
+                        "FROM ARTICULO a " +
+                        "JOIN USUARIO u ON a.matricula_usuario_fk = u.matricula " +
+                        "WHERE a.id_articulo NOT IN (SELECT id_articulo_fk FROM transaccion WHERE estado = 'PENDIENTE') " +
+                        "AND a.estado != 'ELIMINADO' "
+        );
+
+        List<Object> parametros = new ArrayList<>();
+
+        // 1. Filtro por Categoría
+        if (idCategoria != null && idCategoria > 0) {
+            sql.append(" AND a.id_categoria_fk = ? ");
+            parametros.add(idCategoria);
+        }
+
+        // 2. Filtro por División Académica (desde la tabla USUARIO)
+        if (idDivision != null && idDivision > 0) {
+            sql.append(" AND u.id_division_academica_fk = ? ");
+            parametros.add(idDivision);
+        }
+
+        // 3. Filtro por Precio Mínimo
+        if (minPrecio != null && minPrecio.compareTo(java.math.BigDecimal.ZERO) >= 0) {
+            sql.append(" AND a.precio >= ? ");
+            parametros.add(minPrecio);
+        }
+
+        // 4. Filtro por Precio Máximo
+        if (maxPrecio != null && maxPrecio.compareTo(java.math.BigDecimal.ZERO) > 0) {
+            sql.append(" AND a.precio <= ? ");
+            parametros.add(maxPrecio);
+        }
+
+        // 5. Ordenamiento
+        if ("Precio menor".equalsIgnoreCase(orden)) {
+            sql.append(" ORDER BY a.precio ASC");
+        } else if ("Precio mayor".equalsIgnoreCase(orden)) {
+            sql.append(" ORDER BY a.precio DESC");
+        } else {
+            sql.append(" ORDER BY a.id_articulo DESC"); // Recientes por defecto
+        }
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parametros.size(); i++) {
+                ps.setObject(i + 1, parametros.get(i));
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Articulo a = new Articulo(
+                            rs.getString("nombre"),
+                            rs.getBigDecimal("precio"),
+                            rs.getInt("id_categoria_fk"),
+                            rs.getString("descripcion"),
+                            rs.getString("matricula_usuario_fk")
+                    );
+                    a.setIdArticulo(rs.getInt("id_articulo"));
+                    a.setImagenPrincipal(rs.getString("portada"));
+                    a.setNombreUsuario(rs.getString("nombre_vendedor"));
+                    lista.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al filtrar artículos: " + e.getMessage());
+        }
+        return lista;
+    }
+    public List<Articulo> obtenerPorUsuarioYEstado(String matriculaUsuario, boolean enProceso) {
+        List<Articulo> lista = new ArrayList<>();
+        String sql;
+
+        if (enProceso) {
+            // Artículos con transacción PENDIENTE
+            sql = "SELECT a.*, " +
+                    "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
+                    "FROM ARTICULO a WHERE a.matricula_usuario_fk = ? " +
+                    "AND a.id_articulo IN (SELECT id_articulo_fk FROM transaccion WHERE estado = 'PENDIENTE')AND a.estado != 'ELIMINADO'";
+        } else {
+            // Artículos SIN transacción PENDIENTE
+            sql = "SELECT a.*, " +
+                    "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
+                    "FROM ARTICULO a WHERE a.matricula_usuario_fk = ? " +
+                    "AND a.id_articulo NOT IN (SELECT id_articulo_fk FROM transaccion WHERE estado = 'PENDIENTE')AND a.estado != 'ELIMINADO'";
+        }
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matriculaUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Articulo a = new Articulo(
+                            rs.getString("nombre"),
+                            rs.getBigDecimal("precio"),
+                            rs.getInt("id_categoria_fk"),
+                            rs.getString("descripcion"),
+                            rs.getString("matricula_usuario_fk")
+                    );
+                    a.setIdArticulo(rs.getInt("id_articulo"));
+                    a.setImagenPrincipal(rs.getString("portada"));
+                    lista.add(a);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener artículos por estado: " + e.getMessage());
+        }
+        return lista;
+    }
+
 }

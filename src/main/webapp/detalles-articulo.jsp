@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/28/26
-  Time: 9:00 PM
+  Time: 9:00 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -69,7 +69,9 @@
                         <div class="seller-avatar">
                             <c:choose>
                                 <c:when test="${not empty articulo.fotoVendedor}">
-                                    <img src="${pageContext.request.contextPath}/${articulo.fotoVendedor}" alt="Avatar">
+                                    <img src="${pageContext.request.contextPath}/${articulo.fotoVendedor}"
+                                         alt=""
+                                         onerror="this.style.display='none'; this.parentNode.innerHTML='${fn:substring(articulo.nombreUsuario, 0, 2)}';">
                                 </c:when>
                                 <c:otherwise>
                                     ${fn:substring(articulo.nombreUsuario, 0, 2)}
@@ -90,7 +92,7 @@
 
             <div class="action-buttons">
                 <button class="btn-ofertar">Ofertar</button>
-                <button class="btn-comprar">Comprar</button>
+                <button type="button" class="btn-comprar" onclick="abrirModalCompra()" style="border: none; cursor: pointer;">Comprar</button>
             </div>
         </div>
     </section>
@@ -137,7 +139,7 @@
                                     </div>
                                     <strong>${fn:escapeXml(comentario.nombreRemitente)}</strong>
                                 </div>
-                                <span class="c-date">Reciente</span>
+                                <span class="c-date">${comentario.fechaFormateada}</span>
                             </div>
                             <div class="c-stars">
                                 <c:forEach begin="1" end="5" var="i">
@@ -191,7 +193,7 @@
 
     function iniciarCarrusel() {
         if (totalImagenes > 1) {
-            carruselIntervalo = setInterval(avanzarCarrusel, 15000); // Cambia cada 3.5 segundos
+            carruselIntervalo = setInterval(avanzarCarrusel, 15000); // Cambia cada 15 segundos
         }
     }
 
@@ -245,5 +247,228 @@
     }
 </script>
 
+<%-- MODAL FLOTANTE: HAZ UNA OFERTA --%>
+<div class="modal-overlay" id="modalOferta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="floating-modal" style="background: #fff; border-radius: 18px; width: 90%; max-width: 440px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; text-align: left;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0e6e1; padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #111;">Haz una oferta</h3>
+            <button type="button" onclick="cerrarModalOferta()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #555;">&times;</button>
+        </div>
+
+        <%-- RESUMEN DEL PRODUCTO --%>
+        <div style="background: #f7efe9; border: 1px solid #e8cdbd; border-radius: 12px; padding: 12px; display: flex; gap: 14px; align-items: center; margin-bottom: 20px;">
+            <div style="width: 55px; height: 55px; border-radius: 8px; overflow: hidden; background: #e0d0c8; flex-shrink: 0;">
+                <img src="${pageContext.request.contextPath}/${not empty imagenes ? imagenes[0].urlImagen : ''}" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            </div>
+            <div>
+                <strong style="display: block; font-size: 14px; color: #111; margin-bottom: 3px;">${fn:escapeXml(articulo.nombre)}</strong>
+                <span style="font-size: 13px; color: #555;">Precio actual: <strong style="color: #111;">$${articulo.precio} MXN</strong></span>
+            </div>
+        </div>
+
+        <%-- INPUT DE OFERTA --%>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 6px;">Tu oferta (MXN)</label>
+        <input type="number" id="inputMontoOferta" placeholder="$00000.0000" min="1" step="1" style="width: 100%; height: 45px; border: none; background: #f6efe9; border-radius: 10px; padding: 0 14px; font-size: 15px; box-sizing: border-box; outline: none; margin-bottom: 8px;">
+        <p style="font-size: 12px; color: #666; margin: 0 0 24px;">&#9432; El vendedor revisará tu oferta y podrá aceptarla o rechazarla.</p>
+
+        <%-- BOTÓN DE ENVIAR --%>
+        <div style="background: #f7efe9; padding: 12px; border-radius: 12px;">
+            <button type="button" onclick="enviarOfertaAjax()" style="width: 100%; height: 44px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer;">Enviar oferta</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Conectamos el botón de la tarjeta principal para abrir el modal de oferta
+    const btnOfertarPrincipal = document.querySelector('.btn-ofertar');
+    if (btnOfertarPrincipal) {
+        btnOfertarPrincipal.onclick = function() {
+            document.getElementById('modalOferta').style.display = 'flex';
+        };
+    }
+
+    function cerrarModalOferta() {
+        document.getElementById('modalOferta').style.display = 'none';
+    }
+
+    function enviarOfertaAjax() {
+        const monto = document.getElementById('inputMontoOferta').value;
+        const idArticulo = "${articulo.idArticulo}";
+        const matriculaVendedor = "${articulo.idUsuarioFk}";
+
+        if (!monto || parseFloat(monto) <= 0) {
+            mostrarModalMUA("Por favor ingresa un monto válido para tu oferta.", 'error');
+            return;
+        }
+
+        const datos = new URLSearchParams();
+        datos.append('idArticulo', idArticulo);
+        datos.append('matriculaVendedor', matriculaVendedor);
+        datos.append('monto', monto);
+
+        fetch('${pageContext.request.contextPath}/ofertar-articulo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exito) {
+                    cerrarModalOferta();
+                    document.getElementById('inputMontoOferta').value = '';
+                    // Usamos el Modal MUA estilizado en lugar de alert()
+                    mostrarModalMUA(data.mensaje || "¡Oferta enviada con éxito!", 'exito');
+                } else {
+                    mostrarModalMUA(data.mensaje || "No se pudo enviar la oferta.", 'error');
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud:", error);
+                mostrarModalMUA("Ocurrió un error al procesar la solicitud.", 'error');
+            });
+    }
+</script>
+
+<%-- MODAL FLOTANTE: CONFIRMA TU COMPRA --%>
+<div class="modal-overlay" id="modalCompra" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="floating-modal" style="background: #fff; border-radius: 18px; width: 90%; max-width: 480px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; text-align: left;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0e6e1; padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #111;">Confirma tu compra</h3>
+            <button type="button" onclick="cerrarModalCompra()" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #555;">&times;</button>
+        </div>
+
+        <div style="background: #f7efe9; border: 1px solid #e8cdbd; border-radius: 12px; padding: 12px; display: flex; gap: 14px; align-items: center; margin-bottom: 20px;">
+            <div style="width: 65px; height: 65px; border-radius: 8px; overflow: hidden; background: #e0d0c8; flex-shrink: 0;">
+                <img src="${pageContext.request.contextPath}/${not empty imagenes ? imagenes[0].urlImagen : ''}" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            </div>
+            <div>
+                <strong style="display: block; font-size: 15px; color: #111; margin-bottom: 3px;">${fn:escapeXml(articulo.nombre)}</strong>
+                <span style="font-size: 13px; color: #555;">Precio actual: <strong style="color: #9a3d1e;">$${articulo.precio} MXN</strong></span>
+            </div>
+        </div>
+
+        <%-- CORRECCIÓN: Etiqueta aclarando que el mensaje es opcional --%>
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 6px;">Escribe un mensaje para el Vendedor (Opcional)</label>
+        <textarea id="inputMensajeComprador" placeholder="Escribe aquí tu mensaje....." style="width: 100%; height: 110px; border: 1px solid #e8cdbd; background: #fcf9f7; border-radius: 10px; padding: 12px; font-size: 14px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 20px;"></textarea>
+
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 10px;">¿Cómo quieres contactar al vendedor?</label>
+
+        <%-- CORRECCIÓN: Texto congruente en el botón --%>
+        <%-- CORRECCIÓN: dos opciones de contacto --%>
+        <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="ejecutarCompraAjax('whatsapp')" style="flex: 1; height: 48px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+            </button>
+            <button type="button" onclick="ejecutarCompraAjax('gmail')" style="flex: 1; height: 48px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 63, 29, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="bi bi-envelope"></i> Gmail
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function abrirModalCompra() {
+        document.getElementById('modalCompra').style.display = 'flex';
+    }
+
+    function cerrarModalCompra() {
+        document.getElementById('modalCompra').style.display = 'none';
+    }
+
+    // Convierte un número de celular guardado en BD (con o sin espacios/guiones)
+    // al formato que necesita WhatsApp: solo dígitos, con código de país (52 = México).
+    function formatearNumeroWhatsapp(numero) {
+        if (!numero) return null;
+        let limpio = numero.replace(/\D/g, ''); // deja solo dígitos
+        if (limpio.length === 10) {
+            limpio = '52' + limpio; // anteponemos código de país MX
+        }
+        return limpio;
+    }
+
+    function ejecutarCompraAjax(metodoContacto) {
+        const mensaje = document.getElementById('inputMensajeComprador').value.trim();
+        // Esta línea SÍ debe ser procesada por JSP para obtener el ID del artículo desde Java:
+        const idArticulo = "${articulo.idArticulo}";
+
+        const datos = new URLSearchParams();
+        datos.append('idArticulo', idArticulo);
+        datos.append('mensaje', mensaje);
+
+        fetch('${pageContext.request.contextPath}/comprar-articulo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                cerrarModalCompra();
+
+                console.log("Respuesta del servidor:", data);
+
+                if (data.exito) {
+                    if (metodoContacto === 'whatsapp') {
+                        const telefonoDestino = formatearNumeroWhatsapp(
+                            (data.telefonoVendedor && data.telefonoVendedor !== "null") ? data.telefonoVendedor.trim() : ""
+                        );
+
+                        if (!telefonoDestino) {
+                            mostrarModalMUA("El producto se reservó, pero no se encontró el número de teléfono del vendedor en la base de datos.", 'error', () => {
+                                location.reload();
+                            });
+                            return;
+                        }
+
+                        const mensajeWa = encodeURIComponent(data.mensajeChat);
+                        const urlWhatsapp = "https://wa.me/" + telefonoDestino + "?text=" + mensajeWa;
+
+                        mostrarModalMUA(
+                            "¡Producto reservado! Abriremos WhatsApp para contactar al vendedor. Solo revisa y envía el mensaje.",
+                            'exito',
+                            () => {
+                                window.open(urlWhatsapp, '_blank');
+                                setTimeout(() => location.reload(), 1500);
+                            }
+                        );
+                    } else {
+                        const correoDestino = (data.correoVendedor && data.correoVendedor !== "null")
+                            ? data.correoVendedor.trim()
+                            : "";
+
+                        if (!correoDestino) {
+                            mostrarModalMUA("El producto se reservó, pero no se encontró el correo del vendedor en la base de datos.", 'error', () => {
+                                location.reload();
+                            });
+                            return;
+                        }
+
+                        const asunto = encodeURIComponent("Interés en compra de tu artículo - MUA");
+                        const cuerpo = encodeURIComponent(data.mensajeChat);
+                        const urlGmail = "https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=" + encodeURIComponent(correoDestino) + "&su=" + asunto + "&body=" + cuerpo;
+
+                        mostrarModalMUA(
+                            "¡Producto reservado! Abriremos tu Gmail para contactar a " + correoDestino + ". Solo revisa y haz clic en 'Enviar'.",
+                            'exito',
+                            () => {
+                                window.open(urlGmail, '_blank');
+                                setTimeout(() => location.reload(), 1500);
+                            }
+                        );
+                    }
+                } else {
+                    mostrarModalMUA(data.mensaje || "No se pudo procesar la compra.", 'error');
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud:", error);
+                cerrarModalCompra();
+                mostrarModalMUA("Ocurrió un error al procesar la compra.", 'error');
+            });
+    }
+</script>
 </body>
 </html>

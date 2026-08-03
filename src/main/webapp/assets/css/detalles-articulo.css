@@ -186,7 +186,14 @@ body {
 .bar-track { flex-grow: 1; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
 .bar-fill { height: 100%; background: #7c3f1d; border-radius: 5px; }
 
-.comments-list { display: flex; flex-direction: column; gap: 15px; }
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 450px;       /* <-- Altura máxima permitida */
+    overflow-y: auto;        /* <-- Activa el scroll vertical automático */
+    padding-right: 10px;     /* <-- Espacio para que el scrollbar no tape el texto */
+}
 .comment-item {
     background: #f7efe9;
     border: 1px solid #dcd1cb;
@@ -252,4 +259,29 @@ body {
 
 .close-modal:hover {
     color: #f2d1c9;
+}
+.comments-list::-webkit-scrollbar,
+.ofertas-list::-webkit-scrollbar,
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track,
+.ofertas-list::-webkit-scrollbar-track,
+.history-list::-webkit-scrollbar-track {
+    background: #f4e9e2;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb,
+.ofertas-list::-webkit-scrollbar-thumb,
+.history-list::-webkit-scrollbar-thumb {
+    background: #c8a392;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover,
+.ofertas-list::-webkit-scrollbar-thumb:hover,
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #7c3f1d;
 }

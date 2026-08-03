@@ -88,14 +88,40 @@ body {
 }
 .tab-btn.active { background: #7c3f1d; color: #fff; }
 
-/* LISTA DE OFERTAS */
-.ofertas-list { display: flex; flex-direction: column; gap: 15px; }
-.oferta-item {
-    background: #f7efe9; border-radius: 16px; padding: 14px 18px;
-    display: flex; align-items: center; justify-content: space-between;
-    transition: transform 0.1s;
+/* LISTA DE OFERTAS (Más grande y alta) */
+.ofertas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 450px;
+    min-height: 450px;
+    overflow-y: auto;
+    padding-right: 8px;
+    padding-bottom: 110px;
 }
-.oferta-item:hover { transform: translateY(-1px); }
+
+.oferta-item {
+    background: #f7efe9;
+    border-radius: 16px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1; /* Nivel base para evitar cruces */
+    overflow: visible !important;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.oferta-item:hover {
+    background: #f3e8e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* Eleva la tarjeta completa al frente solo si su menú flotante está abierto */
+.oferta-item:has(.menu-flotante.show) {
+    z-index: 999 !important;
+}
 
 .oferta-img {
     width: 65px; height: 65px; border-radius: 12px; background: #e8cdbd;
@@ -109,43 +135,51 @@ body {
 .oferta-info .monto { font-size: 16px; font-weight: 800; color: #9a3d1e; }
 
 .oferta-actions { display: flex; align-items: center; gap: 10px; }
-.btn-group-vertical { display: flex; flex-direction: column; gap: 6px; }
-.btn-primary-action, .btn-secondary-action {
-    border: none; border-radius: 8px; padding: 6px 18px; font-size: 13px;
-    font-weight: 700; cursor: pointer; transition: background 0.2s;
-}
-.btn-primary-action { background: #7c3f1d; color: #fff; }
-.btn-primary-action:hover { background: #5c2d13; }
-.btn-secondary-action { background: #ebd6ce; color: #111; }
-.btn-secondary-action:hover { background: #e2c3b8; }
 
-/* MENÚ HAMBURGUESA FLOTANTE CON ANIMACIÓN INTELIGENTE */
-.dropdown-hamburguesa { position: relative; }
+/* MENÚ HAMBURGUESA FLOTANTE POR ENCIMA DEL SCROLL */
+.dropdown-hamburguesa {
+    position: relative;
+    z-index: 10;
+}
 .btn-icon-hamburguesa {
     width: 38px; height: 38px; border-radius: 50%; border: none;
     background: #7c3f1d; color: #fff; font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: transform 0.2s, background 0.2s;
 }
-.btn-icon-hamburguesa:hover { background: #5c2d13; transform: scale(1.05); }
+.btn-icon-hamburguesa:hover {
+    background: #5c2d13;
+    transform: scale(1.05);
+}
 
+/* Menú sobrepuesto visualmente al scroll */
 .menu-flotante {
-    position: absolute; right: 0; top: 45px; background: #623015;
-    border-radius: 14px; width: 130px; box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    display: flex; flex-direction: column; padding: 6px 0; z-index: 100;
-    opacity: 0; visibility: hidden; transform: translateY(-10px) scale(0.95);
-    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    background: #623015;
+    border-radius: 12px;
+    width: 170px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0;
+    z-index: 1000 !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.95);
+    transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.18s;
 }
 .menu-flotante.show {
     opacity: 1; visibility: visible; transform: translateY(0) scale(1);
 }
 .menu-flotante a {
-    color: #ffffff; text-decoration: none; padding: 8px 16px;
+    color: #ffffff; text-decoration: none; padding: 10px 16px;
     font-size: 13px; font-weight: 600; display: flex; align-items: center;
-    gap: 8px; transition: background 0.15s;
+    gap: 10px; transition: background 0.15s;
 }
 .menu-flotante a:hover { background: rgba(255,255,255,0.15); }
-.menu-flotante a.text-danger { color: #ff8b8b; }
+.menu-flotante a.text-danger { color: #ff9e9e; }
 
 /* CONFIGURACIÓN DE CUENTA */
 .config-list { display: flex; flex-direction: column; gap: 12px; }
@@ -172,32 +206,30 @@ body {
 }
 
 /* ==========================================
-   ESTILOS PARA MODALES FLOTANTES (AGREGADO)
+   ESTILOS PARA MODALES FLOTANTES (Z-INDEX 5000+)
    ========================================== */
 
-/* Fondo oscuro que cubre toda la pantalla (oculto por defecto) */
 .modal-overlay {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.55);
+    z-index: 5000 !important;
+    display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
-/* Clase que activa el JavaScript para mostrar el modal */
-.modal-overlay.show-modal {
-    display: flex;
+.modal-overlay.show-modal,
+.modal-overlay[style*="display: flex"] {
+    display: flex !important;
 }
 
-/* Caja blanca flotante del modal */
 .floating-modal {
+    position: relative;
+    z-index: 5001 !important;
     background-color: #ffffff;
     border-radius: 16px;
     padding: 28px;
@@ -209,253 +241,156 @@ body {
 }
 
 @keyframes modalSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .floating-modal h2 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #111111;
-    margin-top: 0;
-    margin-bottom: 8px;
+    font-size: 20px; font-weight: 700; color: #111111;
+    margin-top: 0; margin-bottom: 8px;
 }
 
 .floating-modal p {
-    font-size: 14px;
-    color: #666666;
-    margin-bottom: 20px;
-    line-height: 1.4;
+    font-size: 14px; color: #666666; margin-bottom: 20px; line-height: 1.4;
 }
 
-/* Formulario interno del modal de teléfono */
 .phone-modal form label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #333333;
-    margin-bottom: 6px;
+    display: block; font-size: 13px; font-weight: 600; color: #333333; margin-bottom: 6px;
 }
 
 .phone-modal form input[type="tel"] {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    font-size: 14px;
-    box-sizing: border-box;
-    outline: none;
-    transition: border-color 0.2s;
+    width: 100%; padding: 10px 14px; border: 1px solid #dcdcdc;
+    border-radius: 8px; font-size: 14px; box-sizing: border-box;
+    outline: none; transition: border-color 0.2s;
 }
 
-.phone-modal form input[type="tel"]:focus {
-    border-color: #7c3f1d;
-}
+.phone-modal form input[type="tel"]:focus { border-color: #7c3f1d; }
 
-/* Botones dentro del modal */
 .modal-actions,
 .phone-modal-actions {
-    margin-top: 24px;
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
+    margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;
 }
 
 .modal-actions .btn,
 .phone-modal-actions .btn {
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    padding: 10px 18px; border-radius: 8px; font-size: 14px;
+    font-weight: 600; cursor: pointer; border: none; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center;
 }
 
-.btn-secondary {
-    background-color: #eaeaea;
-    color: #444444;
-}
+.btn-secondary { background-color: #eaeaea; color: #444444; }
+.btn-secondary:hover { background-color: #dcdcdc; }
 
-.btn-secondary:hover {
-    background-color: #dcdcdc;
-}
+.btn-primary { background-color: #7c3f1d; color: #ffffff; }
+.btn-primary:hover { background-color: #633014; }
 
-.btn-primary {
-    background-color: #7c3f1d;
-    color: #ffffff;
-}
+.btn-danger { background-color: #d9534f; color: #ffffff; }
+.btn-danger:hover { background-color: #c9302c; }
 
-.btn-primary:hover {
-    background-color: #633014;
-}
-
-.btn-danger {
-    background-color: #d9534f;
-    color: #ffffff;
-}
-
-.btn-danger:hover {
-    background-color: #c9302c;
-}
 /* --- BOTÓN FLOTANTE ESTILO WHATSAPP PARA EL AVATAR --- */
 .avatar-container-profile {
-    position: relative;
-    width: 110px;
-    height: 110px;
-    flex-shrink: 0;
+    position: relative; width: 110px; height: 110px; flex-shrink: 0;
 }
 
-.avatar-container-profile .user-avatar {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
+.avatar-container-profile .user-avatar { width: 100%; height: 100%; margin: 0; }
 
 .btn-edit-avatar {
-    position: absolute;
-    bottom: 2px;
-    left: 2px;              /* <-- Posición: Esquina inferior izquierda */
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #7c3f1d;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    position: absolute; bottom: 2px; left: 2px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background-color: #7c3f1d; color: #ffffff; border: 2px solid #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
     transition: background-color 0.2s, transform 0.1s;
 }
 
-.btn-edit-avatar:hover {
-    background-color: #5c2d13;
-    transform: scale(1.08);
-}
+.btn-edit-avatar:hover { background-color: #5c2d13; transform: scale(1.08); }
 
 /* --- MODAL DE EDITOR DE FOTO ESTILO WHATSAPP --- */
 .photo-editor-modal {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    max-width: 480px;
-    padding: 0;
-    overflow: hidden;
-    border-radius: 12px;
+    background-color: #1a1a1a; color: #ffffff;
+    max-width: 480px; padding: 0; overflow: hidden; border-radius: 12px;
 }
 
 .editor-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background-color: #262626;
-    font-size: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; background-color: #262626; font-size: 14px;
 }
 
 .btn-close-editor, .btn-change-photo {
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: transparent; border: none; color: #ffffff;
+    font-size: 14px; cursor: pointer; display: flex;
+    align-items: center; gap: 6px;
 }
 
 .editor-canvas-area {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 30px auto;
-    background-color: #000000;
-    cursor: grab;
-    overflow: hidden;
+    position: relative; width: 300px; height: 300px;
+    margin: 30px auto; background-color: #000000;
+    cursor: grab; overflow: hidden;
 }
 
-.editor-canvas-area:active {
-    cursor: grabbing;
-}
+.editor-canvas-area:active { cursor: grabbing; }
 
-#canvasEditor {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
+#canvasEditor { width: 100%; height: 100%; display: block; }
 
-/* Máscara redonda estilo WhatsApp */
 .circular-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.65);
-    pointer-events: none;
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; border-radius: 50%;
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.65); pointer-events: none;
 }
 
 .zoom-controls {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    background: #2e2e2e;
-    border-radius: 8px;
-    overflow: hidden;
+    position: absolute; right: 12px; top: 50%;
+    transform: translateY(-50%); display: flex;
+    flex-direction: column; background: #2e2e2e;
+    border-radius: 8px; overflow: hidden;
 }
 
 .zoom-controls button {
-    background: transparent;
-    border: none;
-    color: white;
-    padding: 8px 10px;
-    cursor: pointer;
-    font-size: 16px;
+    background: transparent; border: none; color: white;
+    padding: 8px 10px; cursor: pointer; font-size: 16px;
 }
 
-.zoom-controls button:hover {
-    background: #404040;
-}
+.zoom-controls button:hover { background: #404040; }
 
 .editor-footer {
-    position: relative;
-    padding: 16px 20px;
-    display: flex;
-    justify-content: flex-end;
+    position: relative; padding: 16px 20px;
+    display: flex; justify-content: flex-end;
 }
 
 .btn-confirm-photo {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    background-color: #25d366; /* Verde característico del botón de WhatsApp */
-    color: #ffffff;
-    border: none;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    width: 54px; height: 54px; border-radius: 50%;
+    background-color: #25d366; color: #ffffff;
+    border: none; font-size: 24px; display: flex;
+    align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     transition: transform 0.15s, background-color 0.2s;
 }
 
-.btn-confirm-photo:hover {
-    background-color: #20bd5a;
-    transform: scale(1.05);
+.btn-confirm-photo:hover { background-color: #20bd5a; transform: scale(1.05); }
+
+/* BARRAS DE DESPLAZAMIENTO ESTILIZADAS */
+.comments-list::-webkit-scrollbar,
+.ofertas-list::-webkit-scrollbar,
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track,
+.ofertas-list::-webkit-scrollbar-track,
+.history-list::-webkit-scrollbar-track {
+    background: #f4e9e2;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb,
+.ofertas-list::-webkit-scrollbar-thumb,
+.history-list::-webkit-scrollbar-thumb {
+    background: #c8a392;
+    border-radius: 4px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover,
+.ofertas-list::-webkit-scrollbar-thumb:hover,
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #7c3f1d;
 }

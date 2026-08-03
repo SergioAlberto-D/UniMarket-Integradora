@@ -2,13 +2,9 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/29/26
-  Time: 9:30 PM
+  Time: 9:30 PM
   To change this template use File | Settings | File Templates.
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 --%>
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
@@ -156,18 +152,18 @@
                                         <span class="monto">$${of.monto}</span>
                                     </div>
                                     <div class="oferta-actions">
-                                        <div class="btn-group-vertical">
-                                            <button class="btn-primary-action">Aceptar</button>
-                                            <button class="btn-secondary-action">Rechazar</button>
-                                        </div>
+                                            <%-- MENÚ HAMBURGUESA CON ACEPTAR Y RECHAZAR --%>
                                         <div class="dropdown-hamburguesa">
-                                            <button class="btn-icon-hamburguesa" onclick="toggleMenu(this)">
+                                            <button class="btn-icon-hamburguesa" onclick="toggleMenu(this)" title="Opciones">
                                                 <i class="bi bi-list"></i>
                                             </button>
                                             <div class="menu-flotante">
-                                                <a href="#"><i class="bi bi-pencil"></i> Editar</a>
-                                                <a href="#"><i class="bi bi-check-circle"></i> Vendido</a>
-                                                <a href="#" class="text-danger"><i class="bi bi-trash"></i> Eliminar</a>
+                                                <a href="javascript:void(0)" onclick="abrirModalAceptarOferta(${of.idOferta}, '${fn:escapeXml(of.nombreArticulo)}', ${of.monto}, '${of.imagenArticulo}')">
+                                                    <i class="bi bi-check-circle"></i> Aceptar
+                                                </a>
+                                                <a href="javascript:void(0)" class="text-danger" onclick="responderOferta(${of.idOferta}, 'RECHAZADA')">
+                                                    <i class="bi bi-x-circle"></i> Rechazar
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -196,9 +192,16 @@
                                     <span class="monto">$${of.monto}</span>
                                 </div>
                                 <div class="oferta-actions">
-                                    <div class="btn-group-vertical">
-                                        <button class="btn-primary-action">Editar</button>
-                                        <button class="btn-secondary-action">Cancelar</button>
+                                        <%-- MENÚ HAMBURGUESA PARA COMPRADOR (Solo Cancelar) --%>
+                                    <div class="dropdown-hamburguesa">
+                                        <button class="btn-icon-hamburguesa" onclick="toggleMenu(this)" title="Opciones">
+                                            <i class="bi bi-list"></i>
+                                        </button>
+                                        <div class="menu-flotante">
+                                            <a href="javascript:void(0)" class="text-danger" onclick="responderOferta(${of.idOferta}, 'CANCELADA')">
+                                                <i class="bi bi-trash"></i> Cancelar oferta
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +214,7 @@
             </div>
         </section>
 
-        <%-- COLUMNA DERECHA: CONFIGURACIÓN DE CUENTA (CON ACCIONES A LOS MODALES) --%>
+        <%-- COLUMNA DERECHA: CONFIGURACIÓN DE CUENTA --%>
         <section class="panel-card">
             <div class="panel-header">
                 <div class="header-title">
@@ -224,7 +227,7 @@
             </div>
 
             <div class="config-list">
-                <a href="historial-actividad.jsp" class="config-item">
+                <a href="${pageContext.request.contextPath}/historial" class="config-item">
                     <i class="bi bi-clock-history"></i>
                     <div>
                         <strong>Historial de Actividad</strong>
@@ -305,6 +308,52 @@
     </div>
 </div>
 
+<!-- Modal: Confirmación Personalizada para Ofertas -->
+<div class="modal-overlay" id="modalConfirmarOferta">
+    <div class="floating-modal confirm-modal">
+        <h2 id="tituloModalOferta">Confirmar acción</h2>
+        <p id="textoModalOferta">¿Estás seguro de continuar con esta operación?</p>
+        <div class="modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalConfirmarOferta')">Cancelar</button>
+            <button type="button" class="btn btn-primary" id="btnEjecutarAccionOferta" style="background: #7c3f1d; border: none;">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Confirmar y contactar al aceptar una oferta (igual al de "Confirma tu compra") -->
+<div class="modal-overlay" id="modalAceptarOferta">
+    <div class="floating-modal" style="max-width: 480px; padding: 24px; text-align: left;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0e6e1; padding-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: #111;">Aceptar oferta</h3>
+            <button type="button" onclick="cerrarModal('modalAceptarOferta')" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #555;">&times;</button>
+        </div>
+
+        <div style="background: #f7efe9; border: 1px solid #e8cdbd; border-radius: 12px; padding: 12px; display: flex; gap: 14px; align-items: center; margin-bottom: 20px;">
+            <div style="width: 65px; height: 65px; border-radius: 8px; overflow: hidden; background: #e0d0c8; flex-shrink: 0;">
+                <img id="imgAceptarOferta" src="" style="width: 100%; height: 100%; object-fit: cover;" alt="">
+            </div>
+            <div>
+                <strong id="nombreAceptarOferta" style="display: block; font-size: 15px; color: #111; margin-bottom: 3px;"></strong>
+                <span style="font-size: 13px; color: #555;">Monto de la oferta: <strong id="montoAceptarOferta" style="color: #9a3d1e;"></strong></span>
+            </div>
+        </div>
+
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 6px;">Escribe un mensaje para el comprador (Opcional)</label>
+        <textarea id="inputMensajeAceptarOferta" placeholder="Escribe aquí tu mensaje....." style="width: 100%; height: 110px; border: 1px solid #e8cdbd; background: #fcf9f7; border-radius: 10px; padding: 12px; font-size: 14px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 20px;"></textarea>
+
+        <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 10px;">¿Cómo quieres contactar al comprador?</label>
+        <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="ejecutarAceptarOfertaAjax('whatsapp')" style="flex: 1; height: 48px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+            </button>
+            <button type="button" onclick="ejecutarAceptarOfertaAjax('gmail')" style="flex: 1; height: 48px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 63, 29, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="bi bi-envelope"></i> Gmail
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Modal: Cerrar Sesión -->
 <div class="modal-overlay" id="modalCerrarSesion">
     <div class="floating-modal confirm-modal">
@@ -344,6 +393,7 @@
         </div>
     </div>
 </div>
+
 <!-- ==========================================
      SCRIPTS DE FUNCIONAMIENTO Y FORMATEO
      ========================================== -->
@@ -403,32 +453,152 @@
         }
     });
 
-    // --- MÁSCARA PARA EL NÚMERO DE TELÉFONO ---
-    const formatearTelefono = (event) => {
-        let input = event.target;
-        let valor = input.value.replace(/\D/g, ''); // Elimina letras y símbolos
+    function responderOferta(idOferta, nuevoEstado) {
+        const tituloEl = document.getElementById('tituloModalOferta');
+        const textoEl = document.getElementById('textoModalOferta');
+        const btnEjecutar = document.getElementById('btnEjecutarAccionOferta');
 
-        if (valor.length > 10) {
-            valor = valor.substring(0, 10);
+        if (!tituloEl || !textoEl || !btnEjecutar) return;
+
+        // Configurar los textos según la acción
+        if (nuevoEstado === 'ACEPTADA') {
+            tituloEl.textContent = 'Aceptar oferta';
+            textoEl.textContent = '¿Estás seguro de aceptar esta oferta de compra?';
+        } else if (nuevoEstado === 'RECHAZADA') {
+            tituloEl.textContent = 'Rechazar oferta';
+            textoEl.textContent = '¿Estás seguro de rechazar esta oferta? La propuesta se eliminará de tu lista.';
+        } else {
+            tituloEl.textContent = 'Cancelar oferta';
+            textoEl.textContent = '¿Estás seguro de retirar tu oferta de compra? La propuesta se eliminará.';
         }
 
-        let valorFormateado = '';
-        if (valor.length > 0) {
-            valorFormateado = '(' + valor.substring(0, 3);
-        }
-        if (valor.length >= 4) {
-            valorFormateado += ')-' + valor.substring(3, 6);
-        }
-        if (valor.length >= 7) {
-            valorFormateado += '-' + valor.substring(6, 10);
-        }
+        // Asignar el clic al botón Confirmar del modal
+        btnEjecutar.onclick = function() {
+            cerrarModal('modalConfirmarOferta');
 
-        input.value = valorFormateado;
-    };
+            const datos = new URLSearchParams();
+            datos.append('idOferta', idOferta);
+            datos.append('estado', nuevoEstado);
 
-    const inputTelefono = document.getElementById('telefonoNuevo');
-    if (inputTelefono) {
-        inputTelefono.addEventListener('input', formatearTelefono);
+            fetch('${pageContext.request.contextPath}/responder-oferta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: datos
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Si la función mostrarToast del header existe, la usamos
+                    if (typeof mostrarToast === 'function') {
+                        mostrarToast(
+                            data.mensaje,
+                            data.exito ? 'exito' : 'error',
+                            data.exito ? 'Operación exitosa' : 'Atención'
+                        );
+                    }
+
+                    if (data.exito) {
+                        setTimeout(() => location.reload(), 1200); // Pequeño retraso para que el usuario lea el toast
+                    }
+                })
+                .catch(error => console.error("Error al actualizar la oferta:", error));
+        };
+
+        abrirModal('modalConfirmarOferta');
+    }
+
+    // --- MODAL DE ACEPTAR OFERTA (con opción WhatsApp / Gmail) ---
+    let idOfertaSeleccionada = null;
+
+    function abrirModalAceptarOferta(idOferta, nombreArticulo, monto, imagenArticulo) {
+        idOfertaSeleccionada = idOferta;
+        document.getElementById('nombreAceptarOferta').textContent = nombreArticulo;
+        document.getElementById('montoAceptarOferta').textContent = '$' + monto + ' MXN';
+        document.getElementById('imgAceptarOferta').src = '${pageContext.request.contextPath}/' + imagenArticulo;
+        document.getElementById('inputMensajeAceptarOferta').value = '';
+        abrirModal('modalAceptarOferta');
+    }
+
+    // Convierte un número de celular guardado en BD al formato que necesita WhatsApp
+    function formatearNumeroWhatsapp(numero) {
+        if (!numero) return null;
+        let limpio = numero.replace(/\D/g, '');
+        if (limpio.length === 10) {
+            limpio = '52' + limpio; // código de país MX
+        }
+        return limpio;
+    }
+
+    function ejecutarAceptarOfertaAjax(metodoContacto) {
+        if (!idOfertaSeleccionada) return;
+
+        const mensaje = document.getElementById('inputMensajeAceptarOferta').value.trim();
+
+        const datos = new URLSearchParams();
+        datos.append('idOferta', idOfertaSeleccionada);
+        datos.append('estado', 'ACEPTADA');
+        datos.append('mensaje', mensaje);
+
+        fetch('${pageContext.request.contextPath}/responder-oferta', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: datos
+        })
+            .then(response => response.json())
+            .then(data => {
+                cerrarModal('modalAceptarOferta');
+
+                if (!data.exito) {
+                    if (typeof mostrarToast === 'function') {
+                        mostrarToast(data.mensaje || 'No se pudo aceptar la oferta.', 'error', 'Atención');
+                    }
+                    return;
+                }
+
+                if (metodoContacto === 'whatsapp') {
+                    const telefonoDestino = formatearNumeroWhatsapp(
+                        (data.telefonoComprador && data.telefonoComprador !== "null") ? data.telefonoComprador.trim() : ""
+                    );
+
+                    if (!telefonoDestino) {
+                        if (typeof mostrarToast === 'function') {
+                            mostrarToast('Oferta aceptada, pero no se encontró el teléfono del comprador.', 'error', 'Atención');
+                        }
+                        setTimeout(() => location.reload(), 1200);
+                        return;
+                    }
+
+                    const mensajeWa = encodeURIComponent(data.mensajeChat);
+                    window.open('https://wa.me/' + telefonoDestino + '?text=' + mensajeWa, '_blank');
+                } else {
+                    const correoDestino = (data.correoComprador && data.correoComprador !== "null")
+                        ? data.correoComprador.trim()
+                        : "";
+
+                    if (!correoDestino) {
+                        if (typeof mostrarToast === 'function') {
+                            mostrarToast('Oferta aceptada, pero no se encontró el correo del comprador.', 'error', 'Atención');
+                        }
+                        setTimeout(() => location.reload(), 1200);
+                        return;
+                    }
+
+                    const asunto = encodeURIComponent("Oferta aceptada en MUA");
+                    const cuerpo = encodeURIComponent(data.mensajeChat);
+                    window.open("https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=" + encodeURIComponent(correoDestino) + "&su=" + asunto + "&body=" + cuerpo, '_blank');
+                }
+
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast(data.mensaje || 'Oferta aceptada correctamente.', 'exito', 'Operación exitosa');
+                }
+                setTimeout(() => location.reload(), 1500);
+            })
+            .catch(error => {
+                console.error("Error al aceptar la oferta:", error);
+                cerrarModal('modalAceptarOferta');
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast('Ocurrió un error al procesar la oferta.', 'error', 'Atención');
+                }
+            });
     }
 </script>
 <script>
@@ -503,7 +673,6 @@
 
     function guardarFotoPerfil() {
         const canvas = document.getElementById('canvasEditor');
-        // Exportar como imagen Base64 para enviar por AJAX
         const base64Image = canvas.toDataURL('image/jpeg', 0.9);
 
         fetch('${pageContext.request.contextPath}/actualizar-foto-perfil', {
@@ -513,13 +682,19 @@
         })
             .then(response => response.json())
             .then(data => {
+                cerrarModal('modalEditorFoto');
                 if (data.exito) {
-                    location.reload(); // Recarga para mostrar la foto nueva en el header y perfil
+                    mostrarModalMUA("Foto actualizada correctamente.", 'exito', () => {
+                        location.reload();
+                    });
                 } else {
-                    alert('No se pudo actualizar la foto de perfil.');
+                    mostrarModalMUA(data.mensaje || 'No se pudo actualizar la foto de perfil.', 'error');
                 }
             })
-            .catch(error => console.error('Error al subir la foto:', error));
+            .catch(error => {
+                console.error('Error al subir la foto:', error);
+                mostrarModalMUA('Ocurrió un error al cargar la imagen.', 'error');
+            });
     }
 </script>
 

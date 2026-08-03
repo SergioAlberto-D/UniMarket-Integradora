@@ -69,7 +69,7 @@
         <span class="btn-seleccionar">Seleccionar archivos</span>
       </label>
 
-      <input id="imagenes" name="imagenes" type="file" accept=".jpg,.jpeg,.png" multiple class="hidden-file" style="display: none;">
+      <input id="imagenes" name="imagenes" type="file" accept="image/png, image/jpeg, image/jpg" multiple style="opacity: 0; position: absolute; z-index: -1; width: 1px; height: 1px;">
 
       <div class="image-help">
         <h3>Hasta un máximo de 3 imágenes</h3>
@@ -102,7 +102,7 @@
         <div class="form-group">
           <label for="categoria">Categoría</label>
           <select id="categoria" name="idCategoria" required>
-            <option value="">Selecciona una categoría</option>
+            <option value="" disabled>Selecciona una categoría</option>
             <option value="1">Electrónica y Gadgets</option>
             <option value="2">Libros</option>
             <option value="3">Ropa</option>

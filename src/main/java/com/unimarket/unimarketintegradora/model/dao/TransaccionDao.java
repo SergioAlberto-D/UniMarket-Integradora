@@ -24,6 +24,22 @@ public class TransaccionDao implements Dao<Transaccion, String> {
             return false;
         }
     }
+    // 1. Crear la transacción con estado PENDIENTE (Sin SEQ_TRANSACCION)
+    public boolean crearTransaccionPendiente(int idArticulo, String matriculaVendedor, String matriculaComprador, java.math.BigDecimal montoFinal) {
+        String sql = "INSERT INTO transaccion (id_transaccion, id_articulo_fk, MATRICULA_vendedor_fk, MATRICULA_comprador_fk, monto_final, fecha_transaccion, estado) " +
+                "VALUES ((SELECT COALESCE(MAX(id_transaccion), 0) + 1 FROM transaccion), ?, ?, ?, ?, SYSDATE, 'PENDIENTE')";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            ps.setString(2, matriculaVendedor);
+            ps.setString(3, matriculaComprador);
+            ps.setBigDecimal(4, montoFinal);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al registrar transacción pendiente: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     @Override
     public List<Transaccion> getAll() {
@@ -65,7 +81,6 @@ public class TransaccionDao implements Dao<Transaccion, String> {
     @Override
     public boolean delete(String id) { return false; } // Por auditoría, no se suelen borrar.
 
-    // Método para obtener el historial mezclado de compras y ventas
     public List<TransaccionDTO> obtenerHistorialActividad(String matriculaUsuario) {
         List<TransaccionDTO> historial = new ArrayList<>();
 
@@ -111,5 +126,61 @@ public class TransaccionDao implements Dao<Transaccion, String> {
 
         return historial;
     }
+    public String obtenerCorreoVendedor(String matriculaVendedor) {
+        String sql = "SELECT correo_institucional FROM usuario WHERE matricula = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matriculaVendedor);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String correo = rs.getString("correo_institucional");
+                    return correo != null ? correo.trim() : null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener correo del vendedor: " + e.getMessage());
+        }
+        return null;
+    }
 
+    // Igual que obtenerCorreoVendedor pero para el número de celular (usado para WhatsApp)
+    public String obtenerTelefonoUsuario(String matricula) {
+        String sql = "SELECT numero_celular FROM usuario WHERE matricula = ?";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matricula);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String telefono = rs.getString("numero_celular");
+                    return telefono != null ? telefono.trim() : null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener teléfono del usuario: " + e.getMessage());
+        }
+        return null;
+    }
+    public int contarVentasCompletadas(String matriculaVendedor) {
+        String sql = "SELECT COUNT(*) FROM transaccion WHERE MATRICULA_vendedor_fk = ? AND UPPER(estado) = 'COMPLETADO'";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matriculaVendedor);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al contar ventas completadas: " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public int contarComprasCompletadas(String matriculaComprador) {
+        String sql = "SELECT COUNT(*) FROM transaccion WHERE MATRICULA_comprador_fk = ? AND UPPER(estado) = 'COMPLETADO'";
+        try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, matriculaComprador);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al contar compras completadas: " + e.getMessage());
+        }
+        return 0;
+    }
 }

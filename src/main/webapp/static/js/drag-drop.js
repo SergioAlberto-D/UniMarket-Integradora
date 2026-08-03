@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const previewGrid = document.getElementById("previewGrid");
     const dropZone = document.getElementById("dropZone");
 
+    if (!inputImagenes || !previewGrid || !dropZone) return;
+
     // DataTransfer nos permite manipular la lista de archivos de un input=file
     let dt = new DataTransfer();
 
@@ -50,12 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarVistaPrevia();
     }
 
-    // 5. Función que el HTML llamará para borrar una foto específica
+    // 5. Función global para borrar una foto específica por su índice
     window.eliminarImagen = function(index) {
         const nuevoDt = new DataTransfer();
 
         // Copiamos todos los archivos EXCEPTO el que el usuario quiso borrar
-        for(let i = 0; i < dt.files.length; i++) {
+        for (let i = 0; i < dt.files.length; i++) {
             if (i !== index) {
                 nuevoDt.items.add(dt.files[i]);
             }
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarVistaPrevia();
     };
 
-    // 6. Dibuja las imágenes y los recuadros vacíos
+    // 6. Dibuja las imágenes manteniendo SIEMPRE el orden 1, 2 y 3
     function actualizarVistaPrevia() {
         previewGrid.innerHTML = "";
         const archivosActuales = Array.from(dt.files);
@@ -74,28 +76,26 @@ document.addEventListener("DOMContentLoaded", () => {
         for (let i = 0; i < 3; i++) {
             const archivo = archivosActuales[i];
 
+            // CREAMOS EL CONTENEDOR DE FORMA SÍNCRONA PARA RESERVAR SU POSICIÓN EXACTA
+            const item = document.createElement("div");
+            item.className = archivo ? "preview-item" : "preview-empty";
+            previewGrid.appendChild(item);
+
             if (archivo) {
                 const lector = new FileReader();
                 lector.onload = function (e) {
-                    const item = document.createElement("div");
-                    item.className = "preview-item";
-
-                    // Aquí agregamos el botón de la 'X' flotante
+                    // Cuando termina la lectura, rellenamos la caja que ya está en la posición correcta
                     item.innerHTML = `
-                        <img src="${e.target.result}" alt="Vista previa">
+                        <img src="${e.target.result}" alt="Vista previa" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
                         <button type="button" class="btn-eliminar-foto" onclick="eliminarImagen(${i})">
                             <i class="bi bi-x"></i>
                         </button>
                         <span>${i === 0 ? 'Principal' : (i + 1)}</span>
                     `;
-                    previewGrid.appendChild(item);
                 };
                 lector.readAsDataURL(archivo);
             } else {
-                const empty = document.createElement("div");
-                empty.className = "preview-empty";
-                empty.innerHTML = `<i class="bi bi-image"></i><span>${i + 1}</span>`;
-                previewGrid.appendChild(empty);
+                item.innerHTML = `<i class="bi bi-image"></i><span>${i + 1}</span>`;
             }
         }
     }

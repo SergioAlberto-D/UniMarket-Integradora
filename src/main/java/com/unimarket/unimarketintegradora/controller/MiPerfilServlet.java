@@ -7,6 +7,7 @@ import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
 import com.unimarket.unimarketintegradora.model.dao.ComentarioDao;
 import com.unimarket.unimarketintegradora.model.dao.OfertaDao;
 
+import com.unimarket.unimarketintegradora.model.dao.TransaccionDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -18,6 +19,7 @@ public class MiPerfilServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();
     private final OfertaDao ofertaDao = new OfertaDao();
+    private final TransaccionDao transaccionDao = new TransaccionDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,16 +48,12 @@ public class MiPerfilServlet extends HttpServlet {
         }
         double promedio = (totalComentariosRecibidos > 0) ? (sumaCalificaciones / totalComentariosRecibidos) : 0.0;
 
-        long transaccionesVenta = ofertasRecibidas.stream()
-                .filter(o -> "ACEPTADA".equalsIgnoreCase(o.getEstado()) || "VENDIDO".equalsIgnoreCase(o.getEstado()))
-                .count();
+        long transaccionesVenta = transaccionDao.contarVentasCompletadas(matricula);
 
         // 3. CÁLCULO PARA COMPRADOR (Rol 2 y también contable para el Vendedor)
         int comentariosRealizados = comentarioDao.contarComentariosRealizados(matricula);
 
-        long transaccionesCompra = ofertasHechas.stream()
-                .filter(o -> "ACEPTADA".equalsIgnoreCase(o.getEstado()) || "VENDIDO".equalsIgnoreCase(o.getEstado()))
-                .count();
+        long transaccionesCompra = transaccionDao.contarComprasCompletadas(matricula);
 
         // 4. Traducir División Académica
         String nombreDivision = "DATID";
