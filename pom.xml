@@ -66,6 +66,12 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
         <!-- Dependencias por defecto -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
