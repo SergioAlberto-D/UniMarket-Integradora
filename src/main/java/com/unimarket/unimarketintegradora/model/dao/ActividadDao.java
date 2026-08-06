@@ -44,10 +44,10 @@ public class ActividadDao {
         List<Actividad> lista = new ArrayList<>();
 
         String sql =
-                "SELECT u.nombre AS usuario, u.correo_institucional AS correo, 'Usuarios' AS modulo, 'Registro en el sistema' AS accion, u.fecha_registro AS fecha " +
+                "SELECT u.nombre AS usuario, u.correo, 'Usuarios' AS modulo, 'Registro en el sistema' AS accion, u.fecha_registro AS fecha " +
                         "FROM usuario u " +
                         "UNION ALL " +
-                        "SELECT u.nombre AS usuario, u.correo_institucional AS correo, 'Publicaciones' AS modulo, CONCAT('Publicó artículo ID ', a.id_articulo) AS accion, a.fecha_publicacion AS fecha " +
+                        "SELECT u.nombre AS usuario, u.correo, 'Publicaciones' AS modulo, CONCAT('Publicó artículo ID ', a.id_articulo) AS accion, a.fecha_publicacion AS fecha " +
                         "FROM articulo a " +
                         "JOIN usuario u ON a.matricula_usuario_fk = u.matricula " +
                         "WHERE a.estado IS NULL OR a.estado != 'ELIMINADO' " +

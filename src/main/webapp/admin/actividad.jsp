@@ -12,10 +12,36 @@
 </head>
 <body>
 
-<!-- Llamada dinámica al Sidebar -->
-<jsp:include page="/includes/sidebar.jsp">
-    <jsp:param name="active" value="actividad" />
-</jsp:include>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand-section">
+        <img src="static/img/logoMUA.png" alt="Logo Mua" class="brand-logo">
+        <h1 class="brand-name">Mua</h1>
+        <p class="brand-sub">Administración</p>
+    </div>
+
+    <ul class="menu-list">
+        <li class="menu-item active"><a href="adminactividad">Actividad reciente</a></li>
+        <li class="menu-item"><a href="adminpublicaciones">Publicaciones</a></li>
+        <li class="menu-item"><a href="adminusuarios">Usuarios</a></li>
+        <li class="menu-item"><a href="adminreportes">Reportes</a></li>
+        <li class="menu-item"><a href="admincategorias">Categorías</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <div class="user-profile-summary">
+            <div class="avatar-circle">RH</div>
+            <div class="profile-info">
+                <h4>Rafael Hurtado</h4>
+                <p>rafaelhurtado@utez.edu.mx</p>
+            </div>
+        </div>
+        <form action="LogoutServlet" method="POST">
+            <button type="submit" class="btn-logout">Cerrar sesión</button>
+        </form>
+    </div>
+</aside>
 
 <main class="main-content">
     <div class="topbar">
@@ -23,7 +49,7 @@
             <button class="btn-hamburger" id="btnHamburger">&#9776;</button>
             <div>Administración &gt; <span style="color:#555;">Actividad reciente</span></div>
         </div>
-        <!-- Se eliminó right-avatar -->
+        <div class="right-avatar">RH</div>
     </div>
 
     <div class="container">
@@ -39,6 +65,7 @@
                 <h2><c:out value="${totalUsuarios}" default="0"/></h2>
                 <p>Usuarios<br>registrados</p>
             </div>
+        </div>
         </div>
 
         <!-- Tabla de Actividad Reciente -->
@@ -84,7 +111,24 @@
     </div>
 </main>
 
-<script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
+<script>
+    // Script para soporte del menú colapsable en móviles
+    const btnHamburger = document.getElementById('btnHamburger');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    if (btnHamburger && sidebar && sidebarOverlay) {
+        btnHamburger.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+        });
+    }
+</script>
 
 </body>
 </html>
