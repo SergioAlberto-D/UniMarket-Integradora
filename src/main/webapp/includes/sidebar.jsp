@@ -16,13 +16,10 @@
       <a href="adminactividad">Actividad reciente</a>
     </li>
     <li class="menu-item ${param.active == 'publicaciones' ? 'active' : ''}">
-      <a href="adminpublicacionesJS">Publicaciones</a>
+      <a href="adminpublicaciones">Publicaciones</a>
     </li>
     <li class="menu-item ${param.active == 'usuarios' ? 'active' : ''}">
       <a href="adminusuarios">Usuarios</a>
-    </li>
-    <li class="menu-item ${param.active == 'reportes' ? 'active' : ''}">
-      <a href="adminreportes">Reportes</a>
     </li>
     <li class="menu-item ${param.active == 'categorias' ? 'active' : ''}">
       <a href="admincategorias">Categorías</a>
@@ -31,19 +28,15 @@
 
   <div class="sidebar-footer">
     <div class="user-profile-summary">
-      <!-- Muestra únicamente la primera letra del nombre en mayúscula -->
       <div class="avatar-circle">
-        <c:out value="${fn:toUpperCase(fn:substring(sessionScope.admin.nombre, 0, 1))}" default="A"/>
+        <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="RH"/>
       </div>
       <div class="profile-info">
-        <!-- Toma el nombre y correo del objeto admin en la sesión -->
-        <h4><c:out value="${sessionScope.admin.nombre}" default="Administrador"/></h4>
-        <p><c:out value="${sessionScope.admin.correo}" default="admin@sistema.com"/></p>
+        <h4><c:out value="${sessionScope.adminLogueado.nombre} ${sessionScope.adminLogueado.apellidoPaterno}" default="Rafael Hurtado"/></h4>
+        <p><c:out value="${sessionScope.adminLogueado.correoInstitucional}" default="rafaelhurtado@utez.edu.mx"/></p>
       </div>
     </div>
-
-    <!-- Formulario de Logout (GET a la ruta /logout) -->
-    <form action="${pageContext.request.contextPath}/logout" method="GET">
+    <form action="LogoutServlet" method="POST">
       <button type="submit" class="btn-logout">Cerrar sesión</button>
     </form>
   </div>

@@ -31,6 +31,9 @@
             </button>
             <div>Administración &gt; <span style="color:#555;">Publicaciones</span></div>
         </div>
+        <div class="right-avatar">
+            <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="AD"/>
+        </div>
     </div>
 
     <div class="container">
@@ -57,7 +60,7 @@
                     <tbody>
                     <c:choose>
                         <c:when test="${empty listaArticulos}">
-                            <tr id="rowSinDatos">
+                            <tr>
                                 <td colspan="6" style="text-align: center; padding: 40px; color: #888;">
                                     No hay publicaciones registradas por el momento.
                                 </td>
@@ -66,14 +69,23 @@
                         <c:otherwise>
                             <c:forEach var="art" items="${listaArticulos}">
                                 <tr>
+                                    <!-- Propiedad: art.idArticulo -->
                                     <td><c:out value="${art.idArticulo}"/></td>
+
+                                    <!-- Propiedad: art.nombre -->
                                     <td><c:out value="${art.nombre}"/></td>
+
+                                    <!-- Propiedad: art.precio -->
                                     <td>$<fmt:formatNumber value="${art.precio}" pattern="#,##0.00"/> MXN</td>
+
+                                    <!-- Propiedad: art.idCategoriaFk -->
                                     <td>
                                         <span class="badge-categoria">
-                                            <c:out value="${art.nombreCategoria}" default="Sin categoría"/>
+                                            Cat. <c:out value="${art.idCategoriaFk}"/>
                                         </span>
                                     </td>
+
+                                    <!-- Muestra art.nombreUsuario si el DAO lo trajo, o cae de respaldo a art.idUsuarioFk -->
                                     <td>
                                         <c:choose>
                                             <c:when test="${not empty art.nombreUsuario}">
@@ -84,12 +96,13 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
+
+                                    <!-- Acción enviada al Servlet via POST -->
                                     <td style="text-align: right;">
-                                        <!-- AQUÍ: Ruta absoluta para asegurar que el fetch encuentre el Servlet JS -->
-                                        <form class="form-eliminar-publicacion" action="${pageContext.request.contextPath}/adminpublicacionesJS" style="margin:0;">
+                                        <form action="adminpublicaciones" method="POST" style="margin:0;">
                                             <input type="hidden" name="accion" value="eliminar">
                                             <input type="hidden" name="idArticulo" value="${art.idArticulo}">
-                                            <button type="submit" class="btn-delete">
+                                            <button type="submit" class="btn-delete" onclick="return confirm('¿Deseas dar de baja esta publicación?');">
                                                 Eliminar
                                             </button>
                                         </form>
@@ -105,10 +118,9 @@
     </div>
 </main>
 
-<!-- Scripts Generales -->
+<!-- Scripts -->
 <script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
-<script src="${pageContext.request.contextPath}/static/js/admin-publicaciones.js"></script>
 
 </body>
 </html>
