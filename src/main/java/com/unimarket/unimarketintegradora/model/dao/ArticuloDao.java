@@ -27,6 +27,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
     @Override
     public List<Articulo> getAll() {
         List<Articulo> lista = new ArrayList<>();
+        // Ocultamos artículos que tengan una transacción activa en estado 'PENDIENTE'
         String sql = "SELECT a.*, \n" +
                 "       u.nombre AS nombre_vendedor, \n" +
                 "       (SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada \n" +
@@ -168,7 +169,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return 0;
     }
 
-    public List<Articulo> filtrarArticulos(String orden, Integer idCategoria, Integer idDivision, java.math.BigDecimal minPrecio, java.math.BigDecimal maxPrecio, String matriculaUsuarioLogueado) {
+    public List<Articulo> filtrarArticulos(String orden, Integer idCategoria, Integer idDivision, java.math.BigDecimal minPrecio, java.math.BigDecimal maxPrecio) {
         List<Articulo> lista = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT a.*, u.nombre AS nombre_vendedor, " +
@@ -180,11 +181,6 @@ public class ArticuloDao implements Dao<Articulo, String> {
         );
 
         List<Object> parametros = new ArrayList<>();
-
-        if (matriculaUsuarioLogueado != null && !matriculaUsuarioLogueado.trim().isEmpty()) {
-            sql.append(" AND a.matricula_usuario_fk != ? ");
-            parametros.add(matriculaUsuarioLogueado);
-        }
 
         if (idCategoria != null && idCategoria > 0) {
             sql.append(" AND a.id_categoria_fk = ? ");
@@ -281,16 +277,15 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return lista;
     }
 
+    // metodo para el admin
+
     public List<Articulo> listarParaAdmin() {
         List<Articulo> lista = new ArrayList<>();
-
         String sql = "SELECT a.id_articulo, a.nombre, a.precio, a.id_categoria_fk, a.descripcion, a.matricula_usuario_fk, " +
                 "       u.nombre AS nombre_vendedor, u.foto_perfil, " +
-                "       c.categoria AS nombre_categoria, " +
                 "       (SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
                 "FROM articulo a " +
                 "LEFT JOIN usuario u ON a.matricula_usuario_fk = u.matricula " +
-                "LEFT JOIN categoria c ON a.id_categoria_fk = c.id_categoria " +
                 "WHERE a.estado IS NULL OR a.estado != 'ELIMINADO' " +
                 "ORDER BY a.id_articulo DESC";
 
@@ -310,9 +305,6 @@ public class ArticuloDao implements Dao<Articulo, String> {
                 a.setImagenPrincipal(rs.getString("portada"));
                 a.setNombreUsuario(rs.getString("nombre_vendedor"));
                 a.setFotoVendedor(rs.getString("foto_perfil"));
-
-                a.setNombreCategoria(rs.getString("nombre_categoria"));
-
                 lista.add(a);
             }
         } catch (SQLException e) {
@@ -320,5 +312,4 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return lista;
     }
-
 }

@@ -7,9 +7,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioDao implements Dao<Usuario, String> {
+public class UsuarioDao {
 
-    @Override
     public boolean create(Usuario entidad) {
         String sql = "INSERT INTO usuario (MATRICULA, nombre, apellido_paterno, apellido_materno, numero_celular, id_division_academica_fk, fecha_registro, correo_institucional, id_rol_fk, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -19,7 +18,6 @@ public class UsuarioDao implements Dao<Usuario, String> {
             ps.setString(4, entidad.getApellidoMaterno());
             ps.setString(5, entidad.getNumeroCelular());
             ps.setInt(6, entidad.getIdDivisionAcademicaFk());
-            // Usamos la fecha proporcionada, sino tomamos la actual
             ps.setDate(7, entidad.getFechaRegistro() != null ? entidad.getFechaRegistro() : new Date(System.currentTimeMillis()));
             ps.setString(8, entidad.getCorreoInstitucional());
             ps.setInt(9, entidad.getIdRolFk());
@@ -32,22 +30,24 @@ public class UsuarioDao implements Dao<Usuario, String> {
     }
 
     // COMPATIBILIDAD CON SERVLETS
+
     public boolean registrar(Usuario usuario) throws SQLException {
         return create(usuario);
     }
 
-    public Usuario buscarPorCorreoYContrasena(String correo, String contrasenaPlana) throws SQLException {
+    // Login directo
+    public Usuario buscarPorCorreoYContrasena(String correo, String contrasena) throws SQLException {
         Usuario usuario = buscarPorCorreo(correo);
         if (usuario == null) {
             return null;
         }
-        String sql = "SELECT COUNT(*) FROM contrasena_usuario WHERE matricula_usuario_fk = ? AND contrasena_hash = LOWER(RAWTOHEX(STANDARD_HASH(?, 'SHA256')))";
 
+        String sql = "SELECT COUNT(*) FROM contrasena_usuario WHERE id_usuario_fk = ? AND contrasena = ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, usuario.getIdUsuario());
-            ps.setString(2, contrasenaPlana);
+            ps.setString(2, contrasena);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next() && rs.getInt(1) > 0) {
@@ -60,7 +60,8 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return null;
     }
 
-    @Override
+    //
+
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuario";
@@ -77,7 +78,6 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return lista;
     }
 
-    @Override
     public Usuario getById(String matricula) {
         String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
 
@@ -104,7 +104,6 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return null;
     }
 
-    @Override
     public boolean update(Usuario entidad) {
         String sql = "UPDATE usuario SET nombre = ?, apellido_paterno = ?, apellido_materno = ?, numero_celular = ?, id_division_academica_fk = ?, id_rol_fk = ?, estado = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -123,7 +122,6 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
     }
 
-    @Override
     public boolean delete(String id) {
         String sql = "UPDATE usuario SET estado = 'inactivo' WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -315,6 +313,7 @@ public class UsuarioDao implements Dao<Usuario, String> {
     }
 
     // MÉTODOS PARA CAMBIAR ESTADO (ACTIVAR / DESACTIVAR)
+
     public boolean cambiarEstado(String matricula, String nuevoEstado) {
         String sql = "UPDATE usuario SET estado = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection();

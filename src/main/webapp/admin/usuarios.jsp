@@ -1,108 +1,107 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mua - Administración de Usuarios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mua - Administración de Usuarios</title>
 
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/Usuarios.css">
-
-
+    <base href="${pageContext.request.contextPath}/">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin-layout.css">
+    <!-- FontAwesome para cargar la hamburguesa y la lupa -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="brand-section">
-    <img src="${pageContext.request.contextPath}/static/img/logoMUA.png" alt="Logo Mua"
-         class="brand-logo">
-    <h1 class="brand-name">Mua</h1>
-    <p class="brand-sub">Administración</p>
-  </div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <ul class="menu-list">
-      <li class="menu-item"><a href="adminactividad">Actividad reciente</a></li>
-      <li class="menu-item"><a href="adminpublicaciones">Publicaciones</a></li>
-      <li class="menu-item active"><a href="adminusuarios">Usuarios</a></li>
-      <li class="menu-item"><a href="adminreportes">Reportes</a></li>
-      <li class="menu-item"><a href="admincategorias">Categorías</a></li>
-    </ul>
-  </div>
-
-  <div class="sidebar-footer">
-    <div class="user-profile-summary">
-      <div class="avatar-circle">RH</div>
-      <div class="profile-info">
-        <h4>Rafael Hurtado</h4>
-        <p>rafaelhurtado@utez.edu.mx</p>
-      </div>
-    </div>
-    <form action="LogoutServlet" method="POST">
-      <button type="submit" class="btn-logout">Cerrar sesión</button>
-    </form>
-  </div>
-</aside>
+<!-- AQUÍ SE INCLUYE EL SIDEBAR -->
+<jsp:include page="/includes/sidebar.jsp">
+    <jsp:param name="active" value="usuarios" />
+</jsp:include>
 
 <main class="main-content">
-  <div class="topbar">
-    <div>Administración &gt; <span style="color:#555;">Usuarios</span></div>
-    <div class="right-avatar">RH</div>
-  </div>
-
-  <div class="container">
-    <div class="search-container">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" placeholder="Buscar">
+    <div class="topbar">
+        <div class="topbar-left">
+            <button type="button" class="btn-hamburger" id="btnHamburger">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div>Administración &gt; <span style="color:#555;">Usuarios</span></div>
+        </div>
+        <div class="right-avatar">
+            <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="AD"/>
+        </div>
     </div>
 
-    <div class="table-card">
-      <h2 class="table-title">Usuarios</h2>
+    <div class="container">
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="inputBuscar" placeholder="Buscar">
+        </div>
 
-      <table class="custom-table">
-        <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Correo</th>
-          <th>Teléfono</th>
-          <th>Carrera</th>
-          <th>Contraseña</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="usuario" items="${listaUsuarios}">
-          <tr>
-            <td>
-              <c:out value="${usuario.nombres} ${usuario.apellidoPaterno} ${usuario.apellidoMaterno}"/>
-            </td>
+        <div class="table-card">
+            <h2 class="table-title">Usuarios</h2>
 
-            <td><c:out value="${usuario.correoInstitucional}"/></td>
+            <div class="table-responsive">
+                <table class="custom-table" id="tablaDatos">
+                    <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>División</th>
+                        <th style="text-align: right;">Acción</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:choose>
+                        <c:when test="${empty listaUsuarios}">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #888;">
+                                    No hay usuarios registrados por el momento.
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="usuario" items="${listaUsuarios}">
+                                <tr>
+                                    <td>
+                                        <c:out value="${usuario.nombre} ${usuario.apellidoPaterno} ${usuario.apellidoMaterno}"/>
+                                    </td>
+                                    <td><c:out value="${usuario.correoInstitucional}"/></td>
+                                    <td><c:out value="${usuario.numeroCelular}"/></td>
+                                    <td>
+                                        <span class="badge-categoria">
+                                            Div. <c:out value="${usuario.idDivisionAcademicaFk}"/>
+                                        </span>
+                                    </td>
 
-            <td><c:out value="${usuario.telefono}"/></td>
-
-            <td>
-        <span class="badge-carrera">
-          <c:out value="${usuario.carrera}"/>
-        </span>
-            </td>
-
-            <td>######</td>
-            <td style="text-align: right;">
-              <form action="${pageContext.request.contextPath}/EliminarUsuarioServlet" method="POST" style="margin:0;">
-                <input type="hidden" name="idUsuario" value="${usuario.idUsuario}">
-                <button type="submit" class="btn-delete" onclick="return confirm('¿Eliminar usuario?');">
-                  Eliminar
-                </button>
-              </form>
-            </td>
-          </tr>
-        </c:forEach>
-        </tbody>
-      </table>
+                                    <td style="text-align: right;">
+                                        <form action="AdminUsuarioServlet" method="POST" style="margin:0;">
+                                            <input type="hidden" name="accion" value="eliminar">
+                                            <input type="hidden" name="idUsuario" value="${usuario.idUsuario}">
+                                            <button type="submit" class="btn-delete" onclick="return confirm('¿Deseas dar de baja a este usuario?');">
+                                                Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </main>
+
+<!-- JS para el menú hamburguesa -->
+<script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
+<!-- JS para el buscador de la tabla -->
+<script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
 
 </body>
 </html>
