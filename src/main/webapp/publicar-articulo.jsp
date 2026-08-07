@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
 <!doctype html>
 <html lang="es">
@@ -102,13 +103,12 @@
         <div class="form-group">
           <label for="categoria">Categoría</label>
           <select id="categoria" name="idCategoria" required>
-            <option value="" disabled>Selecciona una categoría</option>
-            <option value="1">Electrónica y Gadgets</option>
-            <option value="2">Libros</option>
-            <option value="3">Ropa</option>
-            <option value="4">Accesorios</option>
-            <option value="5">Material escolar</option>
-            <option value="6">Otros</option>
+            <option value="" disabled ${empty param.idCategoria ? 'selected' : ''}>Selecciona una categoría</option>
+            <c:forEach var="cat" items="${categorias}">
+              <option value="${cat.idCategoria}" ${param.idCategoria == cat.idCategoria ? 'selected' : ''}>
+                  ${fn:escapeXml(cat.categoria)}
+              </option>
+            </c:forEach>
           </select>
         </div>
       </div>

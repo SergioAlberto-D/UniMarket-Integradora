@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import com.unimarket.unimarketintegradora.model.Categoria;
+import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
@@ -27,7 +29,14 @@ public class PublicarArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
+    private final CategoriaDao categoriaDao = new CategoriaDao();
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Categoria> categorias = categoriaDao.getAll();
+        request.setAttribute("categorias", categorias);
+        request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
+    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
@@ -141,6 +150,7 @@ public class PublicarArticuloServlet extends HttpServlet {
 
     private void enviarError(HttpServletRequest request, HttpServletResponse response, String mensaje) throws ServletException, IOException {
         request.setAttribute("error", mensaje);
+        request.setAttribute("categorias", categoriaDao.getAll()); // <- Evita que el select aparezca vacío al haber un error
         request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
     }
 }

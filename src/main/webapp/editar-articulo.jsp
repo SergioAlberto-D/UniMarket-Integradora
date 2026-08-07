@@ -129,12 +129,11 @@
                 <div class="form-group">
                     <label for="categoria">Categoría</label>
                     <select id="categoria" name="idCategoria">
-                        <option value="1" ${articulo.idCategoriaFk == 1 ? 'selected' : ''}>Electrónica y Gadgets</option>
-                        <option value="2" ${articulo.idCategoriaFk == 2 ? 'selected' : ''}>Libros</option>
-                        <option value="3" ${articulo.idCategoriaFk == 3 ? 'selected' : ''}>Ropa</option>
-                        <option value="4" ${articulo.idCategoriaFk == 4 ? 'selected' : ''}>Accesorios</option>
-                        <option value="5" ${articulo.idCategoriaFk == 5 ? 'selected' : ''}>Material escolar</option>
-                        <option value="6" ${articulo.idCategoriaFk == 6 ? 'selected' : ''}>Otros</option>
+                        <c:forEach var="cat" items="${categorias}">
+                            <option value="${cat.idCategoria}" ${articulo.idCategoriaFk == cat.idCategoria ? 'selected' : ''}>
+                                    ${fn:escapeXml(cat.categoria)}
+                            </option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>

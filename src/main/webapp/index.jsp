@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ page import="com.unimarket.unimarketintegradora.model.Articulo" %>
 <%@ page import="java.util.List" %>
 
@@ -80,17 +82,16 @@
         </div>
 
         <div class="filter-group">
-          <label for="categoria">Categoría</label>
-          <select name="categoria" id="categoria" class="filter-control" onchange="this.form.submit()">
-            <option value="0" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 0) ? "selected" : "" %>>Todas</option>
-            <option value="1" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 1) ? "selected" : "" %>>Electrónica y Gadgets</option>
-            <option value="2" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 2) ? "selected" : "" %>>Libros</option>
-            <option value="3" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 3) ? "selected" : "" %>>Ropa</option>
-            <option value="4" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 4) ? "selected" : "" %>>Accesorios</option>
-            <option value="5" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 5) ? "selected" : "" %>>Material escolar</option>
-            <option value="6" <%= (request.getAttribute("catSel") != null && (Integer)request.getAttribute("catSel") == 6) ? "selected" : "" %>>Otros</option>
-          </select>
-        </div>
+        <label for="categoria">Categoría</label>
+        <select name="categoria" id="categoria" class="filter-control" onchange="this.form.submit()">
+          <option value="0" ${catSel == null || catSel == 0 ? 'selected' : ''}>Todas</option>
+          <c:forEach var="cat" items="${categorias}">
+            <option value="${cat.idCategoria}" ${catSel == cat.idCategoria ? 'selected' : ''}>
+                ${fn:escapeXml(cat.categoria)}
+            </option>
+          </c:forEach>
+        </select>
+      </div>
 
         <div class="filter-group">
           <label for="division">División Académica</label>

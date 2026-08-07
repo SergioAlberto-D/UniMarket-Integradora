@@ -16,6 +16,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import com.unimarket.unimarketintegradora.model.Categoria;
+import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "EditarArticuloServlet", value = "/editar-articulo")
 @MultipartConfig(
@@ -26,6 +28,7 @@ import java.util.UUID;
 public class EditarArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
+    private final CategoriaDao categoriaDao = new CategoriaDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,9 +47,14 @@ public class EditarArticuloServlet extends HttpServlet {
         // 1. Obtener las imágenes actuales del artículo desde la base de datos
         List<ImagenArticulo> imagenes = imagenDao.obtenerPorArticulo(articulo.getIdArticulo());
 
+        // --- NUEVO: Obtener todas las categorías desde la base de datos ---
+        List<Categoria> categorias = categoriaDao.getAll();
+
         // 2. Mandarlas al request
         request.setAttribute("articulo", articulo);
         request.setAttribute("imagenes", imagenes);
+        // --- NUEVO: Mandar las categorías al JSP ---
+        request.setAttribute("categorias", categorias);
 
         request.getRequestDispatcher("editar-articulo.jsp").forward(request, response);
     }

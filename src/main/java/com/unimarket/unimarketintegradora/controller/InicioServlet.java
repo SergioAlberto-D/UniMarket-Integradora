@@ -14,11 +14,14 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import com.unimarket.unimarketintegradora.model.Categoria;
+import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "InicioServlet", value = "/inicio")
 public class InicioServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
+    private final CategoriaDao categoriaDao = new CategoriaDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,7 +40,8 @@ public class InicioServlet extends HttpServlet {
 
         // 2. Obtener lista filtrada desde la base de datos
         List<Articulo> articulos = articuloDao.filtrarArticulos(orden, categoria, division, minPrecio, maxPrecio);
-
+        //OBTENER LAS CATEGORIAS
+        List<Categoria> categorias = categoriaDao.getAll();
         // 3. VERIFICAR SI TIENE UN ARTÍCULO EN PROCESO DE VENTA (Para lanzar la notificación)
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("usuario") != null) {
@@ -56,6 +60,7 @@ public class InicioServlet extends HttpServlet {
         request.setAttribute("divSel", division);
         request.setAttribute("minSel", (minStr != null && !minStr.trim().isEmpty()) ? minStr : "");
         request.setAttribute("maxSel", (maxStr != null && !maxStr.trim().isEmpty()) ? maxStr : "");
+        request.setAttribute("categorias", categorias);
 
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }

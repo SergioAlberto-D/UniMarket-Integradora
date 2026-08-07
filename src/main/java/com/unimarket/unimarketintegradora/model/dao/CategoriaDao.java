@@ -28,7 +28,7 @@ public class CategoriaDao implements Dao<Categoria, Integer> {
     @Override
     public List<Categoria> getAll() {
         List<Categoria> categorias = new ArrayList<>();
-        String sql = "SELECT * FROM categoria";
+        String sql = "SELECT * FROM categoria ORDER BY ID_CATEGORIA ASC";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
