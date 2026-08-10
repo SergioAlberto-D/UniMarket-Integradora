@@ -25,7 +25,22 @@ public class InicioServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. Leer parámetros del filtro
+        // 1. Obtener la sesión y la matrícula del usuario actual (si ha iniciado sesión)
+        HttpSession session = request.getSession(false);
+        String matriculaActual = "";
+
+        if (session != null && session.getAttribute("usuario") != null) {
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            matriculaActual = usuario.getIdUsuario();
+
+            // Verificamos también si tiene un artículo en proceso de venta para la notificación
+            List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getIdUsuario(), true);
+            if (!enProceso.isEmpty()) {
+                request.setAttribute("articuloRecordatorio", enProceso.get(0));
+            }
+        }
+
+        // 2. Leer parámetros del filtro
         String orden = request.getParameter("orden");
         String catStr = request.getParameter("categoria");
         String divStr = request.getParameter("division");
@@ -38,22 +53,13 @@ public class InicioServlet extends HttpServlet {
         BigDecimal minPrecio = (minStr != null && !minStr.trim().isEmpty()) ? new BigDecimal(minStr.trim()) : BigDecimal.ZERO;
         BigDecimal maxPrecio = (maxStr != null && !maxStr.trim().isEmpty()) ? new BigDecimal(maxStr.trim()) : null;
 
-        // 2. Obtener lista filtrada desde la base de datos
-        List<Articulo> articulos = articuloDao.filtrarArticulos(orden, categoria, division, minPrecio, maxPrecio);
-        //OBTENER LAS CATEGORIAS
-        List<Categoria> categorias = categoriaDao.getAll();
-        // 3. VERIFICAR SI TIENE UN ARTÍCULO EN PROCESO DE VENTA (Para lanzar la notificación)
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("usuario") != null) {
-            Usuario usuario = (Usuario) session.getAttribute("usuario");
-            List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getIdUsuario(), true);
-            if (!enProceso.isEmpty()) {
-                // Le mandamos el primer artículo pendiente que encontremos
-                request.setAttribute("articuloRecordatorio", enProceso.get(0));
-            }
-        }
+        // 3. Obtener lista filtrada excluyendo los artículos propios del usuario actual
+        List<Articulo> articulos = articuloDao.filtrarArticulos(orden, categoria, division, minPrecio, maxPrecio, matriculaActual);
 
-        // 4. Devolver atributos a la vista
+        // 4. Obtener las categorías
+        List<Categoria> categorias = categoriaDao.getAll();
+
+        // 5. Devolver atributos a la vista
         request.setAttribute("listaArticulos", articulos);
         request.setAttribute("ordenSel", orden != null ? orden : "Recientes");
         request.setAttribute("catSel", categoria);
@@ -62,6 +68,12 @@ public class InicioServlet extends HttpServlet {
         request.setAttribute("maxSel", (maxStr != null && !maxStr.trim().isEmpty()) ? maxStr : "");
         request.setAttribute("categorias", categorias);
 
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+
+        if (isAjax) {
+            request.getRequestDispatcher("articulos-fragment.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("index.jsp").forward(request, response);
+        }
     }
 }

@@ -33,7 +33,7 @@
     <section class="main-card">
         <div class="product-gallery">
             <!-- Agregamos cursor: pointer y el evento onclick para abrir el Modal -->
-            <div class="main-image-box" onclick="abrirModal()" style="cursor: zoom-in;" title="Haz clic para ampliar">
+            <div class="main-image-box" onclick="abrirModalZoom()" style="cursor: zoom-in;" title="Haz clic para ampliar">
                 <c:choose>
                     <c:when test="${not empty imagenes}">
                         <img id="imagenPrincipal" src="${pageContext.request.contextPath}/${imagenes[0].urlImagen}" alt="Imagen del producto">
@@ -91,7 +91,7 @@
             </div>
 
             <div class="action-buttons">
-                <button class="btn-ofertar">Ofertar</button>
+                <button class="btn-ofertar" onclick="document.getElementById('modalOferta').style.display = 'flex';">Ofertar</button>
                 <button type="button" class="btn-comprar" onclick="abrirModalCompra()" style="border: none; cursor: pointer;">Comprar</button>
             </div>
         </div>
@@ -159,93 +159,12 @@
 </main>
 
 <%-- MODAL PARA ZOOM DE IMAGEN --%>
-<div id="imageModal" class="modal-overlay" onclick="cerrarModal(event)">
+<div id="imageModal" class="modal-overlay" onclick="cerrarModalZoom(event)">
     <span class="close-modal">&times;</span>
     <div class="modal-content">
         <img id="modalImage" src="" alt="Zoom" onmousemove="hacerZoom(event)" onmouseleave="resetearZoom()">
     </div>
 </div>
-
-<script>
-    // --- VARIABLES GLOBALES ---
-    let indiceImagenActual = 0;
-    const miniaturas = document.querySelectorAll(".thumb");
-    const totalImagenes = miniaturas.length;
-    let carruselIntervalo;
-
-    // --- FUNCIONES DEL CARRUSEL ---
-    function cambiarImagen(elemento, rutaImagen, indice) {
-        document.getElementById("imagenPrincipal").src = rutaImagen;
-        miniaturas.forEach(m => m.classList.remove("active"));
-        elemento.classList.add("active");
-
-        if(indice !== undefined) {
-            indiceImagenActual = indice;
-        }
-    }
-
-    function avanzarCarrusel() {
-        if (totalImagenes <= 1) return;
-        indiceImagenActual = (indiceImagenActual + 1) % totalImagenes;
-        // Simulamos un click en la siguiente miniatura
-        miniaturas[indiceImagenActual].click();
-    }
-
-    function iniciarCarrusel() {
-        if (totalImagenes > 1) {
-            carruselIntervalo = setInterval(avanzarCarrusel, 15000); // Cambia cada 15 segundos
-        }
-    }
-
-    function detenerCarrusel() {
-        clearInterval(carruselIntervalo);
-    }
-
-    // Iniciamos el carrusel y lo pausamos si el usuario tiene el mouse encima de la galería
-    iniciarCarrusel();
-    const galeria = document.querySelector('.product-gallery');
-    if (galeria) {
-        galeria.addEventListener('mouseenter', detenerCarrusel);
-        galeria.addEventListener('mouseleave', iniciarCarrusel);
-    }
-
-    // --- FUNCIONES DEL MODAL Y ZOOM ---
-    function abrirModal() {
-        const modal = document.getElementById("imageModal");
-        const modalImg = document.getElementById("modalImage");
-        const imagenActualSrc = document.getElementById("imagenPrincipal").src;
-
-        modalImg.src = imagenActualSrc;
-        modal.style.display = "flex";
-        detenerCarrusel(); // Pausamos el carrusel al abrir el zoom
-    }
-
-    function cerrarModal(event) {
-        // Cierra solo si le dan clic al fondo negro o a la "X"
-        if (event.target.id === "imageModal" || event.target.className === "close-modal") {
-            document.getElementById("imageModal").style.display = "none";
-            resetearZoom();
-            iniciarCarrusel(); // Reanudamos el carrusel
-        }
-    }
-
-    function hacerZoom(event) {
-        const img = document.getElementById("modalImage");
-        // Calculamos la posición del ratón respecto al tamaño de la imagen
-        const x = (event.offsetX / img.offsetWidth) * 100;
-        const y = (event.offsetY / img.offsetHeight) * 100;
-
-        // Movemos el punto de origen de la transformación (el "foco" de la lupa)
-        img.style.transformOrigin = `${x}% ${y}%`;
-        img.style.transform = "scale(2.5)"; // Nivel de zoom (2.5x)
-    }
-
-    function resetearZoom() {
-        const img = document.getElementById("modalImage");
-        img.style.transformOrigin = "center center";
-        img.style.transform = "scale(1)";
-    }
-</script>
 
 <%-- MODAL FLOTANTE: HAZ UNA OFERTA --%>
 <div class="modal-overlay" id="modalOferta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
@@ -274,62 +193,11 @@
 
         <%-- BOTÓN DE ENVIAR --%>
         <div style="background: #f7efe9; padding: 12px; border-radius: 12px;">
-            <button type="button" onclick="enviarOfertaAjax()" style="width: 100%; height: 44px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer;">Enviar oferta</button>
+            <button type="button" onclick="enviarOfertaAjax('${articulo.idArticulo}', '${articulo.idUsuarioFk}')" style="width: 100%; height: 44px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer;">Enviar oferta</button>
         </div>
 
     </div>
 </div>
-
-<script>
-    // Conectamos el botón de la tarjeta principal para abrir el modal de oferta
-    const btnOfertarPrincipal = document.querySelector('.btn-ofertar');
-    if (btnOfertarPrincipal) {
-        btnOfertarPrincipal.onclick = function() {
-            document.getElementById('modalOferta').style.display = 'flex';
-        };
-    }
-
-    function cerrarModalOferta() {
-        document.getElementById('modalOferta').style.display = 'none';
-    }
-
-    function enviarOfertaAjax() {
-        const monto = document.getElementById('inputMontoOferta').value;
-        const idArticulo = "${articulo.idArticulo}";
-        const matriculaVendedor = "${articulo.idUsuarioFk}";
-
-        if (!monto || parseFloat(monto) <= 0) {
-            mostrarModalMUA("Por favor ingresa un monto válido para tu oferta.", 'error');
-            return;
-        }
-
-        const datos = new URLSearchParams();
-        datos.append('idArticulo', idArticulo);
-        datos.append('matriculaVendedor', matriculaVendedor);
-        datos.append('monto', monto);
-
-        fetch('${pageContext.request.contextPath}/ofertar-articulo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.exito) {
-                    cerrarModalOferta();
-                    document.getElementById('inputMontoOferta').value = '';
-                    // Usamos el Modal MUA estilizado en lugar de alert()
-                    mostrarModalMUA(data.mensaje || "¡Oferta enviada con éxito!", 'exito');
-                } else {
-                    mostrarModalMUA(data.mensaje || "No se pudo enviar la oferta.", 'error');
-                }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud:", error);
-                mostrarModalMUA("Ocurrió un error al procesar la solicitud.", 'error');
-            });
-    }
-</script>
 
 <%-- MODAL FLOTANTE: CONFIRMA TU COMPRA --%>
 <div class="modal-overlay" id="modalCompra" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
@@ -350,19 +218,16 @@
             </div>
         </div>
 
-        <%-- CORRECCIÓN: Etiqueta aclarando que el mensaje es opcional --%>
         <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 6px;">Escribe un mensaje para el Vendedor (Opcional)</label>
         <textarea id="inputMensajeComprador" placeholder="Escribe aquí tu mensaje....." style="width: 100%; height: 110px; border: 1px solid #e8cdbd; background: #fcf9f7; border-radius: 10px; padding: 12px; font-size: 14px; box-sizing: border-box; outline: none; resize: none; margin-bottom: 20px;"></textarea>
 
         <label style="display: block; font-size: 13px; font-weight: 700; color: #111; margin-bottom: 10px;">¿Cómo quieres contactar al vendedor?</label>
 
-        <%-- CORRECCIÓN: Texto congruente en el botón --%>
-        <%-- CORRECCIÓN: dos opciones de contacto --%>
         <div style="display: flex; gap: 10px;">
-            <button type="button" onclick="ejecutarCompraAjax('whatsapp')" style="flex: 1; height: 48px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button type="button" onclick="ejecutarCompraAjax('whatsapp', '${articulo.idArticulo}')" style="flex: 1; height: 48px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <i class="bi bi-whatsapp"></i> WhatsApp
             </button>
-            <button type="button" onclick="ejecutarCompraAjax('gmail')" style="flex: 1; height: 48px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 63, 29, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <button type="button" onclick="ejecutarCompraAjax('gmail', '${articulo.idArticulo}')" style="flex: 1; height: 48px; background: #7c3f1d; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(124, 63, 29, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <i class="bi bi-envelope"></i> Gmail
             </button>
         </div>
@@ -370,105 +235,7 @@
     </div>
 </div>
 
-<script>
-    function abrirModalCompra() {
-        document.getElementById('modalCompra').style.display = 'flex';
-    }
+<script src="${pageContext.request.contextPath}/static/js/detalles-articulo.js"></script>
 
-    function cerrarModalCompra() {
-        document.getElementById('modalCompra').style.display = 'none';
-    }
-
-    // Convierte un número de celular guardado en BD (con o sin espacios/guiones)
-    // al formato que necesita WhatsApp: solo dígitos, con código de país (52 = México).
-    function formatearNumeroWhatsapp(numero) {
-        if (!numero) return null;
-        let limpio = numero.replace(/\D/g, ''); // deja solo dígitos
-        if (limpio.length === 10) {
-            limpio = '52' + limpio; // anteponemos código de país MX
-        }
-        return limpio;
-    }
-
-    function ejecutarCompraAjax(metodoContacto) {
-        const mensaje = document.getElementById('inputMensajeComprador').value.trim();
-        // Esta línea SÍ debe ser procesada por JSP para obtener el ID del artículo desde Java:
-        const idArticulo = "${articulo.idArticulo}";
-
-        const datos = new URLSearchParams();
-        datos.append('idArticulo', idArticulo);
-        datos.append('mensaje', mensaje);
-
-        fetch('${pageContext.request.contextPath}/comprar-articulo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                cerrarModalCompra();
-
-                console.log("Respuesta del servidor:", data);
-
-                if (data.exito) {
-                    if (metodoContacto === 'whatsapp') {
-                        const telefonoDestino = formatearNumeroWhatsapp(
-                            (data.telefonoVendedor && data.telefonoVendedor !== "null") ? data.telefonoVendedor.trim() : ""
-                        );
-
-                        if (!telefonoDestino) {
-                            mostrarModalMUA("El producto se reservó, pero no se encontró el número de teléfono del vendedor en la base de datos.", 'error', () => {
-                                location.reload();
-                            });
-                            return;
-                        }
-
-                        const mensajeWa = encodeURIComponent(data.mensajeChat);
-                        const urlWhatsapp = "https://wa.me/" + telefonoDestino + "?text=" + mensajeWa;
-
-                        mostrarModalMUA(
-                            "¡Producto reservado! Abriremos WhatsApp para contactar al vendedor. Solo revisa y envía el mensaje.",
-                            'exito',
-                            () => {
-                                window.open(urlWhatsapp, '_blank');
-                                setTimeout(() => location.reload(), 1500);
-                            }
-                        );
-                    } else {
-                        const correoDestino = (data.correoVendedor && data.correoVendedor !== "null")
-                            ? data.correoVendedor.trim()
-                            : "";
-
-                        if (!correoDestino) {
-                            mostrarModalMUA("El producto se reservó, pero no se encontró el correo del vendedor en la base de datos.", 'error', () => {
-                                location.reload();
-                            });
-                            return;
-                        }
-
-                        const asunto = encodeURIComponent("Interés en compra de tu artículo - MUA");
-                        const cuerpo = encodeURIComponent(data.mensajeChat);
-                        const urlGmail = "https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=" + encodeURIComponent(correoDestino) + "&su=" + asunto + "&body=" + cuerpo;
-
-                        mostrarModalMUA(
-                            "¡Producto reservado! Abriremos tu Gmail para contactar a " + correoDestino + ". Solo revisa y haz clic en 'Enviar'.",
-                            'exito',
-                            () => {
-                                window.open(urlGmail, '_blank');
-                                setTimeout(() => location.reload(), 1500);
-                            }
-                        );
-                    }
-                } else {
-                    mostrarModalMUA(data.mensaje || "No se pudo procesar la compra.", 'error');
-                }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud:", error);
-                cerrarModalCompra();
-                mostrarModalMUA("Ocurrió un error al procesar la compra.", 'error');
-            });
-    }
-</script>
 </body>
 </html>

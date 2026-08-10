@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <!-- SWITCH DE PESTAÑAS (Idéntico al de Mis Artículos) -->
+    <!-- SWITCH DE PESTAÑAS -->
     <div class="tabs-switch">
       <button type="button" class="tab-btn active" onclick="cambiarPestana('compras', this)">Compras</button>
       <button type="button" class="tab-btn" onclick="cambiarPestana('ventas', this)">Ventas</button>
@@ -137,15 +137,7 @@
 
 </main>
 
-<script>
-  function cambiarPestana(tipo, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    document.getElementById('tab-compras').style.display = (tipo === 'compras') ? 'flex' : 'none';
-    document.getElementById('tab-ventas').style.display = (tipo === 'ventas') ? 'flex' : 'none';
-  }
-</script>
+<script src="${pageContext.request.contextPath}/static/js/historial.js"></script>
 
 </body>
 </html>

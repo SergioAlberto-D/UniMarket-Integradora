@@ -5,8 +5,8 @@ body {
 }
 
 .details-container {
-    width: 90%;
-    max-width: 1100px;
+    width: 100%;
+    max-width: calc(100vw - 200px);
     margin: 0 auto;
     padding: 20px 0 60px;
 }
@@ -73,8 +73,8 @@ body {
 
 .seller-box {
     background-color: #f6e9e4;
-    border-radius: 16px;          /* Bordes un poco más finos para acompañar la menor altura */
-    padding: 8px 24px;            /* <-- AQUÍ ESTÁ LA CLAVE: Bajamos de 16px a solo 8px arriba/abajo */
+    border-radius: 16px;
+    padding: 8px 24px;
     width: 100%;
     box-sizing: border-box;
     display: flex;
@@ -96,7 +96,7 @@ body {
 }
 
 .seller-label {
-    font-size: 20px;              /* Un poquitito más estilizado para armonizar (de 22px a 20px) */
+    font-size: 20px;
     font-weight: 600;
     color: #111111;
     text-transform: lowercase;
@@ -112,7 +112,7 @@ body {
 }
 
 .seller-avatar {
-    width: 40px;                  /* <-- Bajamos de 48px a 40px para reducir la altura total de la caja */
+    width: 40px;
     height: 40px;
     border-radius: 50%;
     background: #9a3d1e;
@@ -135,7 +135,7 @@ body {
 .seller-details {
     display: flex;
     flex-direction: column;
-    gap: 1px;                     /* Apretamos 1px la distancia entre nombre y estrellas */
+    gap: 1px;
     text-align: left;
     text-decoration: none !important;
 }
@@ -190,9 +190,9 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    max-height: 450px;       /* <-- Altura máxima permitida */
-    overflow-y: auto;        /* <-- Activa el scroll vertical automático */
-    padding-right: 10px;     /* <-- Espacio para que el scrollbar no tape el texto */
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 .comment-item {
     background: #f7efe9;
@@ -208,19 +208,14 @@ body {
 .c-stars { font-size: 12px; margin-bottom: 8px; }
 .comment-item p { margin: 0; font-size: 14px; color: #333; line-height: 1.4; }
 
-@media (max-width: 850px) {
-    .main-card { grid-template-columns: 1fr; gap: 25px; }
-    .reviews-summary { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .progress-bars { width: 100%; }
-}
 /* --- MODAL Y ZOOM DE IMÁGENES --- */
 .modal-overlay {
-    display: none; /* Oculto por defecto */
+    display: none;
     position: fixed;
-    z-index: 1050; /* Por encima del header */
+    z-index: 1050;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fondo negro semitransparente */
+    background-color: rgba(0, 0, 0, 0.85);
     justify-content: center;
     align-items: center;
     backdrop-filter: blur(5px);
@@ -228,7 +223,7 @@ body {
 
 .modal-content {
     position: relative;
-    overflow: hidden; /* Mantiene el zoom dentro de los bordes */
+    overflow: hidden;
     border-radius: 12px;
     max-width: 90vw;
     max-height: 90vh;
@@ -240,8 +235,8 @@ body {
     max-width: 100%;
     max-height: 90vh;
     object-fit: contain;
-    transition: transform 0.1s ease; /* Transición suave al moverse */
-    cursor: crosshair; /* Cursor de "mira" para analizar */
+    transition: transform 0.1s ease;
+    cursor: crosshair;
     transform-origin: center center;
 }
 
@@ -284,4 +279,21 @@ body {
 .ofertas-list::-webkit-scrollbar-thumb:hover,
 .history-list::-webkit-scrollbar-thumb:hover {
     background: #7c3f1d;
+}
+
+/* =========================================
+   ADAPTACIÓN RESPONSIVA
+   ========================================= */
+@media (max-width: 1200px) {
+    .details-container { max-width: calc(100vw - 100px); }
+}
+
+@media (max-width: 850px) {
+    .main-card { grid-template-columns: 1fr; gap: 25px; }
+    .reviews-summary { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .progress-bars { width: 100%; }
+}
+
+@media (max-width: 768px) {
+    .details-container { max-width: 92vw; }
 }

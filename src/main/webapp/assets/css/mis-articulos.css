@@ -2,7 +2,8 @@
    CONTENEDOR PRINCIPAL
    ========================================== */
 .mis-articulos-container {
-    max-width: 1050px;
+    width: 100%;
+    max-width: calc(100vw - 200px);
     margin: 40px auto;
     padding: 0 20px;
     font-family: 'Inter', sans-serif;
@@ -87,7 +88,7 @@
 
 .articulo-card {
     position: relative;
-    z-index: 1; /* Nivel base para todas las tarjetas */
+    z-index: 1;
     background: #fdfaf7;
     border: 1px solid #efe5dd;
     border-radius: 16px;
@@ -98,7 +99,6 @@
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Eleva la tarjeta completa al frente solo si su menú está abierto */
 .articulo-card:has(.dropdown-menu-acciones.show) {
     z-index: 999 !important;
 }
@@ -233,4 +233,15 @@
 .floating-modal {
     position: relative;
     z-index: 5001 !important;
+}
+
+/* =========================================
+   ADAPTACIÓN RESPONSIVA
+   ========================================= */
+@media (max-width: 1200px) {
+    .mis-articulos-container { max-width: calc(100vw - 100px); }
+}
+
+@media (max-width: 768px) {
+    .mis-articulos-container { max-width: 92vw; }
 }

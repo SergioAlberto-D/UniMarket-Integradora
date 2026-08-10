@@ -27,7 +27,6 @@ public class ArticuloDao implements Dao<Articulo, String> {
     @Override
     public List<Articulo> getAll() {
         List<Articulo> lista = new ArrayList<>();
-        // Ocultamos artículos que tengan una transacción activa en estado 'PENDIENTE'
         String sql = "SELECT a.*, \n" +
                 "       u.nombre AS nombre_vendedor, \n" +
                 "       (SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada \n" +
@@ -124,6 +123,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return -1;
     }
+
     public Articulo getDetallesCompletos(String idArticulo) {
         String sql = "SELECT a.*, u.nombre AS nombre_vendedor, u.foto_perfil, " +
                 "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
@@ -152,6 +152,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return null;
     }
+
     public int contarPorUsuario(String matriculaUsuario) {
         String sql = "SELECT COUNT(*) FROM articulo WHERE matricula_usuario_fk = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -167,7 +168,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return 0;
     }
 
-    public List<Articulo> filtrarArticulos(String orden, Integer idCategoria, Integer idDivision, java.math.BigDecimal minPrecio, java.math.BigDecimal maxPrecio) {
+    public List<Articulo> filtrarArticulos(String orden, Integer idCategoria, Integer idDivision, java.math.BigDecimal minPrecio, java.math.BigDecimal maxPrecio, String matriculaUsuarioLogueado) {
         List<Articulo> lista = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT a.*, u.nombre AS nombre_vendedor, " +
@@ -179,6 +180,12 @@ public class ArticuloDao implements Dao<Articulo, String> {
         );
 
         List<Object> parametros = new ArrayList<>();
+
+        // Si hay un usuario en sesión, excluimos sus propios artículos del catálogo general
+        if (matriculaUsuarioLogueado != null && !matriculaUsuarioLogueado.trim().isEmpty()) {
+            sql.append(" AND a.matricula_usuario_fk != ? ");
+            parametros.add(matriculaUsuarioLogueado);
+        }
 
         // 1. Filtro por Categoría
         if (idCategoria != null && idCategoria > 0) {
@@ -240,18 +247,17 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return lista;
     }
+
     public List<Articulo> obtenerPorUsuarioYEstado(String matriculaUsuario, boolean enProceso) {
         List<Articulo> lista = new ArrayList<>();
         String sql;
 
         if (enProceso) {
-            // Artículos con transacción PENDIENTE
             sql = "SELECT a.*, " +
                     "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
                     "FROM ARTICULO a WHERE a.matricula_usuario_fk = ? " +
                     "AND a.id_articulo IN (SELECT id_articulo_fk FROM transaccion WHERE estado = 'PENDIENTE')AND a.estado != 'ELIMINADO'";
         } else {
-            // Artículos SIN transacción PENDIENTE
             sql = "SELECT a.*, " +
                     "(SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
                     "FROM ARTICULO a WHERE a.matricula_usuario_fk = ? " +
@@ -280,5 +286,4 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return lista;
     }
-
 }

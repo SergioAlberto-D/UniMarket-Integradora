@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/3/26
-  Time: 7:01 PM
+  Time: 7:01 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -86,25 +86,9 @@
 
 <script src="assets/js/bootstrap.js"></script>
 
-<!-- Script de Automatización -->
+<!-- Script de Automatización importado de un js externo -->
 <c:if test="${empty error}">
-<script>
-  // Al cargar la página, inicia la secuencia
-  window.onload = function() {
-    // 1. Simula el tiempo de carga por 1.5 segundos
-    setTimeout(() => {
-      // 2. Oculta el spinner y muestra el éxito (como en tu diseño)
-      document.getElementById('loader').classList.add('d-none');
-      document.getElementById('status-text').classList.add('d-none');
-      document.getElementById('success-msg').classList.remove('d-none');
-      
-      // 3. Medio segundo después, hace el submit real al servidor
-      setTimeout(() => {
-        document.getElementById('tokenForm').submit();
-      }, 500); 
-    }, 1500); 
-  };
-</script>
+  <script src="static/js/verificar-token.js"></script>
 </c:if>
 
 </body>

@@ -8,7 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 95px;
+    padding: 0 100px; /* Alineado con el calc(100vw - 200px) */
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -212,7 +212,6 @@
     line-height: 1;
 }
 
-/* Oculto obligatoriamente con display: none por defecto */
 .notification-tray {
     display: none;
     position: absolute;
@@ -228,7 +227,6 @@
     overflow: hidden;
 }
 
-/* Solo se activa al hacer clic en la campana */
 .notification-tray.show {
     display: flex;
     animation: trayFadeIn 0.18s ease-out forwards;
@@ -400,31 +398,10 @@
 }
 
 /* =========================================
-   RESPONSIVIDAD
-   ========================================= */
-@media (max-width: 1100px) {
-    .mua-header { padding: 0 30px; }
-    .search-box { width: 320px; }
-}
-
-@media (max-width: 760px) {
-    .mua-header {
-        padding: 14px;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .header-left, .header-nav {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    .search-box { width: 100%; }
-}
-/* =========================================
    ESTILOS PARA EL MODAL UNIVERSAL MUA
    ========================================= */
 #muaModalUniversal.modal-overlay {
-    display: none; /* <--- Esto garantiza que NUNCA se vea al cargar la página */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -436,7 +413,6 @@
     justify-content: center;
 }
 
-/* Solo se activará el display cuando JavaScript agregue esta clase */
 #muaModalUniversal.modal-overlay.show-modal {
     display: flex !important;
     animation: fadeInModal 0.2s ease-out forwards;
@@ -461,4 +437,27 @@
 @keyframes scaleUpModal {
     from { transform: scale(0.95); }
     to { transform: scale(1); }
+}
+
+/* =========================================
+   RESPONSIVIDAD (Actualizada)
+   ========================================= */
+@media (max-width: 1200px) {
+    .mua-header { padding: 0 50px; }
+    .search-box { width: 320px; }
+}
+
+@media (max-width: 768px) {
+    .mua-header {
+        height: auto;
+        padding: 14px 20px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .header-left, .header-nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .search-box { width: 100%; }
 }

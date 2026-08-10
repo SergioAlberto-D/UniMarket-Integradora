@@ -5,8 +5,8 @@ body {
 }
 
 .profile-container {
-    width: 94%;
-    max-width: 1500px;
+    width: 100%;
+    max-width: calc(100vw - 200px);
     margin: 0 auto;
     padding: 20px 0 60px;
 }
@@ -124,7 +124,6 @@ body {
 }
 .btn-comentar:hover { background-color: #623015; }
 
-/* (Se reutilizan los estilos de barras y comentarios de detalles-articulo.css) */
 .reviews-summary { display: flex; gap: 40px; align-items: center; margin-bottom: 30px; }
 .global-rating { text-align: center; }
 .big-score { font-size: 55px; font-weight: 800; line-height: 1; color: #111; }
@@ -159,38 +158,6 @@ body {
 .c-stars { font-size: 12px; margin-bottom: 8px; }
 .comment-item p { margin: 0; font-size: 14px; color: #333; line-height: 1.4; }
 
-@media (max-width: 950px) {
-    .profile-card { grid-template-columns: 1fr; gap: 20px; }
-    .stats-section { grid-template-columns: repeat(2, 1fr); }
-    .reviews-summary { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .progress-bars { width: 100%; }
-}
-.comments-list::-webkit-scrollbar,
-.ofertas-list::-webkit-scrollbar,
-.history-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.comments-list::-webkit-scrollbar-track,
-.ofertas-list::-webkit-scrollbar-track,
-.history-list::-webkit-scrollbar-track {
-    background: #f4e9e2;
-    border-radius: 4px;
-}
-
-.comments-list::-webkit-scrollbar-thumb,
-.ofertas-list::-webkit-scrollbar-thumb,
-.history-list::-webkit-scrollbar-thumb {
-    background: #c8a392;
-    border-radius: 4px;
-}
-
-.comments-list::-webkit-scrollbar-thumb:hover,
-.ofertas-list::-webkit-scrollbar-thumb:hover,
-.history-list::-webkit-scrollbar-thumb:hover {
-    background: #7c3f1d;
-}
-
 .modal-comentario-overlay {
     display: none;
     position: fixed;
@@ -221,11 +188,7 @@ body {
 
 .interactive-stars { display: flex; gap: 8px; margin-bottom: 18px; cursor: pointer; }
 .interactive-stars i { font-size: 26px; color: #d6d6d6; transition: color 0.15s; }
-
-
 .interactive-stars i.active { color: #f59e0b; }
-
-
 .interactive-stars i.hovered { color: #fcd34d; }
 
 
@@ -247,3 +210,34 @@ body {
 }
 .btn-cancel-modal:hover { background: #eacabe; }
 .btn-submit-modal:hover { background: #5c2d13; }
+
+.comments-list::-webkit-scrollbar,
+.ofertas-list::-webkit-scrollbar,
+.history-list::-webkit-scrollbar { width: 6px; }
+.comments-list::-webkit-scrollbar-track,
+.ofertas-list::-webkit-scrollbar-track,
+.history-list::-webkit-scrollbar-track { background: #f4e9e2; border-radius: 4px; }
+.comments-list::-webkit-scrollbar-thumb,
+.ofertas-list::-webkit-scrollbar-thumb,
+.history-list::-webkit-scrollbar-thumb { background: #c8a392; border-radius: 4px; }
+.comments-list::-webkit-scrollbar-thumb:hover,
+.ofertas-list::-webkit-scrollbar-thumb:hover,
+.history-list::-webkit-scrollbar-thumb:hover { background: #7c3f1d; }
+
+/* =========================================
+   ADAPTACIÓN RESPONSIVA
+   ========================================= */
+@media (max-width: 1200px) {
+    .profile-container { max-width: calc(100vw - 100px); }
+}
+
+@media (max-width: 950px) {
+    .profile-card { grid-template-columns: 1fr; gap: 20px; }
+    .stats-section { grid-template-columns: repeat(2, 1fr); }
+    .reviews-summary { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .progress-bars { width: 100%; }
+}
+
+@media (max-width: 768px) {
+    .profile-container { max-width: 92vw; }
+}

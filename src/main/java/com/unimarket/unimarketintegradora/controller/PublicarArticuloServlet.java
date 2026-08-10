@@ -22,7 +22,7 @@ import com.unimarket.unimarketintegradora.model.Categoria;
 import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 5 * 1024 * 1024, maxRequestSize = 20 * 1024 * 1024)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 40 * 1024 * 1024)
 public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();

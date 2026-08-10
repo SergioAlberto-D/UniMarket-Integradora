@@ -10,13 +10,14 @@ body {
 }
 
 .history-page {
-    max-width: 1050px;
+    width: 100%;
+    max-width: calc(100vw - 200px);
     margin: 40px auto;
     padding: 0 20px 60px;
     font-family: 'Inter', sans-serif;
 }
 
-/* ENCABEZADO Y SWITCH DE PESTAÑAS (Exacto a Mis Artículos) */
+/* ENCABEZADO Y SWITCH DE PESTAÑAS */
 .header-section {
     display: flex;
     justify-content: space-between;
@@ -233,38 +234,41 @@ body {
     color: #888888;
 }
 
-@media (max-width: 760px) {
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+.history-list::-webkit-scrollbar-track {
+    background: #f4e9e2;
+    border-radius: 4px;
+}
+.history-list::-webkit-scrollbar-thumb {
+    background: #c8a392;
+    border-radius: 4px;
+}
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: #7c3f1d;
+}
+
+/* =========================================
+   ADAPTACIÓN RESPONSIVA
+   ========================================= */
+@media (max-width: 1200px) {
+    .history-page { max-width: calc(100vw - 100px); }
+}
+
+@media (max-width: 768px) {
+    .history-page { max-width: 92vw; }
     .history-item {
         grid-template-columns: 46px 1fr;
         grid-template-rows: auto auto;
     }
-
     .item-type {
         grid-column: 2;
         text-align: left;
     }
-
     .item-price-date {
         grid-column: 2;
         align-items: flex-start;
         margin-top: 5px;
     }
-}
-
-.history-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.history-list::-webkit-scrollbar-track {
-    background: #f4e9e2;
-    border-radius: 4px;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-    background: #c8a392;
-    border-radius: 4px;
-}
-
-.history-list::-webkit-scrollbar-thumb:hover {
-    background: #7c3f1d;
 }

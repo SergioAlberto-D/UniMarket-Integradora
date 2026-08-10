@@ -72,7 +72,6 @@
                     <c:when test="${not empty imagenes}">
                         <c:forEach var="img" items="${imagenes}" varStatus="status">
                             <div class="preview-item" id="caja-img-${img.idImagen}" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; background: #eae0d7;">
-                                <!-- Imagen cargada desde tu servidor Linux -->
                                 <img src="${pageContext.request.contextPath}/${img.urlImagen}" style="width: 100%; height: 100%; object-fit: cover;" alt="Imagen previa">
 
                                 <!-- Botón "X" para eliminar la imagen del servidor -->
@@ -82,14 +81,12 @@
                                     <i class="bi bi-x"></i>
                                 </button>
 
-                                <!-- Etiqueta inferior con el número -->
                                 <span style="position: absolute; bottom: 6px; left: 6px; background: rgba(0,0,0,0.6); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px;">
                                         ${status.first ? 'Principal' : (status.index + 1)}
                                 </span>
                             </div>
                         </c:forEach>
 
-                        <%-- Si tiene menos de 3 imágenes, rellenamos con espacios vacíos --%>
                         <c:forEach begin="${fn:length(imagenes) + 1}" end="3" var="i">
                             <div class="preview-empty"><i class="bi bi-image"></i><span>${i}</span></div>
                         </c:forEach>
@@ -114,7 +111,6 @@
 
             <div class="form-group">
                 <label for="titulo">Nombre del artículo</label>
-                <!-- Placeholder mostrando el nombre anterior -->
                 <input id="titulo" name="titulo" type="text"
                        placeholder="${fn:escapeXml(articulo.nombre)}">
             </div>
@@ -122,7 +118,6 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="precio">Precio ($ MXN)</label>
-                    <!-- Placeholder mostrando el precio anterior -->
                     <input id="precio" name="precio" type="number" step="0.01" min="0"
                            placeholder="${articulo.precio}">
                 </div>
@@ -154,39 +149,7 @@
 </main>
 
 <script src="${pageContext.request.contextPath}/static/js/drag-drop.js"></script>
-<script>
-    // Función para eliminar una foto YA EXISTENTE en el servidor usando el modal estilizado MUA
-    function eliminarImagenServidor(idImagen, botonElemento) {
-        // 1. Abrimos el modal de confirmación MUA en lugar de confirm() nativo
-        mostrarModalMUA("¿Estás seguro de que deseas eliminar esta imagen?", "info", () => {
+<script src="${pageContext.request.contextPath}/static/js/editar-articulo.js"></script>
 
-            fetch('${pageContext.request.contextPath}/eliminar-imagen-articulo?id=' + idImagen, {
-                method: 'POST'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exito) {
-                        // 2. Obtenemos el contenedor de la imagen que se acaba de borrar
-                        const caja = botonElemento.closest('.preview-item');
-                        if (caja) {
-                            // Lo convertimos visualmente en una caja vacía en lugar de romper el diseño
-                            caja.className = 'preview-empty';
-                            caja.style = '';
-                            caja.innerHTML = '<i class="bi bi-image"></i><span>Vacío</span>';
-                        }
-                        // Opcional: confirmamos con el modal de éxito de MUA
-                        mostrarModalMUA("Imagen eliminada correctamente.", "exito");
-                    } else {
-                        mostrarModalMUA(data.mensaje || "No se pudo eliminar la imagen.", "error");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error al eliminar imagen:", error);
-                    mostrarModalMUA("Error de conexión al intentar eliminar la imagen.", "error");
-                });
-
-        });
-    }
-</script>
 </body>
 </html>

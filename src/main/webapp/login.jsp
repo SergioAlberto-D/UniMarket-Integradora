@@ -11,8 +11,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Iniciar sesión - MUA</title>
     <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
@@ -67,8 +66,6 @@
                     </div>
                 </div>
 
-
-
                 <!-- Recuperar Contraseña -->
                 <div class="text-end mb-4 mt-2">
                     <a href="recuperar-password.jsp" class="login-link login-forgot-link">¿Olvidaste tu contraseña?</a>
@@ -100,49 +97,41 @@
     </div>
 </div>
 
+<c:if test="${not empty cuentaVerificada or not empty errorVerificacion}">
+    <div class="modal fade" id="modalVerificacion" tabindex="-1" aria-labelledby="modalVerificacionLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                <div class="modal-body text-center p-5">
+
+                    <c:choose>
+                        <%-- Si la cuenta fue verificada --%>
+                        <c:when test="${not empty cuentaVerificada}">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4.5rem;"></i>
+                            <h3 class="fw-bold text-dark mt-3 mb-2">¡Cuenta Verificada!</h3>
+                            <p class="text-muted mb-4 fs-6">${cuentaVerificada}</p>
+                            <button type="button" class="btn btn-brown w-100 py-3 fw-semibold shadow-sm fs-5" data-bs-dismiss="modal">
+                                Excelente, quiero entrar
+                            </button>
+                        </c:when>
+
+                        <%-- Si hubo un error --%>
+                        <c:when test="${not empty errorVerificacion}">
+                            <i class="bi bi-x-circle-fill text-danger" style="font-size: 4.5rem;"></i>
+                            <h3 class="fw-bold text-dark mt-3 mb-2">Ups, algo salió mal</h3>
+                            <p class="text-muted mb-4 fs-6">${errorVerificacion}</p>
+                            <button type="button" class="btn btn-peach w-100 py-3 fw-semibold shadow-sm fs-5" data-bs-dismiss="modal">
+                                Cerrar
+                            </button>
+                        </c:when>
+                    </c:choose>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
+
 <script src="assets/js/bootstrap.js"></script>
 <script src="static/js/login.js"></script>
-<div class="modal fade" id="modalVerificacion" tabindex="-1" aria-labelledby="modalVerificacionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
-        <div class="modal-body text-center p-5">
-          
-          <c:choose>
-              <%-- Si la cuenta fue verificada --%>
-              <c:when test="${not empty cuentaVerificada}">
-                  <i class="bi bi-check-circle-fill text-success" style="font-size: 4.5rem;"></i>
-                  <h3 class="fw-bold text-dark mt-3 mb-2">¡Cuenta Verificada!</h3>
-                  <p class="text-muted mb-4 fs-6">${cuentaVerificada}</p>
-                  <!-- Al darle clic a este botón, el modal se cierra (data-bs-dismiss="modal") -->
-                  <button type="button" class="btn btn-brown w-100 py-3 fw-semibold shadow-sm fs-5" data-bs-dismiss="modal">
-                      Excelente, quiero entrar
-                  </button>
-              </c:when>
-
-              <%-- Si hubo un error --%>
-              <c:when test="${not empty errorVerificacion}">
-                  <i class="bi bi-x-circle-fill text-danger" style="font-size: 4.5rem;"></i>
-                  <h3 class="fw-bold text-dark mt-3 mb-2">Ups, algo salió mal</h3>
-                  <p class="text-muted mb-4 fs-6">${errorVerificacion}</p>
-                  <button type="button" class="btn btn-peach w-100 py-3 fw-semibold shadow-sm fs-5" data-bs-dismiss="modal">
-                      Cerrar
-                  </button>
-              </c:when>
-          </c:choose>
-  
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <c:if test="${not empty cuentaVerificada or not empty errorVerificacion}">
-  <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          var modalElement = document.getElementById('modalVerificacion');
-          var modalObj = new bootstrap.Modal(modalElement);
-          modalObj.show();
-      });
-  </script>
-  </c:if>
 </body>
 </html>

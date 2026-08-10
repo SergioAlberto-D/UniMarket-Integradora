@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 8/1/26
-  Time: 9:55 PM
+  Time: 9:55 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <!-- PESTAÑA 1: ARTÍCULOS DISPONIBLES (NO ESTÁN EN TRANSACCIÓN PENDIENTE) -->
+    <!-- PESTAÑA 1: ARTÍCULOS DISPONIBLES -->
     <section id="tab-disponibles" class="articulos-list">
         <c:choose>
             <c:when test="${not empty disponibles}">
@@ -78,7 +78,7 @@
         </c:choose>
     </section>
 
-    <!-- PESTAÑA 2: ARTÍCULOS EN PROCESO (EN TABLA TRANSACCION COMO PENDIENTE) -->
+    <!-- PESTAÑA 2: ARTÍCULOS EN PROCESO -->
     <section id="tab-proceso" class="articulos-list" style="display: none;">
         <c:choose>
             <c:when test="${not empty enProceso}">
@@ -117,66 +117,6 @@
     </section>
 </main>
 
-<script>
-    // ALTERNAR PESTAÑAS
-    function cambiarPestana(tipo, btn) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.getElementById('tab-disponibles').style.display = (tipo === 'disponibles') ? 'flex' : 'none';
-        document.getElementById('tab-proceso').style.display = (tipo === 'proceso') ? 'flex' : 'none';
-    }
-
-    // ABRIR / CERRAR EL MENÚ HAMBURGUESA
-    function toggleMenuAction(e, menuId) {
-        e.stopPropagation();
-        document.querySelectorAll('.dropdown-menu-acciones').forEach(menu => {
-            if (menu.id !== menuId) menu.classList.remove('show');
-        });
-        const targetMenu = document.getElementById(menuId);
-        if (targetMenu) targetMenu.classList.toggle('show');
-    }
-
-    // CERRAR LOS MENÚS AL HACER CLIC FUERA
-    window.addEventListener('click', function() {
-        document.querySelectorAll('.dropdown-menu-acciones').forEach(menu => menu.classList.remove('show'));
-    });
-
-    // ACTUALIZAR ESTADO (VENDIDO / NO VENDIDO)
-    function actualizarEstadoTransaccion(idArticulo, nuevoEstado) {
-        const datos = new URLSearchParams({ idArticulo, estado: nuevoEstado });
-
-        fetch('${pageContext.request.contextPath}/actualizar-transaccion', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: datos
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.exito) {
-                    mostrarModalMUA(data.mensaje, 'exito', () => location.reload());
-                } else {
-                    mostrarModalMUA(data.mensaje || "Ocurrió un error al actualizar el estado.", 'error');
-                }
-            })
-            .catch(() => mostrarModalMUA("Error de conexión con el servidor.", 'error'));
-    }
-
-    // ELIMINAR ARTÍCULO
-    function confirmarEliminacion(idArticulo) {
-        mostrarModalMUA("¿Estás seguro de que deseas eliminar este artículo?", "info", () => {
-            fetch('${pageContext.request.contextPath}/eliminar-articulo?id=' + idArticulo, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.exito) {
-                        mostrarModalMUA("Artículo eliminado correctamente.", 'exito', () => location.reload());
-                    } else {
-                        mostrarModalMUA(data.mensaje || "No se pudo eliminar el artículo.", 'error');
-                    }
-                });
-        });
-    }
-</script>
 <!-- MODAL FLOTANTE: ¿QUÉ HACER DESPUÉS DE VENDER? -->
 <div class="modal-overlay" id="modalDecisionVenta" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 3000; align-items: center; justify-content: center;">
     <div class="floating-modal" style="background: #fff; border-radius: 18px; width: 90%; max-width: 440px; padding: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); text-align: center;">
@@ -198,103 +138,7 @@
     </div>
 </div>
 
-<script>
-    let articuloVendidoIdTemporal = null;
+<script src="${pageContext.request.contextPath}/static/js/mis-articulos.js"></script>
 
-    // ALTERNAR PESTAÑAS
-    function cambiarPestana(tipo, btn) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        document.getElementById('tab-disponibles').style.display = (tipo === 'disponibles') ? 'flex' : 'none';
-        document.getElementById('tab-proceso').style.display = (tipo === 'proceso') ? 'flex' : 'none';
-    }
-
-    // SI LA URL DICE ?tab=proceso, ABRIR LA PESTAÑA AUTOMÁTICAMENTE
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('tab') === 'proceso') {
-            const btnProceso = document.querySelectorAll('.tab-btn')[1];
-            if (btnProceso) cambiarPestana('proceso', btnProceso);
-        }
-    });
-
-    // ABRIR / CERRAR EL MENÚ HAMBURGUESA
-    function toggleMenuAction(e, menuId) {
-        e.stopPropagation();
-        document.querySelectorAll('.dropdown-menu-acciones').forEach(menu => {
-            if (menu.id !== menuId) menu.classList.remove('show');
-        });
-        const targetMenu = document.getElementById(menuId);
-        if (targetMenu) targetMenu.classList.toggle('show');
-    }
-
-    window.addEventListener('click', function() {
-        document.querySelectorAll('.dropdown-menu-acciones').forEach(menu => menu.classList.remove('show'));
-    });
-
-    // ACTUALIZAR ESTADO DE LA TRANSACCIÓN
-    function actualizarEstadoTransaccion(idArticulo, nuevoEstado) {
-        const datos = new URLSearchParams({ idArticulo, estado: nuevoEstado });
-
-        fetch('${pageContext.request.contextPath}/actualizar-transaccion', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: datos
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.exito) {
-                    if (nuevoEstado === 'COMPLETADO') {
-                        // Si le dio a "Vendido", abrimos el modal de decisión en vez de recargar
-                        articuloVendidoIdTemporal = idArticulo;
-                        document.getElementById('modalDecisionVenta').style.display = 'flex';
-                    } else {
-                        mostrarModalMUA(data.mensaje, 'exito', () => location.reload());
-                    }
-                } else {
-                    mostrarModalMUA(data.mensaje || "Ocurrió un error al actualizar el estado.", 'error');
-                }
-            })
-            .catch(() => mostrarModalMUA("Error de conexión con el servidor.", 'error'));
-    }
-
-    // OPCIÓN 1: SEGUIR VENDIÉNDOLO (Al completar la transacción, vuelve a "Disponibles" al recargar)
-    function accionSeguirVendiendo() {
-        document.getElementById('modalDecisionVenta').style.display = 'none';
-        location.reload();
-    }
-
-    // OPCIÓN 2: QUITAR DEL CATÁLOGO (Elimina el artículo y sus imágenes)
-    function accionQuitarCatalogo() {
-        if (!articuloVendidoIdTemporal) return;
-        document.getElementById('modalDecisionVenta').style.display = 'none';
-
-        fetch('${pageContext.request.contextPath}/eliminar-articulo?id=' + articuloVendidoIdTemporal, { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.exito) {
-                    mostrarModalMUA("Artículo eliminado del catálogo correctamente.", 'exito', () => location.reload());
-                } else {
-                    mostrarModalMUA(data.mensaje || "No se pudo eliminar el artículo.", 'error', () => location.reload());
-                }
-            });
-    }
-
-    // ELIMINAR ARTÍCULO DIRECTAMENTE
-    function confirmarEliminacion(idArticulo) {
-        mostrarModalMUA("¿Estás seguro de que deseas eliminar este artículo?", "info", () => {
-            fetch('${pageContext.request.contextPath}/eliminar-articulo?id=' + idArticulo, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.exito) {
-                        mostrarModalMUA("Artículo eliminado correctamente.", 'exito', () => location.reload());
-                    } else {
-                        mostrarModalMUA(data.mensaje || "No se pudo eliminar el artículo.", 'error');
-                    }
-                });
-        });
-    }
-</script>
 </body>
 </html>

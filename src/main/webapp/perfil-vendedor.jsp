@@ -28,8 +28,6 @@
 
 <main class="profile-container">
 
-    <%-- SE ELIMINÓ EL ENCABEZADO SUPERIOR <header class="profile-header"> --%>
-
     <section class="profile-card">
         <div class="user-info-section">
             <div class="user-avatar">
@@ -168,7 +166,7 @@
             <strong>${fn:escapeXml(sessionScope.usuario.nombre)} ${fn:escapeXml(sessionScope.usuario.apellidoPaterno)}.</strong>
         </div>
 
-        <%-- SELECTOR INTERACTIVO DE ESTRELLAS (Inician deshabilitadas/grises) --%>
+        <%-- SELECTOR INTERACTIVO DE ESTRELLAS --%>
         <div class="interactive-stars" id="interactiveStars">
             <i class="bi bi-star-fill" data-value="1"></i>
             <i class="bi bi-star-fill" data-value="2"></i>
@@ -177,7 +175,7 @@
             <i class="bi bi-star-fill" data-value="5"></i>
         </div>
 
-        <%-- INPUT OCULTO CON EL VALOR SELECCIONADO (Inicia en 0) --%>
+        <%-- INPUT OCULTO CON EL VALOR SELECCIONADO --%>
         <input type="hidden" id="calificacionSeleccionada" value="0">
 
         <%-- CAJA DE COMENTARIO --%>
@@ -185,99 +183,12 @@
 
         <div class="modal-buttons">
             <button type="button" class="btn-cancel-modal" onclick="cerrarModalComentario()">Cancelar</button>
-            <button type="button" class="btn-submit-modal" onclick="enviarComentario()">Comentar</button>
+            <button type="button" class="btn-submit-modal" onclick="enviarComentario('${vendedor.idUsuario}')">Comentar</button>
         </div>
     </div>
 </div>
 
-<script>
-    let calificacionActual = 0; // Empieza en 0 (sin estrellas seleccionadas)
-
-    // Abrir / Cerrar el Modal
-    function abrirModalComentario() {
-        document.getElementById('modalComentar').style.display = 'flex';
-    }
-    function cerrarModalComentario() {
-        document.getElementById('modalComentar').style.display = 'none';
-    }
-
-    // Interactividad en las Estrellas
-    const contenedorEstrellas = document.getElementById('interactiveStars');
-    if (contenedorEstrellas) {
-        const estrellas = contenedorEstrellas.querySelectorAll('i');
-
-        estrellas.forEach(estrella => {
-            // Hover momentáneo: aplica el color tenue (.hovered) sólo a las que están por encima del mouse
-            estrella.addEventListener('mouseover', function() {
-                const valHover = parseInt(this.getAttribute('data-value'));
-                estrellas.forEach(e => {
-                    const val = parseInt(e.getAttribute('data-value'));
-                    e.classList.toggle('hovered', val <= valHover);
-                });
-            });
-
-            // Fijar selección al hacer click
-            estrella.addEventListener('click', function() {
-                calificacionActual = parseInt(this.getAttribute('data-value'));
-                document.getElementById('calificacionSeleccionada').value = calificacionActual;
-                estrellas.forEach(e => {
-                    const val = parseInt(e.getAttribute('data-value'));
-                    e.classList.toggle('active', val <= calificacionActual);
-                });
-            });
-        });
-
-        // Limpiar el hover al salir del contenedor
-        contenedorEstrellas.addEventListener('mouseleave', function() {
-            estrellas.forEach(e => e.classList.remove('hovered'));
-        });
-    }
-
-    // Enviar comentario vía Ajax
-    function enviarComentario() {
-        const comentario = document.getElementById('textoComentarioInput').value.trim();
-        const calificacion = parseInt(document.getElementById('calificacionSeleccionada').value);
-        const matriculaReceptor = "${vendedor.idUsuario}";
-
-        if (calificacion === 0) {
-            mostrarModalMUA("Por favor, selecciona una puntuación en estrellas antes de comentar.", 'error');
-            return;
-        }
-        if (!comentario) {
-            mostrarModalMUA("Por favor, redacta un comentario antes de continuar.", 'error');
-            return;
-        }
-
-        const datos = new URLSearchParams();
-        datos.append('matriculaReceptor', matriculaReceptor);
-        datos.append('comentario', comentario);
-        datos.append('calificacion', calificacion);
-
-        fetch('${pageContext.request.contextPath}/comentar-vendedor', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: datos
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.exito) {
-                    cerrarModalComentario();
-                    mostrarModalMUA("¡Comentario publicado con éxito!", 'exito', () => {
-                        location.reload();
-                    });
-                } else {
-                    // CORRECCIÓN: Cerramos el modal de comentario antes de mostrar el error del servidor
-                    cerrarModalComentario();
-                    mostrarModalMUA(data.mensaje || "Error al registrar el comentario.", 'error');
-                }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud:", error);
-                cerrarModalComentario();
-                mostrarModalMUA("No se pudo conectar con el servidor.", 'error');
-            });
-    }
-</script>
+<script src="${pageContext.request.contextPath}/static/js/perfil-vendedor.js"></script>
 
 </body>
 </html>
