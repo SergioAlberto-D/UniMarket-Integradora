@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,47 +10,29 @@
 
     <base href="${pageContext.request.contextPath}/">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin-layout.css">
+    <!-- FontAwesome para cargar la hamburguesa y la lupa -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<aside class="sidebar" id="sidebar">
-    <div class="brand-section">
-        <img src="static/img/logoMUA.png" alt="Logo Mua" class="brand-logo">
-        <h1 class="brand-name">Mua</h1>
-        <p class="brand-sub">Administración</p>
-    </div>
-
-    <ul class="menu-list">
-        <li class="menu-item active"><a href="adminactividad">Actividad reciente</a></li>
-        <li class="menu-item"><a href="adminpublicaciones">Publicaciones</a></li>
-        <li class="menu-item"><a href="adminusuarios">Usuarios</a></li>
-        <li class="menu-item"><a href="adminreportes">Reportes</a></li>
-        <li class="menu-item"><a href="admincategorias">Categorías</a></li>
-    </ul>
-
-    <div class="sidebar-footer">
-        <div class="user-profile-summary">
-            <div class="avatar-circle">RH</div>
-            <div class="profile-info">
-                <h4>Rafael Hurtado</h4>
-                <p>rafaelhurtado@utez.edu.mx</p>
-            </div>
-        </div>
-        <form action="LogoutServlet" method="POST">
-            <button type="submit" class="btn-logout">Cerrar sesión</button>
-        </form>
-    </div>
-</aside>
+<!-- INCLUSIÓN DINÁMICA DEL SIDEBAR -->
+<jsp:include page="/includes/sidebar.jsp">
+    <jsp:param name="active" value="actividad" />
+</jsp:include>
 
 <main class="main-content">
     <div class="topbar">
         <div class="topbar-left">
-            <button class="btn-hamburger" id="btnHamburger">&#9776;</button>
+            <button type="button" class="btn-hamburger" id="btnHamburger">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             <div>Administración &gt; <span style="color:#555;">Actividad reciente</span></div>
         </div>
-        <div class="right-avatar">RH</div>
+        <div class="right-avatar">
+            <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="AD"/>
+        </div>
     </div>
 
     <div class="container">
@@ -66,6 +49,11 @@
                 <p>Usuarios<br>registrados</p>
             </div>
         </div>
+
+        <!-- Buscador -->
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="inputBuscar" placeholder="Buscar actividad...">
         </div>
 
         <!-- Tabla de Actividad Reciente -->
@@ -73,7 +61,7 @@
             <h2 class="table-title">Actividad reciente</h2>
 
             <div class="table-responsive">
-                <table class="custom-table">
+                <table class="custom-table" id="tablaDatos">
                     <thead>
                     <tr>
                         <th>Usuario</th>
@@ -84,25 +72,26 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Bucle que recorre la lista enviada por el Servlet -->
-                    <c:forEach var="act" items="${listaActividad}">
-                        <tr>
-                            <td><c:out value="${act.usuario}"/></td>
-                            <td><c:out value="${act.correo}"/></td>
-                            <td><span class="badge-categoria"><c:out value="${act.modulo}"/></span></td>
-                            <td><c:out value="${act.accion}"/></td>
-                            <td><c:out value="${act.fecha}"/></td>
-                        </tr>
-                    </c:forEach>
-
-                    <!-- Mensaje si no hay registros -->
-                    <c:if test="${empty listaActividad}">
-                        <tr>
-                            <td colspan="5" style="text-align: center; padding: 30px; color: #888;">
-                                No hay actividad registrada por el momento.
-                            </td>
-                        </tr>
-                    </c:if>
+                    <c:choose>
+                        <c:when test="${empty listaActividad}">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 40px; color: #888;">
+                                    No hay actividad registrada por el momento.
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="act" items="${listaActividad}">
+                                <tr>
+                                    <td><c:out value="${act.usuario}"/></td>
+                                    <td><c:out value="${act.correo}"/></td>
+                                    <td><span class="badge-categoria"><c:out value="${act.modulo}"/></span></td>
+                                    <td><c:out value="${act.accion}"/></td>
+                                    <td><c:out value="${act.fecha}"/></td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
                     </tbody>
                 </table>
             </div>
@@ -111,24 +100,10 @@
     </div>
 </main>
 
-<script>
-    // Script para soporte del menú colapsable en móviles
-    const btnHamburger = document.getElementById('btnHamburger');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    if (btnHamburger && sidebar && sidebarOverlay) {
-        btnHamburger.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-        });
-
-        sidebarOverlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-        });
-    }
-</script>
+<!-- JS para el menú hamburguesa -->
+<script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
+<!-- JS para el buscador de la tabla -->
+<script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
 
 </body>
 </html>
