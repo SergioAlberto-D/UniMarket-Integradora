@@ -104,4 +104,31 @@ public class AdministradorDao implements Dao<Administrador, Integer> {
             return false;
         }
     }
+    public Administrador validarLoginAdmin(String correo, String contrasenaPlana) {
+        String sql = "SELECT a.* FROM administrador a " +
+                "JOIN contrasena_admin ca ON a.id_admin = ca.id_admin_fk " +
+                "WHERE a.correo = ? AND ca.contrasena_hash = LOWER(RAWTOHEX(STANDARD_HASH(?, 'SHA256')))";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, correo);
+            ps.setString(2, contrasenaPlana);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Administrador admin = new Administrador(
+                            rs.getString("nombre"),
+                            rs.getString("correo"),
+                            rs.getInt("id_division_academica_fk"),
+                            rs.getInt("id_rol_fk")
+                    );
+                    admin.setIdAdmin(rs.getInt("id_admin"));
+                    return admin;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al validar login de admin: " + e.getMessage());
+        }
+        return null;
+    }
 }

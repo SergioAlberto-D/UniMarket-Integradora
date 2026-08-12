@@ -183,4 +183,44 @@ public class TransaccionDao implements Dao<Transaccion, String> {
         }
         return 0;
     }
+    public boolean tieneTransaccionCompletada(int idArticulo) {
+        String sql = "SELECT COUNT(*) FROM transaccion WHERE id_articulo_fk = ? AND UPPER(estado) = 'COMPLETADO'";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en tieneTransaccionCompletada: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public List<String> obtenerCompradoresTransaccionesIncompletas(int idArticulo) {
+        List<String> compradores = new ArrayList<>();
+        String sql = "SELECT MATRICULA_comprador_fk FROM transaccion WHERE id_articulo_fk = ? AND UPPER(estado) != 'COMPLETADO'";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) compradores.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar afectados incompletos: " + e.getMessage());
+        }
+        return compradores;
+    }
+
+    public boolean eliminarTransaccionesIncompletas(int idArticulo) {
+        String sql = "DELETE FROM transaccion WHERE id_articulo_fk = ? AND UPPER(estado) != 'COMPLETADO'";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar transacciones incompletas: " + e.getMessage());
+            return false;
+        }
+    }
 }
