@@ -10,17 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Objeto de acceso a datos (DAO) de MUA para la entidad Actividad.
- *
- * @author Dulce
- */
-
 public class ActividadDao {
-/**
- * Cuenta el total de publicaciones registradas que cumplen las condiciones establecidas por el DAO.
- * @return Devuelve el número de registros que cumplen la condición de la consulta; si no existen registros que coincidan, el resultado es `0`.
- */
+
     public int contarTotalPublicaciones() {
         String sql = "SELECT COUNT(*) FROM articulo WHERE estado IS NULL OR estado != 'ELIMINADO'";
         try (Connection con = SQLConnector.getConnection();
@@ -34,10 +25,7 @@ public class ActividadDao {
         }
         return 0;
     }
-/**
- * Cuenta el total de usuarios registrados que cumplen las condiciones establecidas por el DAO.
- * @return Devuelve el número de registros que cumplen la condición de la consulta; si no existen registros que coincidan, el resultado es `0`.
- */
+
     public int contarTotalUsuarios() {
         String sql = "SELECT COUNT(*) FROM usuario";
         try (Connection con = SQLConnector.getConnection();
@@ -50,5 +38,39 @@ public class ActividadDao {
             System.out.println("Error al contar usuarios: " + e.getMessage());
         }
         return 0;
+    }
+
+    public List<Actividad> obtenerActividadReciente() {
+        List<Actividad> lista = new ArrayList<>();
+
+        String sql =
+                "SELECT u.nombre AS usuario, u.correo_institucional AS correo, 'Usuarios' AS modulo, 'Registro en el sistema' AS accion, u.fecha_registro AS fecha " +
+                        "FROM usuario u " +
+                        "UNION ALL " +
+                        "SELECT u.nombre AS usuario, u.correo_institucional AS correo, 'Publicaciones' AS modulo, CONCAT('Publicó artículo ID ', a.id_articulo) AS accion, a.fecha_publicacion AS fecha " +
+                        "FROM articulo a " +
+                        "JOIN usuario u ON a.matricula_usuario_fk = u.matricula " +
+                        "WHERE a.estado IS NULL OR a.estado != 'ELIMINADO' " +
+                        "ORDER BY fecha DESC " +
+                        "FETCH FIRST 15 ROWS ONLY";
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Actividad act = new Actividad(
+                        rs.getString("usuario"),
+                        rs.getString("correo"),
+                        rs.getString("modulo"),
+                        rs.getString("accion"),
+                        rs.getTimestamp("fecha")
+                );
+                lista.add(act);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener actividad reciente: " + e.getMessage());
+        }
+        return lista;
     }
 }
