@@ -19,10 +19,12 @@ public class FiltroAutenticacion extends HttpFilter {
             throws IOException, ServletException {
 
         String requestURI = request.getRequestURI();
-        HttpSession session = request.getSession(false); // false = no crea una nueva sesión si no existe
+        HttpSession session = request.getSession(false);
 
-        // 1. Verificar si el usuario ya está logueado
-        boolean loggedIn = (session != null && session.getAttribute("usuario") != null);
+        // 1. Identificar QUÉ tipo de sesión existe
+        boolean isUsuario = (session != null && session.getAttribute("usuario") != null);
+        boolean isAdmin = (session != null && session.getAttribute("admin") != null);
+        boolean loggedIn = isUsuario || isAdmin; // Está logueado si es cualquiera de los dos
 
         // 2. Definir las rutas JSPs y Servlets que son PÚBLICAS
         boolean loginRequest =
@@ -42,32 +44,34 @@ public class FiltroAutenticacion extends HttpFilter {
         boolean isResource = requestURI.contains("/assets/") || requestURI.contains("/static/");
 
         if (loggedIn) {
-            // === NUEVA LÓGICA DEL HEADER (Se calcula una vez y sirve para todo) ===
-            Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-            // Calculamos iniciales
-            String iniciales = "";
-            if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
-                iniciales += usuario.getNombre().substring(0, 1).toUpperCase();
+            // Si es un Usuario normal, calculamos las cosas del Header
+            if (isUsuario) {
+                Usuario usuario = (Usuario) session.getAttribute("usuario");
+                String iniciales = "";
+                if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
+                    iniciales += usuario.getNombre().substring(0, 1).toUpperCase();
+                }
+                if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
+                    iniciales += usuario.getApellidoPaterno().substring(0, 1).toUpperCase();
+                }
+                if (iniciales.isEmpty()) {
+                    iniciales = "U";
+                }
+                request.setAttribute("iniciales", iniciales);
+                request.setAttribute("esVendedor", usuario.getIdRolFk() == 3);
             }
-            if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
-                iniciales += usuario.getApellidoPaterno().substring(0, 1).toUpperCase();
-            }
-            if (iniciales.isEmpty()) {
-                iniciales = "U";
-            }
-
-            // Mandamos los datos limpios a la vista
-            request.setAttribute("iniciales", iniciales);
-            request.setAttribute("esVendedor", usuario.getIdRolFk() == 3);
-            // =====================================================================
 
             // SI TIENE SESIÓN:
             if (loginRequest) {
-                // Si ya está logueado e intenta ir al login o registro, lo mandamos al catálogo (index)
-                response.sendRedirect(request.getContextPath() + "/inicio");
+                // Si ya está logueado e intenta ir al login o registro, lo mandamos a su respectivo panel
+                if (isAdmin) {
+                    response.sendRedirect(request.getContextPath() + "/adminactividad");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/inicio");
+                }
             } else {
-                // Si va a cualquier otra página (perfil, publicar, etc.), lo dejamos pasar
+                // Si va a cualquier otra página lo dejamos pasar (los otros filtros se encargarán de bloquear si cruzan rutas)
                 chain.doFilter(request, response);
             }
         } else {
@@ -76,7 +80,7 @@ public class FiltroAutenticacion extends HttpFilter {
                 // Si no tiene sesión pero va a recuperar contraseña, login o está cargando CSS, lo dejamos pasar
                 chain.doFilter(request, response);
             } else {
-                // Si intenta entrar a una página protegida (como perfil-usuario.jsp) sin sesión, va para el login
+                // Si intenta entrar a una página protegida sin sesión, va para el login
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
             }
         }

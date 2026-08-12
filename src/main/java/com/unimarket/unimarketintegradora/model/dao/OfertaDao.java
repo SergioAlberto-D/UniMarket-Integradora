@@ -236,4 +236,30 @@ public class OfertaDao implements Dao<Oferta, Integer> {
             return false;
         }
     }
+    public List<String> obtenerCompradoresOfertasActivas(int idArticulo) {
+        List<String> compradores = new ArrayList<>();
+        String sql = "SELECT matricula_usuario_fk FROM oferta WHERE id_articulo_fk = ? AND UPPER(estado) IN ('PENDIENTE', 'ACEPTADA')";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) compradores.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en obtenerCompradoresOfertasActivas: " + e.getMessage());
+        }
+        return compradores;
+    }
+
+    public boolean eliminarOfertasNoCompletadas(int idArticulo) {
+        String sql = "DELETE FROM oferta WHERE id_articulo_fk = ? AND UPPER(estado) IN ('PENDIENTE', 'ACEPTADA')";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idArticulo);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar ofertas no completadas: " + e.getMessage());
+            return false;
+        }
+    }
 }

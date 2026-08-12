@@ -181,43 +181,37 @@ public class ArticuloDao implements Dao<Articulo, String> {
 
         List<Object> parametros = new ArrayList<>();
 
-        // Si hay un usuario en sesión, excluimos sus propios artículos del catálogo general
         if (matriculaUsuarioLogueado != null && !matriculaUsuarioLogueado.trim().isEmpty()) {
             sql.append(" AND a.matricula_usuario_fk != ? ");
             parametros.add(matriculaUsuarioLogueado);
         }
 
-        // 1. Filtro por Categoría
         if (idCategoria != null && idCategoria > 0) {
             sql.append(" AND a.id_categoria_fk = ? ");
             parametros.add(idCategoria);
         }
 
-        // 2. Filtro por División Académica (desde la tabla USUARIO)
         if (idDivision != null && idDivision > 0) {
             sql.append(" AND u.id_division_academica_fk = ? ");
             parametros.add(idDivision);
         }
 
-        // 3. Filtro por Precio Mínimo
         if (minPrecio != null && minPrecio.compareTo(java.math.BigDecimal.ZERO) >= 0) {
             sql.append(" AND a.precio >= ? ");
             parametros.add(minPrecio);
         }
 
-        // 4. Filtro por Precio Máximo
         if (maxPrecio != null && maxPrecio.compareTo(java.math.BigDecimal.ZERO) > 0) {
             sql.append(" AND a.precio <= ? ");
             parametros.add(maxPrecio);
         }
 
-        // 5. Ordenamiento
         if ("Precio menor".equalsIgnoreCase(orden)) {
             sql.append(" ORDER BY a.precio ASC");
         } else if ("Precio mayor".equalsIgnoreCase(orden)) {
             sql.append(" ORDER BY a.precio DESC");
         } else {
-            sql.append(" ORDER BY a.id_articulo DESC"); // Recientes por defecto
+            sql.append(" ORDER BY a.id_articulo DESC");
         }
 
         try (Connection con = SQLConnector.getConnection();
@@ -286,4 +280,45 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
         return lista;
     }
+
+    public List<Articulo> listarParaAdmin() {
+        List<Articulo> lista = new ArrayList<>();
+
+        String sql = "SELECT a.id_articulo, a.nombre, a.precio, a.id_categoria_fk, a.descripcion, a.matricula_usuario_fk, " +
+                "       u.nombre AS nombre_vendedor, u.foto_perfil, " +
+                "       c.categoria AS nombre_categoria, " +
+                "       (SELECT URL_IMAGEN FROM IMAGEN_ARTICULO ia WHERE ia.id_articulo_fk = a.id_articulo FETCH FIRST 1 ROWS ONLY) AS portada " +
+                "FROM articulo a " +
+                "LEFT JOIN usuario u ON a.matricula_usuario_fk = u.matricula " +
+                "LEFT JOIN categoria c ON a.id_categoria_fk = c.id_categoria " +
+                "WHERE a.estado IS NULL OR a.estado != 'ELIMINADO' " +
+                "ORDER BY a.id_articulo DESC";
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Articulo a = new Articulo(
+                        rs.getString("nombre"),
+                        rs.getBigDecimal("precio"),
+                        rs.getInt("id_categoria_fk"),
+                        rs.getString("descripcion"),
+                        rs.getString("matricula_usuario_fk")
+                );
+                a.setIdArticulo(rs.getInt("id_articulo"));
+                a.setImagenPrincipal(rs.getString("portada"));
+                a.setNombreUsuario(rs.getString("nombre_vendedor"));
+                a.setFotoVendedor(rs.getString("foto_perfil"));
+
+                a.setNombreCategoria(rs.getString("nombre_categoria"));
+
+                lista.add(a);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al listar para Admin: " + e.getMessage());
+        }
+        return lista;
+    }
+
 }

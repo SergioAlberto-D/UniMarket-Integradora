@@ -12,6 +12,10 @@ public class Articulo {
     private String imagenPrincipal;
     private String nombreUsuario;
     private String fotoVendedor;
+
+    // NUEVO CAMPO: Para almacenar el texto de la categoría
+    private String nombreCategoria;
+
     public Articulo() {}
 
     public Articulo(String nombre, BigDecimal precio, int idCategoriaFk, String descripcion, String idUsuarioFk) {
@@ -22,7 +26,7 @@ public class Articulo {
         this.idUsuarioFk = idUsuarioFk;
     }
 
-    // Getters y Setters
+    // Getters y Setters existentes
     public int getIdArticulo() { return idArticulo; }
     public void setIdArticulo(int idArticulo) { this.idArticulo = idArticulo; }
     public String getNombre() { return nombre; }
@@ -41,4 +45,6 @@ public class Articulo {
     public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
     public String getFotoVendedor() { return fotoVendedor; }
     public void setFotoVendedor(String fotoVendedor) { this.fotoVendedor = fotoVendedor; }
+    public String getNombreCategoria() { return nombreCategoria; }
+    public void setNombreCategoria(String nombreCategoria) { this.nombreCategoria = nombreCategoria; }
 }
