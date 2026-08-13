@@ -43,123 +43,46 @@ public class AdminCategoriaServlet extends HttpServlet {
         String accion = request.getParameter("accion");
         boolean esAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
 
-        if (esAjax) {
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-        }
-
         try {
             if ("agregar".equals(accion)) {
-
                 String nombreCat = request.getParameter("nombreCategoria");
-                if (nombreCat == null || nombreCat.trim().isEmpty()) {
-                    if (esAjax) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.getWriter().write(
-                                "{\"success\": false, \"message\": \"El nombre de la categor\\u00eda es obligatorio.\"}");
-                        return;
-                    }
-                    response.sendRedirect(request.getContextPath() + "/admincategorias");
-                    return;
+                if (nombreCat != null && !nombreCat.trim().isEmpty()) {
+                    categoria nuevaCat = new categoria(nombreCat.trim());
+                    categoriaDao.agregarCategoria(nuevaCat);
                 }
-
-                if (categoriaDao.existeCategoria(nombreCat.trim(), null)) {
-                    if (esAjax) {
-                        response.setStatus(HttpServletResponse.SC_CONFLICT);
-                        response.getWriter().write(
-                                "{\"success\": false, \"message\": \"Ya existe una categor\\u00eda con ese nombre.\"}");
-                        return;
-                    }
-                    response.sendRedirect(request.getContextPath() + "/admincategorias");
-                    return;
-                }
-                categoria nuevaCat = new categoria(nombreCat.trim());
-                categoriaDao.agregarCategoria(nuevaCat);
 
                 if (esAjax) {
-                    // NOTA: asume que agregarCategoria() setea el id generado en nuevaCat.
-                    // Si tu DAO no hace esto, avísame y ajustamos para recuperar el id.
-                    String json = "{\"success\": true, \"idCategoria\": " + nuevaCat.getIdCategoria()
-                            + ", \"nombreCategoria\": \"" + escapeJson(nuevaCat.getCategoria()) + "\"}";
-                    response.getWriter().write(json);
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"success\": true}");
                     return;
                 }
-
             } else if ("editar".equals(accion)) {
-
                 int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
                 String nombreCat = request.getParameter("nombreCategoria");
 
-                if (nombreCat == null || nombreCat.trim().isEmpty()) {
-                    if (esAjax) {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.getWriter().write(
-                                "{\"success\": false, \"message\": \"El nombre de la categor\\u00eda es obligatorio.\"}");
-                        return;
-                    }
-                    response.sendRedirect(request.getContextPath() + "/admincategorias");
-                    return;
-                }
-                if (categoriaDao.existeCategoria(nombreCat.trim(), idCategoria)) {
-                    if (esAjax) {
-                        response.setStatus(HttpServletResponse.SC_CONFLICT);
-                        response.getWriter().write(
-                                "{\"success\": false, \"message\": \"Ya existe una categor\\u00eda con ese nombre.\"}");
-                        return;
-                    }
-                    response.sendRedirect(request.getContextPath() + "/admincategorias");
-                    return;
-                }
+                if (nombreCat != null && !nombreCat.trim().isEmpty()) {
+                    categoria catEditar = new categoria();
+                    catEditar.setIdCategoria(idCategoria);
+                    catEditar.setCategoria(nombreCat.trim());
 
-                categoria catEditar = new categoria();
-                catEditar.setIdCategoria(idCategoria);
-                catEditar.setCategoria(nombreCat.trim());
-                categoriaDao.editarCategoria(catEditar);
-
-                if (esAjax) {
-                    String json = "{\"success\": true, \"idCategoria\": " + idCategoria
-                            + ", \"nombreCategoria\": \"" + escapeJson(nombreCat.trim()) + "\"}";
-                    response.getWriter().write(json);
-                    return;
+                    categoriaDao.editarCategoria(catEditar);
                 }
-
             } else if ("eliminar".equals(accion)) {
-
                 int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
                 categoriaDao.eliminarCategoria(idCategoria);
-
-                if (esAjax) {
-                    response.getWriter().write(
-                            "{\"success\": true, \"idCategoria\": " + idCategoria + "}");
-                    return;
-                }
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            if (esAjax) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.getWriter().write(
-                        "{\"success\": false, \"message\": \"Identificador de categor\\u00eda inv\\u00e1lido.\"}");
-                return;
             }
         } catch (SQLException e) {
             e.printStackTrace();
             if (esAjax) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.getWriter().write(
-                        "{\"success\": false, \"message\": \"Error en el servidor al procesar la solicitud.\"}");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"success\": false}");
                 return;
             }
         }
 
         response.sendRedirect(request.getContextPath() + "/admincategorias");
-    }
-
-    /**
-     * Escapa comillas y backslashes para incrustar texto de forma segura en JSON armado a mano.
-     */
-    private String escapeJson(String value) {
-        if (value == null) return "";
-        return value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
