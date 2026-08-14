@@ -55,12 +55,78 @@ public class categoriaDao implements Dao<categoria, Integer> {
         }
     }
 
-    public void eliminarCategoria(int idCategoria) throws SQLException {
-        String sql = "DELETE FROM CATEGORIA WHERE ID_CATEGORIA = ?";
+    public void editarCategoria(categoria categoria) throws SQLException {
+        String sql = "UPDATE CATEGORIA SET CATEGORIA = ? WHERE ID_CATEGORIA = ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idCategoria);
             ps.executeUpdate();
+        }
+    }
+
+    public void eliminarCategoria(int idCategoria) throws SQLException {
+        String sqlBuscarOtros = "SELECT ID_CATEGORIA FROM CATEGORIA WHERE UPPER(CATEGORIA) = 'OTROS'";
+        String sqlDelete = "DELETE FROM CATEGORIA WHERE ID_CATEGORIA = ?";
+
+        try (Connection con = SQLConnector.getConnection()) {
+            con.setAutoCommit(false); // Iniciar transacción para seguridad
+
+            try {
+                int idOtros = -1;
+
+                // 1. Buscar si ya existe la categoría "Otros"
+                try (PreparedStatement psBuscar = con.prepareStatement(sqlBuscarOtros);
+                     ResultSet rs = psBuscar.executeQuery()) {
+                    if (rs.next()) {
+                        idOtros = rs.getInt("ID_CATEGORIA");
+                    }
+                }
+
+                // Si "Otros" no existe y no estamos eliminando la misma "Otros", la creamos
+                if (idOtros == -1 && idCategoria != idOtros) {
+                    // Usamos la secuencia o MAX+1 según el estándar de tu BD
+                    String sqlMaxId = "SELECT NVL(MAX(ID_CATEGORIA), 0) + 1 AS SIGUIENTE_ID FROM CATEGORIA";
+                    String sqlInsertOtros = "INSERT INTO CATEGORIA (ID_CATEGORIA, CATEGORIA) VALUES (?, 'Otros')";
+
+                    int nuevoIdOtros = 1;
+                    try (PreparedStatement psId = con.prepareStatement(sqlMaxId);
+                         ResultSet rsId = psId.executeQuery()) {
+                        if (rsId.next()) {
+                            nuevoIdOtros = rsId.getInt("SIGUIENTE_ID");
+                        }
+                    }
+
+                    try (PreparedStatement psIns = con.prepareStatement(sqlInsertOtros)) {
+                        psIns.setInt(1, nuevoIdOtros);
+                        psIns.executeUpdate();
+                    }
+                    idOtros = nuevoIdOtros;
+                }
+
+                // 2. Reasignar todos los artículos a la categoría "Otros" (usando id_categoria_fk)
+                if (idCategoria != idOtros) {
+                    String sqlReasignar = "UPDATE articulo SET id_categoria_fk = ? WHERE id_categoria_fk = ?";
+                    try (PreparedStatement psReasignar = con.prepareStatement(sqlReasignar)) {
+                        psReasignar.setInt(1, idOtros);
+                        psReasignar.setInt(2, idCategoria);
+                        psReasignar.executeUpdate();
+                    } catch (SQLException e) {
+                        System.out.println("Aviso reasignación artículos: " + e.getMessage());
+                    }
+                }
+
+                // 3. Eliminar la categoría deseada de la tabla CATEGORIA
+                try (PreparedStatement psDelete = con.prepareStatement(sqlDelete)) {
+                    psDelete.setInt(1, idCategoria);
+                    psDelete.executeUpdate();
+                }
+
+                con.commit(); // Confirmar la transacción
+
+            } catch (SQLException e) {
+                con.rollback(); // Cancelar cambios si ocurre un error inesperado
+                throw e;
+            }
         }
     }
     @Override

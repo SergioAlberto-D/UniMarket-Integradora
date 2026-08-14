@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -52,12 +51,22 @@ public class AdminCategoriaServlet extends HttpServlet {
                     categoriaDao.agregarCategoria(nuevaCat);
                 }
 
-                // Si viene por AJAX, respondemos JSON inmediatamente y NO hacemos redirect
                 if (esAjax) {
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write("{\"success\": true}");
                     return;
+                }
+            } else if ("editar".equals(accion)) {
+                int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));
+                String nombreCat = request.getParameter("nombreCategoria");
+
+                if (nombreCat != null && !nombreCat.trim().isEmpty()) {
+                    categoria catEditar = new categoria();
+                    catEditar.setIdCategoria(idCategoria);
+                    catEditar.setCategoria(nombreCat.trim());
+
+                    categoriaDao.editarCategoria(catEditar);
                 }
             } else if ("eliminar".equals(accion)) {
                 int idCategoria = Integer.parseInt(request.getParameter("idCategoria"));

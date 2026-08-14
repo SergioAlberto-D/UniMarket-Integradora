@@ -33,7 +33,7 @@
 
     <div class="container">
 
-        <!-- Formulario con ID para JavaScript -->
+        <!-- Formulario Agregar Categoría -->
         <div class="table-card" style="margin-bottom: 25px;">
             <h2 class="table-title">Agregar Nueva Categoría</h2>
             <form id="formAgregarCategoria" style="display: flex; gap: 15px; align-items: center; margin-top: 15px;">
@@ -68,9 +68,9 @@
                 <table class="custom-table" id="tablaDatos">
                     <thead>
                     <tr>
-                        <th style="width: 20%;">ID</th>
+                        <th style="width: 10%;">#</th>
                         <th>Nombre de Categoría</th>
-                        <th style="text-align: right; width: 20%;">Acciones</th>
+                        <th style="text-align: right; width: 30%;">Acciones</th>
                     </tr>
                     </thead>
                     <tbody id="cuerpoTablaCategorias">
@@ -83,20 +83,31 @@
                             </tr>
                         </c:when>
                         <c:otherwise>
-                            <c:forEach var="cat" items="${listaCategorias}">
+                            <c:forEach var="cat" items="${listaCategorias}" varStatus="loop">
                                 <tr>
-                                    <td><c:out value="${cat.idCategoria}"/></td>
+                                    <!-- Numeración consecutiva continua sin huecos -->
+                                    <td><strong><c:out value="${loop.count}"/></strong></td>
                                     <td><strong><c:out value="${cat.categoria}"/></strong></td>
                                     <td style="text-align: right;">
-                                        <form action="admincategorias" method="POST" style="margin:0;">
-                                            <input type="hidden" name="accion" value="eliminar">
-                                            <input type="hidden" name="idCategoria" value="${cat.idCategoria}">
-                                            <button type="submit"
-                                                    class="btn-delete"
-                                                    onclick="return confirm('¿Seguro que deseas eliminar la categoría \'${cat.categoria}\'?');">
-                                                Eliminar
+                                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                            <!-- BOTÓN EDITAR (Abre el modal) -->
+                                            <button type="button"
+                                                    class="btn-update"
+                                                    onclick="abrirModal('${cat.idCategoria}', '${cat.categoria}')">
+                                                Editar
                                             </button>
-                                        </form>
+
+                                            <!-- BOTÓN ELIMINAR -->
+                                            <form action="${pageContext.request.contextPath}/admincategorias" method="POST" style="margin:0;">
+                                                <input type="hidden" name="accion" value="eliminar">
+                                                <input type="hidden" name="idCategoria" value="${cat.idCategoria}">
+                                                <button type="submit"
+                                                        class="btn-delete"
+                                                        onclick="return confirm('Al eliminar la categoría \'${cat.categoria}\', sus productos asociados pasarán a la categoría \'Otros\'. ¿Deseas continuar?');">
+                                                    Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -109,11 +120,36 @@
     </div>
 </main>
 
+<!-- VENTANA FLOTANTE (MODAL EDITAR) -->
+<div id="modalEditar" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Editar Categoría</h3>
+            <button type="button" class="btn-close-modal" onclick="cerrarModal()">&times;</button>
+        </div>
+
+        <form action="${pageContext.request.contextPath}/admincategorias" method="POST">
+            <input type="hidden" name="accion" value="editar">
+            <input type="hidden" id="modalIdCategoria" name="idCategoria">
+
+            <div class="modal-body-group">
+                <label for="modalNombreCategoria">Nombre de la Categoría</label>
+                <input type="text" id="modalNombreCategoria" name="nombreCategoria" required>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button type="submit" class="btn-guardar-modal">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
 
-<!-- Script AJAX para guardar sin recargar la página -->
 <script>
+    // Guardar Categoría vía AJAX
     document.getElementById('formAgregarCategoria').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -125,7 +161,7 @@
         formData.append('accion', 'agregar');
         formData.append('nombreCategoria', nombreVal);
 
-        fetch('admincategorias', {
+        fetch('${pageContext.request.contextPath}/admincategorias', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -139,7 +175,6 @@
             })
             .then(data => {
                 if (data.success) {
-                    // Recarga la página actualizando la tabla con los datos de Oracle
                     window.location.reload();
                 } else {
                     alert('Error al guardar la categoría.');
@@ -150,6 +185,24 @@
                 alert('Ocurrió un error al procesar la solicitud.');
             });
     });
+
+    // Control del Modal de Edición
+    function abrirModal(id, nombre) {
+        document.getElementById('modalIdCategoria').value = id;
+        document.getElementById('modalNombreCategoria').value = nombre;
+        document.getElementById('modalEditar').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalEditar').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalEditar');
+        if (event.target === modal) {
+            cerrarModal();
+        }
+    }
 </script>
 
 </body>
