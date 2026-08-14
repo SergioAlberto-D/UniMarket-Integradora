@@ -2,8 +2,10 @@ package com.unimarket.unimarketintegradora.controller;
 
 import com.unimarket.unimarketintegradora.model.Articulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
+import com.unimarket.unimarketintegradora.model.categoria;
 import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
 
+import com.unimarket.unimarketintegradora.model.dao.categoriaDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,14 +16,12 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import com.unimarket.unimarketintegradora.model.Categoria;
-import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "InicioServlet", value = "/inicio")
 public class InicioServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
-    private final CategoriaDao categoriaDao = new CategoriaDao();
+    private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -57,7 +57,7 @@ public class InicioServlet extends HttpServlet {
         List<Articulo> articulos = articuloDao.filtrarArticulos(orden, categoria, division, minPrecio, maxPrecio, matriculaActual);
 
         // 4. Obtener las categorías
-        List<Categoria> categorias = categoriaDao.getAll();
+        List<categoria> categorias = categoriaDao.getAll();
 
         // 5. Devolver atributos a la vista
         request.setAttribute("listaArticulos", articulos);
