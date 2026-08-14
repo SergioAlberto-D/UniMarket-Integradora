@@ -18,7 +18,7 @@
     </properties>
 
     <dependencies>
-        <!-- Dependencias para usar JSTL -->
+        <!-- Dependencias para usar JSTL (Jakarta EE 10) -->
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
             <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
