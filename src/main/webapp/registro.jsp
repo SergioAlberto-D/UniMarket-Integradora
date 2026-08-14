@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/2/26
-  Time: 9:51 PM
+  Time: 9:51 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -17,7 +17,7 @@
   <title>Registro - MUA</title>
   <link rel="stylesheet" href="assets/css/bootstrap.css">
   <link rel="stylesheet" href="assets/css/bi_s/bootstrap-icons.css">
-
+  <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
   <link rel="stylesheet" href="assets/css/Login.css">
   <link rel="stylesheet" href="assets/css/Registro.css">
 </head>
@@ -64,40 +64,43 @@
           </div>
 
           <div class="mb-3">
-            <label for="txtNombre" class="form-label-custom">Nombre(s) *</label>
-            <input value="${param.nombre}" type="text" class="form-control input-custom py-2 calc-progress" id="txtNombre" name="nombre" placeholder="Ejem: Marco Ivan" required>
+            <label for="txtNombre" class="form-label-custom">Nombre(s) <span class="text-danger">*</span></label>
+            <input value="${param.nombre}" type="text" class="form-control input-custom py-2 calc-progress" id="txtNombre" name="nombre" placeholder="" required>
           </div>
 
           <div class="row mb-3">
             <div class="col-6">
-              <label for="txtApePat" class="form-label-custom">Apellido Paterno *</label>
-              <input value="${param.apellidoPaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApePat" name="apellidoPaterno" placeholder="Ejem: Andres" required>
+              <label for="txtApePat" class="form-label-custom">Apellido Paterno <span class="text-danger">*</span></label>
+              <input value="${param.apellidoPaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApePat" name="apellidoPaterno" placeholder="" required>
             </div>
             <div class="col-6">
-              <label for="txtApeMat" class="form-label-custom">Apellido Materno *</label>
-              <input value="${param.apellidoMaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApeMat" name="apellidoMaterno" placeholder="Ejem: Andres" required>
+              <label for="txtApeMat" class="form-label-custom">Apellido Materno <span class="text-danger">*</span></label>
+              <input value="${param.apellidoMaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApeMat" name="apellidoMaterno" placeholder="" required>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="txtTel" class="form-label-custom">Número de teléfono</label>
-            <input value="${param.telefono}" type="tel" class="form-control input-custom py-2" id="txtTel" name="telefono" placeholder="777 123 4567">
+            <label for="txtTel" class="form-label-custom">Número de teléfono <span class="text-danger">*</span></label>
+            <input value="${param.telefono}" type="tel" class="form-control input-custom py-2 calc-progress" id="txtTel" name="telefono" placeholder="(777)-123-4567" required>
           </div>
 
           <div class="mb-2">
-            <label for="txtCarrera" class="form-label-custom">Carrera *</label>
-            <select class="form-select input-custom py-2 calc-progress" id="txtCarrera" name="carrera" required>
-              <option value="" disabled selected>Selecciona tu carrera...</option>
-              <option value="Terapia Física" ${param.carrera == 'Terapia Física' ? 'selected' : ''}>Terapia Física</option>
+            <label for="txtCarrera" class="form-label-custom">División Académica<span class="text-danger">*</span></label>
+            <select class="form-select input-custom py-2 calc-progress" id="txtCarrera" name="idDivision" required>
+              <option value="" disabled selected>Selecciona tu División Académica...</option>
+              <option value="1">DATID</option>
+              <option value="2">DAMI</option>
+              <option value="3">DACEA</option>
+              <option value="4">DATEFI</option>
             </select>
           </div>
-        </div>
+        </div> <!-- AQUÍ VA EL CIERRE DEL SECTION-BOX QUE FALTABA -->
 
         <!-- Botón Siguiente -->
-        <button type="button" id="btnNext" class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3">
-        Siguiente <i class="bi bi-arrow-right ms-1"></i>
-      </button>
-      </div>
+        <button type="button" id="btnNext" class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3" disabled>
+          Siguiente <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div> <!-- AQUÍ SE CIERRA EL STEP-1 CORRECTAMENTE -->
 
       <!-- ================= PASO 2 ================= -->
       <div id="step-2" class="d-none">
@@ -108,13 +111,20 @@
           </div>
 
           <div class="mb-3">
-            <label for="txtCorreo" class="form-label-custom">Correo institucional *</label>
-            <input value="${param.email1}" type="email" class="form-control input-custom py-2 calc-progress" id="txtCorreo" name="email1" placeholder="Matricula@utez.edu.mx" required>
+            <label for="txtMatricula" class="form-label-custom">Matrícula Institucional <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input value="${param.matricula}" type="text" class="form-control input-custom py-2 calc-progress" id="txtMatricula" name="matricula" placeholder="Ej. 20223TN000" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
+              <span class="input-group-text" style="background-color: #F3ECE8; border: none; color: #6c757d; border-top-right-radius: 6px; border-bottom-right-radius: 6px; font-weight: 500;">@utez.edu.mx</span>
+            </div>
+            <div class="form-text mt-1" style="font-size: 0.8rem;">Solo ingresa tu matrícula, nosotros agregamos el resto.</div>
           </div>
 
           <div class="mb-3">
-            <label for="txtPassword1" class="form-label-custom">Contraseña *</label>
-            <input type="password" class="form-control input-custom py-2 calc-progress" id="txtPassword1" name="contra1" placeholder="Contraseña" required>
+            <label for="txtPassword1" class="form-label-custom">Contraseña <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="password" class="form-control input-custom py-2 pe-5 calc-progress" id="txtPassword1" name="contra1" placeholder="Contraseña" required>
+              <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password" data-target="txtPassword1"></i>
+            </div>
 
             <div id="password-rules" class="small mt-1 d-none" style="font-size: 0.8rem;">
               <div id="rule-length" class="text-danger mb-1"><i class="bi bi-x-circle icon-rule"></i>Mínimo 8 caracteres</div>
@@ -125,30 +135,33 @@
           </div>
 
           <div class="mb-2">
-            <label for="txtPassword2" class="form-label-custom">Confirmar contraseña *</label>
-            <input type="password" class="form-control input-custom py-2 calc-progress" id="txtPassword2" name="contra2" placeholder="Repite tu contraseña" required>
+            <label for="txtPassword2" class="form-label-custom">Confirmar contraseña <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="password" class="form-control input-custom py-2 pe-5 calc-progress" id="txtPassword2" name="contra2" placeholder="Repite tu contraseña" required>
+              <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password" data-target="txtPassword2"></i>
+            </div>
 
             <div id="match-rules" class="small mt-1 d-none" style="font-size: 0.8rem;">
               <div id="rule-match" class="text-danger"><i class="bi bi-x-circle icon-rule"></i>Las contraseñas deben coincidir</div>
             </div>
           </div>
-        </div>
+        </div> <!-- FIN DE LA SECTION-BOX DEL PASO 2 -->
 
         <!-- Botones Atrás y Crear Cuenta -->
         <div class="d-flex gap-2 mb-3">
-          <button type="button" id="btnBack" class="btn btn-outline-secondary w-50 py-2 fw-semibold shadow-sm">
+          <button type="button" id="btnBack" class="btn btn-peach w-50 py-2 fw-semibold">
             <i class="bi bi-arrow-left me-1"></i> Atrás
           </button>
           <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm">
             Crear Cuenta
           </button>
         </div>
-      </div>
+      </div> <!-- FIN DEL PASO 2 -->
 
       <!-- Enlace Login -->
       <div class="text-center mt-2" style="font-size: 0.85rem;">
         <span class="text-muted">¿Ya tienes cuenta?</span>
-        <a href="login.jsp" class="text-muted text-decoration-underline">Inicia sesión</a>
+        <a href="login.jsp" class="login-link ms-1">Inicia sesión</a>
       </div>
 
     </form>

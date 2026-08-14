@@ -1,0 +1,50 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand-section">
+    <img src="static/img/logoMUA.png" alt="Logo Mua" class="brand-logo">
+    <h1 class="brand-name">Mua</h1>
+    <p class="brand-sub">Administración</p>
+  </div>
+
+  <ul class="menu-list">
+    <li class="menu-item ${param.active == 'actividad' ? 'active' : ''}">
+      <a href="adminactividad">Actividad reciente</a>
+    </li>
+    <li class="menu-item ${param.active == 'publicaciones' ? 'active' : ''}">
+      <a href="adminpublicacionesJS">Publicaciones</a>
+    </li>
+    <li class="menu-item ${param.active == 'usuarios' ? 'active' : ''}">
+      <a href="adminusuarios">Usuarios</a>
+    </li>
+    <li class="menu-item ${param.active == 'reportes' ? 'active' : ''}">
+      <a href="adminreportes">Reportes</a>
+    </li>
+    <li class="menu-item ${param.active == 'categorias' ? 'active' : ''}">
+      <a href="admincategorias">Categorías</a>
+    </li>
+  </ul>
+
+  <div class="sidebar-footer">
+    <div class="user-profile-summary">
+      <!-- Muestra únicamente la primera letra del nombre en mayúscula -->
+      <div class="avatar-circle">
+        <c:out value="${fn:toUpperCase(fn:substring(sessionScope.admin.nombre, 0, 1))}" default="A"/>
+      </div>
+      <div class="profile-info">
+        <!-- Toma el nombre y correo del objeto admin en la sesión -->
+        <h4><c:out value="${sessionScope.admin.nombre}" default="Administrador"/></h4>
+        <p><c:out value="${sessionScope.admin.correo}" default="admin@sistema.com"/></p>
+      </div>
+    </div>
+
+    <!-- Formulario de Logout (GET a la ruta /logout) -->
+    <form action="${pageContext.request.contextPath}/logout" method="GET">
+      <button type="submit" class="btn-logout">Cerrar sesión</button>
+    </form>
+  </div>
+</aside>
