@@ -12,7 +12,6 @@ public class OfertaDao implements Dao<Oferta, Integer> {
 
     @Override
     public boolean create(Oferta entidad) {
-        // ID autogenerado con (MAX + 1) en Oracle para evitar ORA-01400
         String sql = "INSERT INTO oferta (id_oferta, id_articulo_fk, matricula_usuario_fk, monto, estado) " +
                 "VALUES ((SELECT NVL(MAX(id_oferta), 0) + 1 FROM oferta), ?, ?, ?, ?)";
         try (Connection con = SQLConnector.getConnection();

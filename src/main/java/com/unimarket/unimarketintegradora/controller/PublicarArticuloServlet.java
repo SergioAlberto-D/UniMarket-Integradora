@@ -3,10 +3,8 @@ package com.unimarket.unimarketintegradora.controller;
 import com.unimarket.unimarketintegradora.model.Articulo;
 import com.unimarket.unimarketintegradora.model.ImagenArticulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
-import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
-import com.unimarket.unimarketintegradora.model.dao.ImagenArticuloDao;
-import com.unimarket.unimarketintegradora.model.dao.NotificacionDao;
-import com.unimarket.unimarketintegradora.model.dao.UsuarioDao;
+import com.unimarket.unimarketintegradora.model.categoria;
+import com.unimarket.unimarketintegradora.model.dao.*;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -18,8 +16,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import com.unimarket.unimarketintegradora.model.Categoria;
-import com.unimarket.unimarketintegradora.model.dao.CategoriaDao;
 
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 40 * 1024 * 1024)
@@ -29,11 +25,11 @@ public class PublicarArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
-    private final CategoriaDao categoriaDao = new CategoriaDao();
+    private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Categoria> categorias = categoriaDao.getAll();
+        List<categoria> categorias = categoriaDao.getAll();
         request.setAttribute("categorias", categorias);
         request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
     }
