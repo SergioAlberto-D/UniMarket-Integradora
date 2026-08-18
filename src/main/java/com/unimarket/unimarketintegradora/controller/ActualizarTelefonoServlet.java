@@ -30,7 +30,7 @@ public class ActualizarTelefonoServlet extends HttpServlet {
 
         if (nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
             UsuarioDao usuarioDao = new UsuarioDao();
-            boolean actualizado = usuarioDao.actualizarTelefono(usuario.getIdUsuario(), nuevoTelefono);
+            boolean actualizado = usuarioDao.actualizarTelefono(usuario.getMatricula(), nuevoTelefono);
 
             if (actualizado) {
                 usuario.setNumeroCelular(nuevoTelefono);
@@ -38,7 +38,7 @@ public class ActualizarTelefonoServlet extends HttpServlet {
 
                 // Notificar en la campana
                 String mensaje = "Tu número de teléfono celular ha sido actualizado a " + nuevoTelefono + ".";
-                notificacionDao.crearNotificacion(usuario.getIdUsuario(), mensaje, "SISTEMA");
+                notificacionDao.crearNotificacion(usuario.getMatricula(), mensaje, "SISTEMA");
             }
         }
 

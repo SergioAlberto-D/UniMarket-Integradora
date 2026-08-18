@@ -64,11 +64,11 @@ public class PublicarArticuloServlet extends HttpServlet {
             return;
         }
 
-        Articulo articulo = new Articulo(titulo, precio, idCategoria, descripcion, usuario.getIdUsuario());
+        Articulo articulo = new Articulo(titulo, precio, idCategoria, descripcion, usuario.getMatricula());
         boolean publicado = articuloDao.create(articulo);
 
         if (publicado) {
-            int idArticuloGenerado = articuloDao.obtenerUltimoIdPorUsuario(usuario.getIdUsuario());
+            int idArticuloGenerado = articuloDao.obtenerUltimoIdPorUsuario(usuario.getMatricula());
 
             List<String> rutas = guardarImagenes(request);
             for (String ruta : rutas) {
@@ -76,14 +76,16 @@ public class PublicarArticuloServlet extends HttpServlet {
             }
 
             if (usuario.getIdRolFk() != 3) {
-                usuario.setIdRolFk(3);
-                usuarioDao.update(usuario);
-                session.setAttribute("usuario", usuario);
+                boolean ascendido = usuarioDao.ascenderAVendedor(usuario.getMatricula());
+                if (ascendido) {
+                    usuario.setIdRolFk(3);
+                    session.setAttribute("usuario", usuario);
+                }
             }
 
             // Notificar al propio vendedor del éxito de su publicación
             String mensaje = "Tu artículo '" + titulo + "' ($" + precio + " MXN) fue publicado correctamente en el catálogo.";
-            notificacionDao.crearNotificacion(usuario.getIdUsuario(), mensaje, "SISTEMA");
+            notificacionDao.crearNotificacion(usuario.getMatricula(), mensaje, "SISTEMA");
 
             response.sendRedirect(request.getContextPath() + "/inicio?exito=true");
 

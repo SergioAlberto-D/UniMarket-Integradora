@@ -46,7 +46,7 @@ public class ComprarArticuloServlet extends HttpServlet {
             boolean registrada = transaccionDao.crearTransaccionPendiente(
                     idArticulo,
                     articulo.getIdUsuarioFk(), // Vendedor
-                    comprador.getIdUsuario(),  // Comprador
+                    comprador.getMatricula(),  // Comprador
                     articulo.getPrecio()
             );
 

@@ -3,14 +3,18 @@
 // ==========================================
 const step1 = document.getElementById('step-1');
 const step2 = document.getElementById('step-2');
+const step3 = document.getElementById('step-3');
+
 const btnNext = document.getElementById('btnNext');
 const btnBack = document.getElementById('btnBack');
+const btnNext2 = document.getElementById('btnNext2');
+const btnBack2 = document.getElementById('btnBack2');
 
 const progressBar = document.getElementById('form-progress');
 const progressText = document.getElementById('progress-text');
 const progressInputs = document.querySelectorAll('.calc-progress');
 
-// 1. LÓGICA DEL BOTÓN SIGUIENTE
+// 1. LÓGICA DEL BOTÓN SIGUIENTE (PASO 1 -> PASO 2)
 btnNext.addEventListener('click', () => {
     const step1Elements = step1.querySelectorAll('input[required], select[required]');
     let allValid = true;
@@ -63,6 +67,67 @@ btnBack.addEventListener('click', () => {
     step1.classList.remove('d-none');
 });
 
+// 2. LÓGICA DEL BOTÓN SIGUIENTE (PASO 2 -> PASO 3)
+const checkStep2Validity = () => {
+    const step2Elements = step2.querySelectorAll('input[required]');
+    let allValid = true;
+
+    step2Elements.forEach(element => {
+        if (element.value.trim() === "") {
+            allValid = false;
+        }
+    });
+
+    const contra1 = document.getElementById('txtPassword1').value;
+    const contra2 = document.getElementById('txtPassword2').value;
+    const passwordsCoinciden = contra1.length > 0 && contra1 === contra2;
+
+    btnNext2.disabled = !(allValid && passwordsCoinciden);
+};
+
+step2.querySelectorAll('input[required]').forEach(element => {
+    element.addEventListener('input', () => {
+        element.classList.remove('is-invalid');
+        checkStep2Validity();
+    });
+    element.addEventListener('change', () => {
+        element.classList.remove('is-invalid');
+        checkStep2Validity();
+    });
+});
+
+btnNext2.addEventListener('click', () => {
+    const step2Elements = step2.querySelectorAll('input[required]');
+    let allValid = true;
+
+    step2Elements.forEach(element => {
+        if (element.value.trim() === "") {
+            element.classList.add('is-invalid');
+            allValid = false;
+        } else {
+            element.classList.remove('is-invalid');
+        }
+    });
+
+    const contra1 = document.getElementById('txtPassword1').value;
+    const contra2 = document.getElementById('txtPassword2').value;
+
+    if (contra1 !== contra2 || contra1.length === 0) {
+        allValid = false;
+    }
+
+    if (allValid) {
+        step2.classList.add('d-none');
+        step3.classList.remove('d-none');
+    }
+});
+
+// Regresar al Paso 2
+btnBack2.addEventListener('click', () => {
+    step3.classList.add('d-none');
+    step2.classList.remove('d-none');
+});
+
 // Actualizar barra de progreso dinámicamente
 const updateProgress = () => {
     let filledCount = 0;
@@ -93,7 +158,7 @@ progressInputs.forEach(input => {
 const formatearTelefono = (event) => {
     let input = event.target;
     // 1. Elimina todo lo que no sea un número (letras, espacios, símbolos)
-    let valor = input.value.replace(/\D/g, ''); 
+    let valor = input.value.replace(/\D/g, '');
 
     // 2. Limita a un máximo de 10 números
     if (valor.length > 10) {
@@ -102,7 +167,7 @@ const formatearTelefono = (event) => {
 
     // 3. Construye el formato paso a paso según la cantidad de números
     let valorFormateado = '';
-    
+
     if (valor.length > 0) {
         valorFormateado = '(' + valor.substring(0, 3);
     }
@@ -172,6 +237,7 @@ passwordInput1.addEventListener('input', () => {
     if (passwordInput2.value.length > 0) {
         validateMatch();
     }
+    checkStep2Validity();
 });
 
 passwordInput2.addEventListener('focus', () => {
@@ -191,7 +257,10 @@ const validateMatch = () => {
     toggleRule(ruleMatch, isMatch, 'Las contraseñas no coinciden', 'Las contraseñas coinciden');
 };
 
-passwordInput2.addEventListener('input', validateMatch);
+passwordInput2.addEventListener('input', () => {
+    validateMatch();
+    checkStep2Validity();
+});
 
 // ==========================================
 // MOSTRAR / OCULTAR CONTRASEÑA
@@ -201,7 +270,7 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
         // Encontrar el input relacionado a este icono a través de su data-target
         const targetId = this.getAttribute('data-target');
         const input = document.getElementById(targetId);
-        
+
         // Alternar el tipo de input (texto/password)
         if (input.type === 'password') {
             input.type = 'text';
@@ -216,3 +285,30 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
         }
     });
 });
+
+// ==========================================
+// VISTA PREVIA DE LA CREDENCIAL ESCOLAR (PASO 3)
+// ==========================================
+const configurarPreview = (inputId, previewId) => {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (!input || !preview) return;
+
+    input.addEventListener('change', () => {
+        const archivo = input.files && input.files[0];
+        if (!archivo) {
+            preview.classList.add('d-none');
+            preview.src = '#';
+            return;
+        }
+        const lector = new FileReader();
+        lector.onload = (e) => {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+        };
+        lector.readAsDataURL(archivo);
+    });
+};
+
+configurarPreview('fileCredencialFrente', 'previewFrente');
+configurarPreview('fileCredencialReverso', 'previewReverso');

@@ -59,7 +59,7 @@ public class CambiarPasswordPerfilServlet extends HttpServlet {
 
             // 6. Obtener el hash real guardado en la base de datos
             ContrasenaUsuarioDao passwordDao = new ContrasenaUsuarioDao();
-            ContrasenaUsuario passGuardada = passwordDao.getById(usuario.getIdUsuario());
+            ContrasenaUsuario passGuardada = passwordDao.getById(usuario.getMatricula());
 
             // 7. Comparar si la contraseña ingresada es la correcta
             if (passGuardada == null || !passGuardada.getContrasenaHash().equals(hashActualIngresado)) {

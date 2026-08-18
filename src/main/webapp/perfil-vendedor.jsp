@@ -80,7 +80,7 @@
     <section class="reviews-card">
         <div class="reviews-header">
             <h2>Reseñas de este vendedor</h2>
-            <c:if test="${not empty sessionScope.usuario and sessionScope.usuario.idUsuario ne vendedor.idUsuario}">
+            <c:if test="${not empty sessionScope.usuario and sessionScope.usuario.matricula ne vendedor.matricula}">
                 <button class="btn-comentar" onclick="abrirModalComentario()">Comentar <i class="bi bi-plus"></i></button>
             </c:if>
         </div>
@@ -183,7 +183,7 @@
 
         <div class="modal-buttons">
             <button type="button" class="btn-cancel-modal" onclick="cerrarModalComentario()">Cancelar</button>
-            <button type="button" class="btn-submit-modal" onclick="enviarComentario('${vendedor.idUsuario}')">Comentar</button>
+            <button type="button" class="btn-submit-modal" onclick="enviarComentario('${vendedor.matricula}')">Comentar</button>
         </div>
     </div>
 </div>

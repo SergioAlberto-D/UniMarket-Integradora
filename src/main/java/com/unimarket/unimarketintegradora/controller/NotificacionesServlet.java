@@ -28,7 +28,7 @@ public class NotificacionesServlet extends HttpServlet {
         }
 
         Usuario u = (Usuario) session.getAttribute("usuario");
-        List<Notificacion> lista = notificacionDao.obtenerNoLeidas(u.getIdUsuario());
+        List<Notificacion> lista = notificacionDao.obtenerNoLeidas(u.getMatricula());
 
         // Construir JSON manual para no depender de librerías externas
         StringBuilder json = new StringBuilder("[");
@@ -50,7 +50,7 @@ public class NotificacionesServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("usuario") != null) {
             Usuario u = (Usuario) session.getAttribute("usuario");
-            notificacionDao.marcarTodasComoLeidas(u.getIdUsuario());
+            notificacionDao.marcarTodasComoLeidas(u.getMatricula());
         }
         response.getWriter().print("{\"exito\":true}");
     }
