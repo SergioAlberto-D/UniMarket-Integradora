@@ -31,7 +31,7 @@ public class MiPerfilServlet extends HttpServlet {
             return;
         }
 
-        String matricula = usuarioLogueado.getIdUsuario(); // O getCorreoInstitucional()
+        String matricula = usuarioLogueado.getMatricula(); // O getCorreoInstitucional()
 
         // 1. Cargar Ofertas (Hechas por mí y Recibidas)
         List<Oferta> ofertasHechas = ofertaDao.obtenerOfertasHechasPorUsuario(matricula);

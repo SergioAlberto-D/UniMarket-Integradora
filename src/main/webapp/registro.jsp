@@ -53,7 +53,7 @@
     <p id="progress-text" class="text-end text-muted small mb-4">0% completado</p>
 
     <!-- Formulario -->
-    <form id="registroForm" action="register" method="post">
+    <form id="registroForm" action="register" method="post" enctype="multipart/form-data">
 
       <!-- ================= PASO 1 ================= -->
       <div id="step-1">
@@ -147,16 +147,51 @@
           </div>
         </div> <!-- FIN DE LA SECTION-BOX DEL PASO 2 -->
 
-        <!-- Botones Atrás y Crear Cuenta -->
+        <!-- Botones Atrás y Siguiente -->
         <div class="d-flex gap-2 mb-3">
           <button type="button" id="btnBack" class="btn btn-peach w-50 py-2 fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Atrás
+          </button>
+          <button type="button" id="btnNext2" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm" disabled>
+            Siguiente <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+        </div>
+      </div> <!-- FIN DEL PASO 2 -->
+
+      <!-- ================= PASO 3 ================= -->
+      <div id="step-3" class="d-none">
+        <div class="section-box">
+          <div class="section-title">
+            <div class="icon-box"><i class="bi bi-card-image"></i></div>
+            Identificación escolar
+          </div>
+          <p class="text-muted mb-3" style="font-size: 0.85rem;">
+            Sube una foto de tu credencial escolar (frente y reverso). Esto nos ayuda a verificar que perteneces a la comunidad universitaria.
+          </p>
+
+          <div class="mb-3">
+            <label for="fileCredencialFrente" class="form-label-custom">Credencial escolar - Frente <span class="text-danger">*</span></label>
+            <input type="file" class="form-control input-custom py-2 calc-progress" id="fileCredencialFrente" name="credencialFrente" accept="image/png, image/jpeg, image/jpg" required>
+            <img id="previewFrente" src="#" alt="Vista previa frente" class="d-none mt-2" style="max-width: 100%; max-height: 160px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
+          </div>
+
+          <div class="mb-2">
+            <label for="fileCredencialReverso" class="form-label-custom">Credencial escolar - Reverso <span class="text-danger">*</span></label>
+            <input type="file" class="form-control input-custom py-2 calc-progress" id="fileCredencialReverso" name="credencialReverso" accept="image/png, image/jpeg, image/jpg" required>
+            <img id="previewReverso" src="#" alt="Vista previa reverso" class="d-none mt-2" style="max-width: 100%; max-height: 160px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
+          </div>
+        </div> <!-- FIN DE LA SECTION-BOX DEL PASO 3 -->
+
+        <!-- Botones Atrás y Crear Cuenta -->
+        <div class="d-flex gap-2 mb-3">
+          <button type="button" id="btnBack2" class="btn btn-peach w-50 py-2 fw-semibold">
             <i class="bi bi-arrow-left me-1"></i> Atrás
           </button>
           <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm">
             Crear Cuenta
           </button>
         </div>
-      </div> <!-- FIN DEL PASO 2 -->
+      </div> <!-- FIN DEL PASO 3 -->
 
       <!-- Enlace Login -->
       <div class="text-center mt-2" style="font-size: 0.85rem;">

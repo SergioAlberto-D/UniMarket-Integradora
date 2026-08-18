@@ -81,7 +81,7 @@ public class EditarArticuloServlet extends HttpServlet {
             int idArticulo = Integer.parseInt(idArticuloStr);
             Articulo articulo = articuloDao.getById(idArticuloStr);
 
-            if (articulo == null || !articulo.getIdUsuarioFk().equals(usuario.getIdUsuario())) {
+            if (articulo == null || !articulo.getIdUsuarioFk().equals(usuario.getMatricula())) {
                 response.sendRedirect("mis-articulos");
                 return;
             }

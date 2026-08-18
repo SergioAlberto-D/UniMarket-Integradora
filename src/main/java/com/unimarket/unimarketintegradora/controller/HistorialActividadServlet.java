@@ -30,7 +30,7 @@ public class HistorialActividadServlet extends HttpServlet {
         TransaccionDao transaccionDao = new TransaccionDao();
 
         // Ejecutamos la consulta dinámica con la matrícula del usuario logueado
-        List<TransaccionDTO> historial = transaccionDao.obtenerHistorialActividad(usuario.getIdUsuario());
+        List<TransaccionDTO> historial = transaccionDao.obtenerHistorialActividad(usuario.getMatricula());
 
         // Enviamos la data a la vista
         request.setAttribute("historial", historial);

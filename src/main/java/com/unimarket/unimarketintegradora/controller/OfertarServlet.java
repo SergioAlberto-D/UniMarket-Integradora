@@ -33,7 +33,7 @@ public class OfertarServlet extends HttpServlet {
         }
 
         Usuario comprador = (Usuario) session.getAttribute("usuario");
-        String matriculaComprador = comprador.getIdUsuario();
+        String matriculaComprador = comprador.getMatricula();
         String matriculaVendedor = request.getParameter("matriculaVendedor");
         String idArticuloStr = request.getParameter("idArticulo");
         String montoStr = request.getParameter("monto");

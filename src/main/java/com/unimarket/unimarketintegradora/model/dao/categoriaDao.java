@@ -52,14 +52,20 @@ public class categoriaDao implements Dao<categoria, Integer> {
                 psInsert.setString(2, categoria.getCategoria());
                 psInsert.executeUpdate();
             }
+
+            // 3. Reflejamos el ID generado en el objeto recibido, para que el llamador
+            //    (por ejemplo el servlet, al responder AJAX) pueda usarlo sin otra consulta.
+            categoria.setIdCategoria(siguienteId);
         }
     }
+
 
     public void editarCategoria(categoria categoria) throws SQLException {
         String sql = "UPDATE CATEGORIA SET CATEGORIA = ? WHERE ID_CATEGORIA = ?";
         try (Connection con = SQLConnector.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, idCategoria);
+            ps.setString(1, categoria.getCategoria());
+            ps.setInt(2, categoria.getIdCategoria());
             ps.executeUpdate();
         }
     }

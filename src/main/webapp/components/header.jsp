@@ -23,7 +23,6 @@
     <a href="${pageContext.request.contextPath}/inicio" class="${paginaBuscar ? 'nav-active' : 'nav-inactive'}">
       <i class="bi bi-house-door-fill"></i> Inicio
     </a>
-
     <c:if test="${esVendedor}">
       <a href="${pageContext.request.contextPath}/mis-articulos" class="${paginaMisArticulos ? 'nav-active' : 'nav-inactive'}">
         <i class="bi bi-archive-fill"></i> Mis artículos

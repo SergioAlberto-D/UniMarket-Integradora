@@ -29,7 +29,7 @@ public class ComentarServlet extends HttpServlet {
         }
 
         Usuario remitente = (Usuario) session.getAttribute("usuario");
-        String matriculaRemitente = remitente.getIdUsuario();
+        String matriculaRemitente = remitente.getMatricula();
         String matriculaReceptor = request.getParameter("matriculaReceptor");
         String textoComentario = request.getParameter("comentario");
         String califStr = request.getParameter("calificacion");

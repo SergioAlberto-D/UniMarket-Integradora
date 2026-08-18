@@ -24,8 +24,8 @@ public class MisArticulosServlet extends HttpServlet {
         ArticuloDao articuloDao = new ArticuloDao();
 
         // Obtiene las dos listas desde la BD
-        List<Articulo> disponibles = articuloDao.obtenerPorUsuarioYEstado(usuario.getIdUsuario(), false); // No están en PENDIENTE
-        List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getIdUsuario(), true);  // Están en PENDIENTE
+        List<Articulo> disponibles = articuloDao.obtenerPorUsuarioYEstado(usuario.getMatricula(), false); // No están en PENDIENTE
+        List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getMatricula(), true);  // Están en PENDIENTE
 
         request.setAttribute("disponibles", disponibles);
         request.setAttribute("enProceso", enProceso);

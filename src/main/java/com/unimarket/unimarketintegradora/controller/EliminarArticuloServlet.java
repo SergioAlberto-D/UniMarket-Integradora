@@ -44,7 +44,7 @@ public class EliminarArticuloServlet extends HttpServlet {
             Articulo articulo = articuloDao.getById(String.valueOf(idArticulo));
 
             // Validar que el artículo exista y que pertenezca al usuario logueado
-            if (articulo == null || !articulo.getIdUsuarioFk().equals(usuarioLogueado.getIdUsuario())) {
+            if (articulo == null || !articulo.getIdUsuarioFk().equals(usuarioLogueado.getMatricula())) {
                 out.print("{\"exito\": false, \"mensaje\": \"No tienes permiso para eliminar este artículo.\"}");
                 return;
             }

@@ -35,7 +35,7 @@ public class ActualizarPasswordServlet extends HttpServlet {
             Usuario usuario = usuarioDao.buscarPorCorreo(correo);
             String passwordHasheada = HashUtils.convertirSHA256(contra1);
             
-            ContrasenaUsuario passModel = new ContrasenaUsuario(usuario.getIdUsuario(), passwordHasheada);
+            ContrasenaUsuario passModel = new ContrasenaUsuario(usuario.getMatricula(), passwordHasheada);
             
             // Actualizamos en la tabla de contraseñas
             if (contrasenaDao.update(passModel)) {

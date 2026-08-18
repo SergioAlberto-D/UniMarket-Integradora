@@ -31,10 +31,10 @@ public class InicioServlet extends HttpServlet {
 
         if (session != null && session.getAttribute("usuario") != null) {
             Usuario usuario = (Usuario) session.getAttribute("usuario");
-            matriculaActual = usuario.getIdUsuario();
+            matriculaActual = usuario.getMatricula();
 
             // Verificamos también si tiene un artículo en proceso de venta para la notificación
-            List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getIdUsuario(), true);
+            List<Articulo> enProceso = articuloDao.obtenerPorUsuarioYEstado(usuario.getMatricula(), true);
             if (!enProceso.isEmpty()) {
                 request.setAttribute("articuloRecordatorio", enProceso.get(0));
             }

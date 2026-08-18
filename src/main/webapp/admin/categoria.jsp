@@ -84,29 +84,27 @@
                         </c:when>
                         <c:otherwise>
                             <c:forEach var="cat" items="${listaCategorias}" varStatus="loop">
-                                <tr>
+                                <tr data-id="${cat.idCategoria}">
                                     <!-- Numeración consecutiva continua sin huecos -->
-                                    <td><strong><c:out value="${loop.count}"/></strong></td>
-                                    <td><strong><c:out value="${cat.categoria}"/></strong></td>
+                                    <td class="col-numero"><strong><c:out value="${loop.count}"/></strong></td>
+                                    <td class="col-nombre"><strong><c:out value="${cat.categoria}"/></strong></td>
                                     <td style="text-align: right;">
                                         <div style="display: flex; gap: 8px; justify-content: flex-end;">
                                             <!-- BOTÓN EDITAR (Abre el modal) -->
                                             <button type="button"
-                                                    class="btn-update"
-                                                    onclick="abrirModal('${cat.idCategoria}', '${cat.categoria}')">
+                                                    class="btn-update btn-editar-categoria"
+                                                    data-id="${cat.idCategoria}"
+                                                    data-nombre="${fn:escapeXml(cat.categoria)}">
                                                 Editar
                                             </button>
 
                                             <!-- BOTÓN ELIMINAR -->
-                                            <form action="${pageContext.request.contextPath}/admincategorias" method="POST" style="margin:0;">
-                                                <input type="hidden" name="accion" value="eliminar">
-                                                <input type="hidden" name="idCategoria" value="${cat.idCategoria}">
-                                                <button type="submit"
-                                                        class="btn-delete"
-                                                        onclick="return confirm('Al eliminar la categoría \'${cat.categoria}\', sus productos asociados pasarán a la categoría \'Otros\'. ¿Deseas continuar?');">
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                    class="btn-delete btn-eliminar-categoria"
+                                                    data-id="${cat.idCategoria}"
+                                                    data-nombre="${fn:escapeXml(cat.categoria)}">
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -125,10 +123,10 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3>Editar Categoría</h3>
-            <button type="button" class="btn-close-modal" onclick="cerrarModal()">&times;</button>
+            <button type="button" class="btn-close-modal" id="btnCerrarModal">&times;</button>
         </div>
 
-        <form action="${pageContext.request.contextPath}/admincategorias" method="POST">
+        <form id="formEditarCategoria">
             <input type="hidden" name="accion" value="editar">
             <input type="hidden" id="modalIdCategoria" name="idCategoria">
 
@@ -138,72 +136,21 @@
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button type="button" class="btn-cancelar" id="btnCancelarModal">Cancelar</button>
                 <button type="submit" class="btn-guardar-modal">Guardar Cambios</button>
             </div>
         </form>
     </div>
 </div>
 
+<script>
+    window.MUA_CTX = {
+        contextPath: '${pageContext.request.contextPath}'
+    };
+</script>
 <script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
-
-<script>
-    // Guardar Categoría vía AJAX
-    document.getElementById('formAgregarCategoria').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const inputNombre = document.getElementById('inputNombreCategoria');
-        const nombreVal = inputNombre.value.trim();
-        if (!nombreVal) return;
-
-        const formData = new URLSearchParams();
-        formData.append('accion', 'agregar');
-        formData.append('nombreCategoria', nombreVal);
-
-        fetch('${pageContext.request.contextPath}/admincategorias', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        })
-            .then(response => {
-                if (!response.ok) throw new Error('Error en el servidor');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('Error al guardar la categoría.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ocurrió un error al procesar la solicitud.');
-            });
-    });
-
-    // Control del Modal de Edición
-    function abrirModal(id, nombre) {
-        document.getElementById('modalIdCategoria').value = id;
-        document.getElementById('modalNombreCategoria').value = nombre;
-        document.getElementById('modalEditar').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-        document.getElementById('modalEditar').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('modalEditar');
-        if (event.target === modal) {
-            cerrarModal();
-        }
-    }
-</script>
+<script src="${pageContext.request.contextPath}/assets/js/categoria.js"></script>
 
 </body>
 </html>

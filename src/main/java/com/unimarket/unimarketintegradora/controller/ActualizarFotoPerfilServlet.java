@@ -75,14 +75,14 @@ public class ActualizarFotoPerfilServlet extends HttpServlet {
                 String rutaRelativa = "uploads/perfiles/" + nombreArchivo;
                 usuario.setFotoPerfil(rutaRelativa);
 
-                boolean actualizado = usuarioDao.actualizarFotoPerfil(usuario.getIdUsuario(), rutaRelativa);
+                boolean actualizado = usuarioDao.actualizarFotoPerfil(usuario.getMatricula(), rutaRelativa);
 
                 if (actualizado) {
                     session.setAttribute("usuario", usuario);
 
                     // Alerta del sistema para la campana de notificaciones
                     String mensaje = "Has actualizado tu foto de perfil de manera exitosa.";
-                    notificacionDao.crearNotificacion(usuario.getIdUsuario(), mensaje, "SISTEMA");
+                    notificacionDao.crearNotificacion(usuario.getMatricula(), mensaje, "SISTEMA");
 
                     out.print("{\"exito\": true, \"mensaje\": \"Foto de perfil actualizada correctamente.\", \"nuevaRuta\": \"" + rutaRelativa + "\"}");
                     return;
