@@ -78,6 +78,36 @@ public class UsuarioDao {
         return lista;
     }
 
+    // MÉTODO EXCLUSIVO PARA ADMINISTRACIÓN (Filtra inactivos y eliminados)
+    public List<Usuario> getUsuariosActivosParaAdmin() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuario WHERE UPPER(estado) NOT IN ('INACTIVO', 'ELIMINADO') ORDER BY fecha_registro DESC";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Usuario u = new Usuario(
+                        rs.getString("nombre"),
+                        rs.getString("apellido_paterno"),
+                        rs.getString("apellido_materno"),
+                        rs.getString("numero_celular"),
+                        rs.getInt("id_division_academica_fk"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("correo_institucional"),
+                        rs.getInt("id_rol_fk"),
+                        rs.getString("estado")
+                );
+                u.setIdUsuario(rs.getString("MATRICULA"));
+                try { u.setFotoPerfil(rs.getString("foto_perfil")); } catch (Exception ignored) {}
+                lista.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener usuarios activos: " + e.getMessage());
+        }
+        return lista;
+    }
+
     public Usuario getById(String matricula) {
         String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
 
@@ -123,7 +153,7 @@ public class UsuarioDao {
     }
 
     public boolean delete(String id) {
-        String sql = "UPDATE usuario SET estado = 'inactivo' WHERE MATRICULA = ?";
+        String sql = "UPDATE usuario SET estado = 'INACTIVO' WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, id);
             return ps.executeUpdate() > 0;

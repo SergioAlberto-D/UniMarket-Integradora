@@ -28,6 +28,9 @@ public class AdminUsuarioServlet extends HttpServlet {
 
         String accion = request.getParameter("accion");
         String matricula = request.getParameter("matricula");
+        if (matricula == null || matricula.isEmpty()) {
+            matricula = request.getParameter("idUsuario");
+        }
 
         // Acción para desactivar (borrado lógico)
         if ("desactivar".equals(accion) || "eliminar".equals(accion)) {
@@ -46,8 +49,8 @@ public class AdminUsuarioServlet extends HttpServlet {
             return;
         }
 
-        // Cargar lista completa desde el DAO y enviarla al JSP
-        List<Usuario> listaUsuarios = usuarioDao.getAll();
+        // Cargar lista filtrada de usuarios activos para el panel de administración
+        List<Usuario> listaUsuarios = usuarioDao.getUsuariosActivosParaAdmin();
         request.setAttribute("listaUsuarios", listaUsuarios);
 
         // Redirige al JSP del panel de administración de usuarios
