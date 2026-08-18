@@ -1,347 +1,59 @@
 package com.unimarket.unimarketintegradora.controller;
 
-import com.unimarket.unimarketintegradora.model.Articulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
-import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
 import com.unimarket.unimarketintegradora.model.dao.UsuarioDao;
 import com.unimarket.unimarketintegradora.utils.EmailSender;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(
-        name = "AdminActividadServlet",
-        value = "/adminactividad"
-)
+@WebServlet(name = "AdminActividadServlet", value = "/adminactividad")
 public class AdminActividadServlet extends HttpServlet {
 
-    private final UsuarioDao usuarioDao =
-            new UsuarioDao();
+    private final UsuarioDao usuarioDao = new UsuarioDao();
 
-    private final ArticuloDao articuloDao =
-            new ArticuloDao();
-
-    /*
-     * ============================================================
-     * GET
-     * ============================================================
-     *
-     * Carga:
-     *
-     * 1. Usuarios en espera:
-     *    estado = unverificado
-     *
-     * 2. Artículos en espera:
-     *    estado = espera
-     */
     @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
-
-        /*
-         * USUARIOS PENDIENTES
-         */
-        List<Usuario> peticiones =
-                usuarioDao.obtenerPeticiones();
-
-        /*
-         * ARTÍCULOS PENDIENTES
-         */
-        List<Articulo> articulosEspera =
-                articuloDao.obtenerArticulosEnEspera();
-
-        /*
-         * Enviar ambas listas al JSP
-         */
-        request.setAttribute(
-                "listaPeticiones",
-                peticiones
-        );
-
-        request.setAttribute(
-                "listaArticulosEspera",
-                articulosEspera
-        );
-
-        /*
-         * Mostrar Actividad
-         */
-        request.getRequestDispatcher(
-                "/admin/actividad.jsp"
-        ).forward(
-                request,
-                response
-        );
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Obtenemos solo los unverificados
+        List<Usuario> peticiones = usuarioDao.obtenerPeticiones();
+        request.setAttribute("listaPeticiones", peticiones);
+        request.getRequestDispatcher("/admin/actividad.jsp").forward(request, response);
     }
 
-    /*
-     * ============================================================
-     * POST
-     * ============================================================
-     *
-     * Aquí se procesan:
-     *
-     * USUARIO
-     *   aceptar
-     *   rechazar
-     *
-     * ARTÍCULO
-     *   aceptar
-     *   rechazar
-     */
     @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String accion = request.getParameter("accion");
+        String matricula = request.getParameter("matricula");
+        String correo = request.getParameter("correo");
 
-        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
 
-        String tipo =
-                request.getParameter("tipo");
+        if ("aceptar".equals(accion)) {
+            boolean verificado = usuarioDao.verificarUsuario(matricula);
+            if (verificado) {
+                // Nuevo correo de bienvenida
+                String msjBienvenida = "<h2>¡Bienvenido a MUA!</h2>" +
+                        "<p>Un moderador ha verificado tu identidad. Tu cuenta ha sido activada y ya puedes iniciar sesión.</p>" +
+                        "<p>Recuerda respetar a los demás y leer nuestros términos y condiciones.</p>";
+                EmailSender.sendMail(correo, "¡Cuenta Verificada en MUA!", msjBienvenida);
 
-        String accion =
-                request.getParameter("accion");
-
-        response.setContentType(
-                "application/json"
-        );
-
-        response.setCharacterEncoding(
-                "UTF-8"
-        );
-
-        PrintWriter out =
-                response.getWriter();
-
-        /*
-         * ========================================================
-         * VALIDAR DATOS
-         * ========================================================
-         */
-        if (tipo == null ||
-                accion == null) {
-
-            out.print(
-                    "{\"exito\":false,\"mensaje\":\"Solicitud inválida.\"}"
-            );
-
-            return;
+                out.print("{\"exito\": true, \"mensaje\": \"Usuario verificado y correo enviado.\"}");
+            } else {
+                out.print("{\"exito\": false, \"mensaje\": \"Hubo un problema al verificar en la base de datos.\"}");
+            }
+        } else if ("rechazar".equals(accion)) {
+            boolean eliminado = usuarioDao.rechazarUsuario(matricula);
+            if (eliminado) {
+                out.print("{\"exito\": true, \"mensaje\": \"Petición rechazada permanentemente.\"}");
+            } else {
+                out.print("{\"exito\": false, \"mensaje\": \"Error al eliminar el usuario.\"}");
+            }
         }
-
-        /*
-         * ========================================================
-         * USUARIO
-         * ========================================================
-         */
-        if ("usuario".equalsIgnoreCase(tipo)) {
-
-            String matricula =
-                    request.getParameter("matricula");
-
-            String correo =
-                    request.getParameter("correo");
-
-            if (matricula == null ||
-                    matricula.trim().isEmpty()) {
-
-                out.print(
-                        "{\"exito\":false,\"mensaje\":\"La matrícula es obligatoria.\"}"
-                );
-
-                return;
-            }
-
-            /*
-             * ACEPTAR USUARIO
-             */
-            if ("aceptar".equalsIgnoreCase(accion)) {
-
-                boolean verificado =
-                        usuarioDao.verificarUsuario(
-                                matricula
-                        );
-
-                if (verificado) {
-
-                    String msjBienvenida =
-                            "<h2>¡Bienvenido a MUA!</h2>" +
-                                    "<p>Un moderador ha verificado tu identidad. " +
-                                    "Tu cuenta ha sido activada y ya puedes iniciar sesión.</p>" +
-                                    "<p>Recuerda respetar a los demás y leer nuestros términos y condiciones.</p>";
-
-                    if (correo != null &&
-                            !correo.trim().isEmpty()) {
-
-                        EmailSender.sendMail(
-                                correo,
-                                "¡Cuenta Verificada en MUA!",
-                                msjBienvenida
-                        );
-                    }
-
-                    out.print(
-                            "{\"exito\":true,\"mensaje\":\"Usuario verificado correctamente.\"}"
-                    );
-
-                } else {
-
-                    out.print(
-                            "{\"exito\":false,\"mensaje\":\"Hubo un problema al verificar al usuario.\"}"
-                    );
-                }
-
-                return;
-            }
-
-            /*
-             * RECHAZAR USUARIO
-             */
-            if ("rechazar".equalsIgnoreCase(accion)) {
-
-                boolean eliminado =
-                        usuarioDao.rechazarUsuario(
-                                matricula
-                        );
-
-                if (eliminado) {
-
-                    out.print(
-                            "{\"exito\":true,\"mensaje\":\"Petición de usuario rechazada correctamente.\"}"
-                    );
-
-                } else {
-
-                    out.print(
-                            "{\"exito\":false,\"mensaje\":\"No se pudo rechazar la petición del usuario.\"}"
-                    );
-                }
-
-                return;
-            }
-
-            out.print(
-                    "{\"exito\":false,\"mensaje\":\"Acción de usuario no válida.\"}"
-            );
-
-            return;
-        }
-
-        /*
-         * ========================================================
-         * ARTÍCULO
-         * ========================================================
-         */
-        if ("articulo".equalsIgnoreCase(tipo)) {
-
-            String idArticuloTexto =
-                    request.getParameter("idArticulo");
-
-            if (idArticuloTexto == null ||
-                    idArticuloTexto.trim().isEmpty()) {
-
-                out.print(
-                        "{\"exito\":false,\"mensaje\":\"El ID del artículo es obligatorio.\"}"
-                );
-
-                return;
-            }
-
-            int idArticulo;
-
-            try {
-
-                idArticulo =
-                        Integer.parseInt(
-                                idArticuloTexto
-                        );
-
-            } catch (NumberFormatException e) {
-
-                out.print(
-                        "{\"exito\":false,\"mensaje\":\"El ID del artículo no es válido.\"}"
-                );
-
-                return;
-            }
-
-            /*
-             * ACEPTAR ARTÍCULO
-             *
-             * espera -> Activo
-             */
-            if ("aceptar".equalsIgnoreCase(accion)) {
-
-                boolean aprobado =
-                        articuloDao.verificarArticulo(
-                                idArticulo
-                        );
-
-                if (aprobado) {
-
-                    out.print(
-                            "{\"exito\":true,\"mensaje\":\"Artículo aprobado correctamente. Ahora aparecerá en el catálogo.\"}"
-                    );
-
-                } else {
-
-                    out.print(
-                            "{\"exito\":false,\"mensaje\":\"No se pudo aprobar el artículo.\"}"
-                    );
-                }
-
-                return;
-            }
-
-            /*
-             * RECHAZAR ARTÍCULO
-             *
-             * espera -> ELIMINADO
-             */
-            if ("rechazar".equalsIgnoreCase(accion)) {
-
-                boolean rechazado =
-                        articuloDao.rechazarArticulo(
-                                idArticulo
-                        );
-
-                if (rechazado) {
-
-                    out.print(
-                            "{\"exito\":true,\"mensaje\":\"Artículo rechazado correctamente.\"}"
-                    );
-
-                } else {
-
-                    out.print(
-                            "{\"exito\":false,\"mensaje\":\"No se pudo rechazar el artículo.\"}"
-                    );
-                }
-
-                return;
-            }
-
-            out.print(
-                    "{\"exito\":false,\"mensaje\":\"Acción de artículo no válida.\"}"
-            );
-
-            return;
-        }
-
-        /*
-         * ========================================================
-         * TIPO NO VÁLIDO
-         * ========================================================
-         */
-        out.print(
-                "{\"exito\":false,\"mensaje\":\"Tipo de petición no válido.\"}"
-        );
     }
 }
