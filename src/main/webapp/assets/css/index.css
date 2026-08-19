@@ -161,16 +161,15 @@ select.filter-control {
     line-height: 1.2;
     color: #333333;
 }
-
 .products-panel {
     background: transparent;
-    border-radius: 0;
-    min-height: calc(100vh - 150px);
-    overflow-y: visible;
-    padding: 10px;
     box-shadow: none;
+    border-radius: 0;
+    padding: 10px;
+    height: calc(100vh - 160px);
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
 }
-
 /* 2. GRILLA FLUIDA: Autocalcula las columnas necesarias según el espacio */
 .products-grid {
     display: grid;
