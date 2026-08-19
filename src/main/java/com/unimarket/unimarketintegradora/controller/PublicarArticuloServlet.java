@@ -4,12 +4,17 @@ import com.unimarket.unimarketintegradora.model.Articulo;
 import com.unimarket.unimarketintegradora.model.ImagenArticulo;
 import com.unimarket.unimarketintegradora.model.Usuario;
 import com.unimarket.unimarketintegradora.model.categoria;
-import com.unimarket.unimarketintegradora.model.dao.*;
+import com.unimarket.unimarketintegradora.model.dao.ArticuloDao;
+import com.unimarket.unimarketintegradora.model.dao.ImagenArticuloDao;
+import com.unimarket.unimarketintegradora.model.dao.UsuarioDao;
+import com.unimarket.unimarketintegradora.model.dao.NotificacionDao;
+import com.unimarket.unimarketintegradora.model.dao.categoriaDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -18,7 +23,11 @@ import java.util.List;
 import java.util.UUID;
 
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 10 * 1024 * 1024, maxRequestSize = 40 * 1024 * 1024)
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 10 * 1024 * 1024,
+        maxRequestSize = 40 * 1024 * 1024
+)
 public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
@@ -28,127 +37,386 @@ public class PublicarArticuloServlet extends HttpServlet {
     private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
         List<categoria> categorias = categoriaDao.getAll();
+
         request.setAttribute("categorias", categorias);
-        request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
+
+        request.getRequestDispatcher("publicar-articulo.jsp")
+                .forward(request, response);
     }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
+
+        if (session == null ||
+                session.getAttribute("usuario") == null) {
+
             response.sendRedirect("login.jsp");
             return;
         }
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        Usuario usuario =
+                (Usuario) session.getAttribute("usuario");
 
-        String titulo = limpiar(request.getParameter("titulo"));
-        String descripcion = limpiar(request.getParameter("descripcion"));
-        String precioTexto = limpiar(request.getParameter("precio"));
+        String titulo =
+                limpiar(request.getParameter("titulo"));
+
+        String descripcion =
+                limpiar(request.getParameter("descripcion"));
+
+        String precioTexto =
+                limpiar(request.getParameter("precio"));
 
         int idCategoria = 1;
-        try { idCategoria = Integer.parseInt(request.getParameter("idCategoria")); } catch(Exception ignored){}
 
-        if (titulo.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            enviarError(request, response, "Completa todos los campos del artículo.");
-            return;
-        }
-
-        BigDecimal precio;
         try {
-            precio = new BigDecimal(precioTexto);
-            if (precio.compareTo(BigDecimal.ZERO) < 0) throw new NumberFormatException();
-        } catch (NumberFormatException e) {
-            enviarError(request, response, "Ingresa un precio válido.");
+
+            idCategoria =
+                    Integer.parseInt(
+                            request.getParameter("idCategoria")
+                    );
+
+        } catch (Exception ignored) {
+        }
+
+        /*
+         * VALIDACIÓN
+         */
+        if (titulo.isEmpty() ||
+                precioTexto.isEmpty() ||
+                descripcion.isEmpty()) {
+
+            enviarError(
+                    request,
+                    response,
+                    "Completa todos los campos del artículo."
+            );
+
             return;
         }
 
-        Articulo articulo = new Articulo(titulo, precio, idCategoria, descripcion, usuario.getMatricula());
-        boolean publicado = articuloDao.create(articulo);
+        /*
+         * VALIDACIÓN DEL PRECIO
+         */
+        BigDecimal precio;
 
-        if (publicado) {
-            int idArticuloGenerado = articuloDao.obtenerUltimoIdPorUsuario(usuario.getMatricula());
+        try {
 
-            List<String> rutas = guardarImagenes(request);
-            for (String ruta : rutas) {
-                imagenDao.create(new ImagenArticulo(idArticuloGenerado, ruta));
+            precio = new BigDecimal(precioTexto);
+
+            if (precio.compareTo(BigDecimal.ZERO) < 0) {
+                throw new NumberFormatException();
             }
 
+        } catch (NumberFormatException e) {
+
+            enviarError(
+                    request,
+                    response,
+                    "Ingresa un precio válido."
+            );
+
+            return;
+        }
+
+        /*
+         * CREAR ARTÍCULO
+         *
+         * IMPORTANTE:
+         *
+         * ArticuloDao.create()
+         * lo registra automáticamente como:
+         *
+         * estado = espera
+         *
+         * NO se activa inmediatamente.
+         */
+        Articulo articulo =
+                new Articulo(
+                        titulo,
+                        precio,
+                        idCategoria,
+                        descripcion,
+                        usuario.getMatricula()
+                );
+
+        boolean publicado =
+                articuloDao.create(articulo);
+
+        if (publicado) {
+
+            /*
+             * Obtener el ID generado
+             */
+            int idArticuloGenerado =
+                    articuloDao.obtenerUltimoIdPorUsuario(
+                            usuario.getMatricula()
+                    );
+
+            /*
+             * Guardar imágenes
+             */
+            List<String> rutas =
+                    guardarImagenes(request);
+
+            for (String ruta : rutas) {
+
+                imagenDao.create(
+                        new ImagenArticulo(
+                                idArticuloGenerado,
+                                ruta
+                        )
+                );
+            }
+
+            /*
+             * El usuario sigue pudiendo ser vendedor.
+             * Esta parte se conserva del proyecto original.
+             */
             if (usuario.getIdRolFk() != 3) {
-                boolean ascendido = usuarioDao.ascenderAVendedor(usuario.getMatricula());
+
+                boolean ascendido =
+                        usuarioDao.ascenderAVendedor(
+                                usuario.getMatricula()
+                        );
+
                 if (ascendido) {
+
                     usuario.setIdRolFk(3);
-                    session.setAttribute("usuario", usuario);
+
+                    session.setAttribute(
+                            "usuario",
+                            usuario
+                    );
                 }
             }
 
-            // Notificar al propio vendedor del éxito de su publicación
-            String mensaje = "Tu artículo '" + titulo + "' ($" + precio + " MXN) fue publicado correctamente en el catálogo.";
-            notificacionDao.crearNotificacion(usuario.getMatricula(), mensaje, "SISTEMA");
+            /*
+             * NOTIFICACIÓN
+             */
+            String mensaje =
+                    "Tu artículo '" +
+                            titulo +
+                            "' ($" +
+                            precio +
+                            " MXN) fue registrado y quedó en espera de verificación por un administrador.";
 
-            response.sendRedirect(request.getContextPath() + "/inicio?exito=true");
+            notificacionDao.crearNotificacion(
+                    usuario.getMatricula(),
+                    mensaje,
+                    "SISTEMA"
+            );
+
+            /*
+             * Regresamos a Inicio.
+             *
+             * El artículo NO aparecerá todavía
+             * porque está en estado "espera".
+             */
+            response.sendRedirect(
+                    request.getContextPath() +
+                            "/inicio?espera=true"
+            );
 
         } else {
-            enviarError(request, response, "No se pudo publicar el artículo.");
+
+            enviarError(
+                    request,
+                    response,
+                    "No se pudo registrar el artículo."
+            );
         }
     }
 
-    private List<String> guardarImagenes(HttpServletRequest request) throws IOException, ServletException {
-        List<String> rutas = new ArrayList<>();
-        String uploadPath = System.getenv("MUA_UPLOAD_PATH");
-        if (uploadPath == null || uploadPath.trim().isEmpty()) {
-            uploadPath = System.getProperty("user.home") + File.separator + "mua_uploads";
-        }
-        uploadPath = uploadPath + File.separator + "articulos";
+    /*
+     * ============================================================
+     * GUARDAR IMÁGENES
+     * ============================================================
+     */
+    private List<String> guardarImagenes(
+            HttpServletRequest request)
+            throws IOException, ServletException {
 
-        File carpeta = new File(uploadPath);
-        if (!carpeta.exists()) carpeta.mkdirs();
+        List<String> rutas =
+                new ArrayList<>();
+
+        String uploadPath =
+                System.getenv("MUA_UPLOAD_PATH");
+
+        if (uploadPath == null ||
+                uploadPath.trim().isEmpty()) {
+
+            uploadPath =
+                    System.getProperty("user.home") +
+                            File.separator +
+                            "mua_uploads";
+        }
+
+        uploadPath =
+                uploadPath +
+                        File.separator +
+                        "articulos";
+
+        File carpeta =
+                new File(uploadPath);
+
+        if (!carpeta.exists()) {
+            carpeta.mkdirs();
+        }
 
         for (Part part : request.getParts()) {
-            if (!"imagenes".equals(part.getName())) continue;
-            if (part.getSize() <= 0) continue;
-            if (rutas.size() >= 3) break;
 
-            String nombreOriginal = obtenerNombreArchivo(part);
-            if (nombreOriginal.isEmpty()) continue;
+            if (!"imagenes".equals(part.getName())) {
+                continue;
+            }
 
-            String extension = obtenerExtension(nombreOriginal);
-            if (!extension.equals(".jpg") && !extension.equals(".jpeg") && !extension.equals(".png")) continue;
+            if (part.getSize() <= 0) {
+                continue;
+            }
 
-            String nombreFinal = UUID.randomUUID() + extension;
-            String rutaArchivo = uploadPath + File.separator + nombreFinal;
+            if (rutas.size() >= 3) {
+                break;
+            }
+
+            String nombreOriginal =
+                    obtenerNombreArchivo(part);
+
+            if (nombreOriginal.isEmpty()) {
+                continue;
+            }
+
+            String extension =
+                    obtenerExtension(nombreOriginal);
+
+            if (!extension.equals(".jpg") &&
+                    !extension.equals(".jpeg") &&
+                    !extension.equals(".png")) {
+
+                continue;
+            }
+
+            String nombreFinal =
+                    UUID.randomUUID() +
+                            extension;
+
+            String rutaArchivo =
+                    uploadPath +
+                            File.separator +
+                            nombreFinal;
+
             part.write(rutaArchivo);
-            rutas.add("uploads/articulos/" + nombreFinal);
+
+            rutas.add(
+                    "uploads/articulos/" +
+                            nombreFinal
+            );
         }
+
         return rutas;
     }
 
+    /*
+     * ============================================================
+     * OBTENER NOMBRE DEL ARCHIVO
+     * ============================================================
+     */
     private String obtenerNombreArchivo(Part part) {
-        String contentDisposition = part.getHeader("content-disposition");
-        if (contentDisposition == null) return "";
-        for (String contenido : contentDisposition.split(";")) {
-            contenido = contenido.trim();
+
+        String contentDisposition =
+                part.getHeader("content-disposition");
+
+        if (contentDisposition == null) {
+            return "";
+        }
+
+        for (String contenido :
+                contentDisposition.split(";")) {
+
+            contenido =
+                    contenido.trim();
+
             if (contenido.startsWith("filename")) {
-                return contenido.substring(contenido.indexOf("=") + 1).trim().replace("\"", "");
+
+                return contenido
+                        .substring(
+                                contenido.indexOf("=") + 1
+                        )
+                        .trim()
+                        .replace("\"", "");
             }
         }
+
         return "";
     }
 
-    private String obtenerExtension(String nombreArchivo) {
-        int punto = nombreArchivo.lastIndexOf(".");
-        if (punto == -1) return "";
-        return nombreArchivo.substring(punto).toLowerCase();
+    /*
+     * ============================================================
+     * OBTENER EXTENSIÓN
+     * ============================================================
+     */
+    private String obtenerExtension(
+            String nombreArchivo) {
+
+        int punto =
+                nombreArchivo.lastIndexOf(".");
+
+        if (punto == -1) {
+            return "";
+        }
+
+        return nombreArchivo
+                .substring(punto)
+                .toLowerCase();
     }
 
+    /*
+     * ============================================================
+     * LIMPIAR TEXTO
+     * ============================================================
+     */
     private String limpiar(String valor) {
-        return valor == null ? "" : valor.trim();
+
+        return valor == null
+                ? ""
+                : valor.trim();
     }
 
-    private void enviarError(HttpServletRequest request, HttpServletResponse response, String mensaje) throws ServletException, IOException {
-        request.setAttribute("error", mensaje);
-        request.setAttribute("categorias", categoriaDao.getAll()); // <- Evita que el select aparezca vacío al haber un error
-        request.getRequestDispatcher("publicar-articulo.jsp").forward(request, response);
+    /*
+     * ============================================================
+     * ERROR
+     * ============================================================
+     */
+    private void enviarError(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String mensaje)
+            throws ServletException, IOException {
+
+        request.setAttribute(
+                "error",
+                mensaje
+        );
+
+        request.setAttribute(
+                "categorias",
+                categoriaDao.getAll()
+        );
+
+        request.getRequestDispatcher(
+                "publicar-articulo.jsp"
+        ).forward(
+                request,
+                response
+        );
     }
 }

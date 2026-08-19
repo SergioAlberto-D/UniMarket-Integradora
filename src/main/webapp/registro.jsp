@@ -180,14 +180,28 @@
             <input type="file" class="form-control input-custom py-2 calc-progress" id="fileCredencialReverso" name="credencialReverso" accept="image/png, image/jpeg, image/jpg" required>
             <img id="previewReverso" src="#" alt="Vista previa reverso" class="d-none mt-2" style="max-width: 100%; max-height: 160px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
           </div>
-        </div> <!-- FIN DE LA SECTION-BOX DEL PASO 3 -->
+        </div>
+        <div class="mb-3 mt-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="chkTerminos" name="aceptaTerminos" value="true" required disabled>
+            <label class="form-check-label" for="chkTerminos" style="font-size: 0.85rem;">
+              He leído y acepto los
+              <a href="#" id="linkTerminos" data-bs-toggle="modal" data-bs-target="#modalTerminos">Términos y Condiciones</a>
+              <span class="text-danger">*</span>
+            </label>
+          </div>
+          <div id="terminosHint" class="form-text text-muted" style="font-size: 0.75rem;">
+            <i class="bi bi-info-circle"></i> Debes abrir y leer los Términos y Condiciones antes de poder aceptarlos.
+          </div>
+        </div>
+        <!-- FIN DE LA SECTION-BOX DEL PASO 3 -->
 
         <!-- Botones Atrás y Crear Cuenta -->
         <div class="d-flex gap-2 mb-3">
           <button type="button" id="btnBack2" class="btn btn-peach w-50 py-2 fw-semibold">
             <i class="bi bi-arrow-left me-1"></i> Atrás
           </button>
-          <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm">
+          <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm" disabled>
             Crear Cuenta
           </button>
         </div>
@@ -209,7 +223,65 @@
   </div>
 
 </div>
+<div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="modalTerminosLabel">Términos y Condiciones de Uso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6;">
 
+        <p class="text-muted small">Última actualización: 18/08/26</p>
+        <p>Al registrarse y utilizar el presente sistema de Marketplace Universitario, el usuario declara haber leído, comprendido y aceptado los siguientes Términos y Condiciones de Uso.</p>
+
+        <h6 class="fw-bold mt-4">1. Objeto de la plataforma</h6>
+        <p>El Marketplace Universitario es una plataforma de uso interno cuyo objetivo es facilitar la publicación, búsqueda, compra y venta de productos entre estudiantes de la Universidad. La plataforma funciona únicamente como un medio de comunicación y publicación de productos entre los usuarios, por lo que no interviene como parte en las operaciones de compraventa.</p>
+
+        <h6 class="fw-bold mt-4">2. Responsabilidad de los usuarios</h6>
+        <p>Cada usuario será responsable de las publicaciones, productos, ofertas, compras y demás actividades que realice dentro de la plataforma. El usuario que publique un producto deberá proporcionar información veraz, clara y suficiente sobre el artículo que ofrece. El usuario que adquiera un producto será responsable de verificar las características, condiciones, precio y demás aspectos del artículo antes de realizar cualquier operación.</p>
+        <p>La Universidad y/o los administradores del sistema no garantizan la calidad, autenticidad, estado, funcionamiento, disponibilidad o legalidad de los productos publicados por los usuarios.</p>
+
+        <h6 class="fw-bold mt-4">3. Operaciones entre estudiantes</h6>
+        <p>Las operaciones de compra y venta se llevan a cabo exclusivamente entre los usuarios involucrados. La Universidad, sus autoridades, administradores, personal o responsables del sistema no forman parte de dichas operaciones y no se hacen responsables por pagos, entregas, incumplimientos, pérdidas, daños, fraudes, conflictos o cualquier otro inconveniente entre compradores y vendedores.</p>
+        <p>Se recomienda acordar previamente precio, condiciones de entrega, forma de pago y demás aspectos de la operación.</p>
+
+        <h6 class="fw-bold mt-4">4. Uso responsable de la plataforma</h6>
+        <p>Queda prohibido utilizar la plataforma para:</p>
+        <ul>
+          <li>Publicar productos ilegales, peligrosos, falsificados, robados o de procedencia ilícita.</li>
+          <li>Publicar contenido ofensivo, discriminatorio, amenazante o difamatorio.</li>
+          <li>Realizar actividades fraudulentas o engañosas.</li>
+          <li>Utilizar cuentas de otras personas o proporcionar información falsa en el registro.</li>
+          <li>Intentar alterar, vulnerar o manipular el funcionamiento del sistema.</li>
+        </ul>
+
+        <h6 class="fw-bold mt-4">5. Moderación y administración</h6>
+        <p>El administrador podrá revisar las publicaciones y, ante incumplimientos, podrá solicitar modificaciones, retirar publicaciones, restringir funciones o suspender/cancelar cuentas cuando exista un incumplimiento grave o reiterado.</p>
+
+        <h6 class="fw-bold mt-4">6. Productos y publicaciones</h6>
+        <p>La publicación de un producto no implica que la Universidad lo respalde, recomiende o garantice. La Universidad se reserva el derecho de retirar publicaciones que incumplan las reglas.</p>
+
+        <h6 class="fw-bold mt-4">7. Acuerdos y entregas</h6>
+        <p>Las condiciones de cada operación se acuerdan directamente entre comprador y vendedor. La plataforma no administra ni garantiza pagos, entregas, devoluciones ni el cumplimiento de los acuerdos entre usuarios.</p>
+
+        <h6 class="fw-bold mt-4">8. Seguridad y comportamiento dentro de la Universidad</h6>
+        <p>Se recomienda realizar entregas en lugares seguros y respetar en todo momento los reglamentos institucionales.</p>
+
+        <h6 class="fw-bold mt-4">9. Responsabilidad de la Universidad</h6>
+        <p>La Universidad proporciona el Marketplace como herramienta tecnológica y no se hace responsable de las operaciones comerciales, pagos, entregas o conflictos derivados entre usuarios. Tampoco garantiza disponibilidad permanente o ausencia de errores.</p>
+
+        <h6 class="fw-bold mt-4">10. Aceptación de los Términos y Condiciones</h6>
+        <p>Al aceptar estos Términos, el usuario confirma haberlos leído y comprendido, se compromete a usar la plataforma responsablemente, a proporcionar información verdadera, y reconoce que las operaciones son directamente entre usuarios y que podrán ser moderadas conforme a las reglas establecidas.</p>
+        <p>El incumplimiento podrá dar lugar a eliminación de publicaciones, suspensión de funciones o cancelación de la cuenta, según la gravedad del caso.</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-brown px-4" data-bs-dismiss="modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="assets/js/bootstrap.js"></script>
 <script src="static/js/registro.js"></script>
 </body>
