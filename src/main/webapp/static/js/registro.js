@@ -312,3 +312,28 @@ const configurarPreview = (inputId, previewId) => {
 
 configurarPreview('fileCredencialFrente', 'previewFrente');
 configurarPreview('fileCredencialReverso', 'previewReverso');
+// ==========================================
+// TÉRMINOS Y CONDICIONES (PASO 3)
+// ==========================================
+const chkTerminos = document.getElementById('chkTerminos');
+const modalTerminosEl = document.getElementById('modalTerminos');
+const terminosHint = document.getElementById('terminosHint');
+
+const checkStep3Validity = () => {
+    if (btnSubmitRef) {
+        btnSubmitRef.disabled = !(chkTerminos && chkTerminos.checked);
+    }
+};
+
+const btnSubmitRef = document.getElementById('btnSubmit');
+
+if (modalTerminosEl && chkTerminos) {
+    modalTerminosEl.addEventListener('shown.bs.modal', () => {
+        chkTerminos.disabled = false;
+        if (terminosHint) terminosHint.classList.add('d-none');
+    });
+}
+
+if (chkTerminos) {
+    chkTerminos.addEventListener('change', checkStep3Validity);
+}
