@@ -1,6 +1,7 @@
 package com.unimarket.unimarketintegradora.model.dao;
 
 import com.unimarket.unimarketintegradora.model.Articulo;
+import com.unimarket.unimarketintegradora.model.ImagenArticulo;
 import com.unimarket.unimarketintegradora.utils.SQLConnector;
 
 import java.sql.*;
@@ -568,6 +569,7 @@ public class ArticuloDao implements Dao<Articulo, String> {
     public List<Articulo> obtenerArticulosEnEspera() {
 
         List<Articulo> lista = new ArrayList<>();
+        ImagenArticuloDao imagenArticuloDao = new ImagenArticuloDao(); // <-- NUEVO
 
         String sql =
                 "SELECT a.id_articulo, " +
@@ -609,6 +611,13 @@ public class ArticuloDao implements Dao<Articulo, String> {
                 a.setNombreUsuario(rs.getString("nombre_vendedor"));
                 a.setNombreCategoria(rs.getString("nombre_categoria"));
 
+                // NUEVO: cargar TODAS las imágenes del artículo (no solo la portada)
+                List<String> urlsImagenes = new ArrayList<>();
+                for (ImagenArticulo img : imagenArticuloDao.obtenerPorArticulo(a.getIdArticulo())) {
+                    urlsImagenes.add(img.getUrlImagen());
+                }
+                a.setImagenes(urlsImagenes);
+
                 lista.add(a);
             }
 
@@ -619,11 +628,6 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return lista;
     }
 
-    /*
-     * ============================================================
-     * CAMBIAR ESTADO DE ARTÍCULO
-     * ============================================================
-     */
     public boolean cambiarEstado(int idArticulo, String nuevoEstado) {
 
         String sql =
@@ -645,21 +649,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
     }
 
-    /*
-     * ============================================================
-     * VERIFICAR ARTÍCULO
-     * ============================================================
-     */
     public boolean verificarArticulo(int idArticulo) {
 
         return cambiarEstado(idArticulo, "Activo");
     }
 
-    /*
-     * ============================================================
-     * RECHAZAR ARTÍCULO
-     * ============================================================
-     */
     public boolean rechazarArticulo(int idArticulo) {
 
         return cambiarEstado(idArticulo, "ELIMINADO");

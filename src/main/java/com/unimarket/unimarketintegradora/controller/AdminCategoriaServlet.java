@@ -63,6 +63,16 @@ public class AdminCategoriaServlet extends HttpServlet {
                     return;
                 }
 
+                if (categoriaDao.existeCategoria(nombreCat.trim(), null)) {
+                    if (esAjax) {
+                        response.setStatus(HttpServletResponse.SC_CONFLICT);
+                        response.getWriter().write(
+                                "{\"success\": false, \"message\": \"Ya existe una categor\\u00eda con ese nombre.\"}");
+                        return;
+                    }
+                    response.sendRedirect(request.getContextPath() + "/admincategorias");
+                    return;
+                }
                 categoria nuevaCat = new categoria(nombreCat.trim());
                 categoriaDao.agregarCategoria(nuevaCat);
 
@@ -85,6 +95,16 @@ public class AdminCategoriaServlet extends HttpServlet {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         response.getWriter().write(
                                 "{\"success\": false, \"message\": \"El nombre de la categor\\u00eda es obligatorio.\"}");
+                        return;
+                    }
+                    response.sendRedirect(request.getContextPath() + "/admincategorias");
+                    return;
+                }
+                if (categoriaDao.existeCategoria(nombreCat.trim(), idCategoria)) {
+                    if (esAjax) {
+                        response.setStatus(HttpServletResponse.SC_CONFLICT);
+                        response.getWriter().write(
+                                "{\"success\": false, \"message\": \"Ya existe una categor\\u00eda con ese nombre.\"}");
                         return;
                     }
                     response.sendRedirect(request.getContextPath() + "/admincategorias");

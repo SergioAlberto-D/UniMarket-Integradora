@@ -211,4 +211,24 @@ public class categoriaDao implements Dao<categoria, Integer> {
             return false;
         }
     }
+    public boolean existeCategoria(String nombre, Integer idExcluir) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CATEGORIA WHERE UPPER(CATEGORIA) = UPPER(?)"
+                + (idExcluir != null ? " AND ID_CATEGORIA <> ?" : "");
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre.trim());
+            if (idExcluir != null) {
+                ps.setInt(2, idExcluir);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
 }
