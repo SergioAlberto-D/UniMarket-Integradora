@@ -38,6 +38,25 @@
             </div>
         </div>
     </div>
+    <div class="container mt-4">
+        <div class="stats-resumen">
+            <div class="stat-card-admin">
+                <i class="fa-solid fa-box-archive stat-card-admin-icon"></i>
+                <div class="stat-card-admin-body">
+                    <span class="stat-card-admin-numero">${empty totalPublicaciones ? 0 : totalPublicaciones}</span>
+                    <span class="stat-card-admin-label">Artículos<br>publicados</span>
+                </div>
+            </div>
+            <div class="stat-card-admin">
+                <i class="fa-solid fa-user stat-card-admin-icon"></i>
+                <div class="stat-card-admin-body">
+                    <span class="stat-card-admin-numero">${empty totalUsuarios ? 0 : totalUsuarios}</span>
+                    <span class="stat-card-admin-label">Usuarios<br>registrados</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- ================================================================
          USUARIOS EN ESPERA

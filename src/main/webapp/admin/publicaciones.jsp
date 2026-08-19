@@ -31,9 +31,6 @@
             </button>
             <div>Administración &gt; <span style="color:#555;">Publicaciones</span></div>
         </div>
-        <div class="right-avatar">
-            <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="AD"/>
-        </div>
     </div>
 
     <div class="container">

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioDao {
+public class UsuarioDao implements Dao<Usuario, String> {
 
     // =========================================================================
     // MÉTODOS OBLIGATORIOS DE LA INTERFAZ DAO (CRUD ESTÁNDAR)
@@ -93,6 +93,7 @@ public class UsuarioDao {
         }
     }
 
+    @Override
     public boolean delete(String id) {
         return rechazarUsuario(id);
     }
