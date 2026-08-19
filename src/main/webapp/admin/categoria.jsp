@@ -152,7 +152,7 @@
 </script>
 <script src="${pageContext.request.contextPath}/assets/js/sidebar.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/categoria.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/categoria.js"></script>
 
 </body>
 </html>

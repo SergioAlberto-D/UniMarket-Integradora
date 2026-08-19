@@ -1,6 +1,7 @@
 package com.unimarket.unimarketintegradora.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Articulo {
 
@@ -14,9 +15,8 @@ public class Articulo {
     private String nombreUsuario;
     private String fotoVendedor;
     private String nombreCategoria;
+    private List<String> imagenes;
 
-    // NUEVO: estado del artículo
-    // ESPERA, ACTIVO, ELIMINADO
     private String estado;
 
     public Articulo() {
@@ -112,15 +112,19 @@ public class Articulo {
         this.nombreCategoria = nombreCategoria;
     }
 
-    // ==========================================
-    // ESTADO
-    // ==========================================
-
     public String getEstado() {
         return estado;
     }
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public List<String> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<String> imagenes) {
+        this.imagenes = imagenes;
     }
 }
