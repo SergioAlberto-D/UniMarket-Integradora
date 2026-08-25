@@ -29,14 +29,13 @@
   <div class="sidebar-footer">
     <div class="user-profile-summary">
       <div class="avatar-circle">
-        <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="RH"/>
+        <c:out value="${fn:toUpperCase(fn:substring(sessionScope.admin.nombre, 0, 1))}" default="A"/>
       </div>
       <div class="profile-info">
-        <h4><c:out value="${sessionScope.adminLogueado.nombre} ${sessionScope.adminLogueado.apellidoPaterno}" default="Rafael Hurtado"/></h4>
-        <p><c:out value="${sessionScope.adminLogueado.correoInstitucional}" default="rafaelhurtado@utez.edu.mx"/></p>
+        <p><c:out value="${sessionScope.admin.correo}" default="admin@utez.edu.mx"/></p>
       </div>
     </div>
-    <form action="LogoutServlet" method="POST">
+    <form action="logout" method="POST">
       <button type="submit" class="btn-logout">Cerrar sesión</button>
     </form>
   </div>

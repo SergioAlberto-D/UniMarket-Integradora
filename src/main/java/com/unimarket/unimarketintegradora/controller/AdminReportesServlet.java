@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Servlet encargado de administrar los reportes de los usuarios dentro del panel de control.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet("/adminreportes")
 public class AdminReportesServlet extends HttpServlet {
 
@@ -22,6 +28,16 @@ public class AdminReportesServlet extends HttpServlet {
         this.reporteDao = new ReportesDao();
     }
 
+    /**
+     * Maneja las peticiones GET para obtener y listar los reportes en la vista de administración.
+     *
+     * @param request  Objeto HttpServletRequest para enviar la lista de reportes a la vista.
+     * @param response Objeto HttpServletResponse para reenviar la solicitud al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -37,6 +53,16 @@ public class AdminReportesServlet extends HttpServlet {
         request.getRequestDispatcher("/admin/reportes.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para actualizar el estado de los reportes (atender o desestimar).
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la acción y el ID del reporte.
+     * @param response Objeto HttpServletResponse para redireccionar al panel de reportes.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

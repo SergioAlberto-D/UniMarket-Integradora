@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: sheuko
   Date: 7/2/26
-  Time: 9:51 PM
+  Time: 9:51 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -17,7 +17,7 @@
   <title>Registro - MUA</title>
   <link rel="stylesheet" href="assets/css/bootstrap.css">
   <link rel="stylesheet" href="assets/css/bi_s/bootstrap-icons.css">
-
+  <link rel="icon" href="<%= request.getContextPath() %>/static/img/logoMUA.png" type="image/png">
   <link rel="stylesheet" href="assets/css/Login.css">
   <link rel="stylesheet" href="assets/css/Registro.css">
 </head>
@@ -53,7 +53,7 @@
     <p id="progress-text" class="text-end text-muted small mb-4">0% completado</p>
 
     <!-- Formulario -->
-    <form id="registroForm" action="register" method="post">
+    <form id="registroForm" action="register" method="post" enctype="multipart/form-data">
 
       <!-- ================= PASO 1 ================= -->
       <div id="step-1">
@@ -64,40 +64,43 @@
           </div>
 
           <div class="mb-3">
-            <label for="txtNombre" class="form-label-custom">Nombre(s) *</label>
-            <input value="${param.nombre}" type="text" class="form-control input-custom py-2 calc-progress" id="txtNombre" name="nombre" placeholder="Ejem: Marco Ivan" required>
+            <label for="txtNombre" class="form-label-custom">Nombre(s) <span class="text-danger">*</span></label>
+            <input value="${param.nombre}" type="text" class="form-control input-custom py-2 calc-progress" id="txtNombre" name="nombre" placeholder="" required>
           </div>
 
           <div class="row mb-3">
             <div class="col-6">
-              <label for="txtApePat" class="form-label-custom">Apellido Paterno *</label>
-              <input value="${param.apellidoPaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApePat" name="apellidoPaterno" placeholder="Ejem: Andres" required>
+              <label for="txtApePat" class="form-label-custom">Apellido Paterno <span class="text-danger">*</span></label>
+              <input value="${param.apellidoPaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApePat" name="apellidoPaterno" placeholder="" required>
             </div>
             <div class="col-6">
-              <label for="txtApeMat" class="form-label-custom">Apellido Materno *</label>
-              <input value="${param.apellidoMaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApeMat" name="apellidoMaterno" placeholder="Ejem: Andres" required>
+              <label for="txtApeMat" class="form-label-custom">Apellido Materno <span class="text-danger">*</span></label>
+              <input value="${param.apellidoMaterno}" type="text" class="form-control input-custom py-2 calc-progress" id="txtApeMat" name="apellidoMaterno" placeholder="" required>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="txtTel" class="form-label-custom">Número de teléfono</label>
-            <input value="${param.telefono}" type="tel" class="form-control input-custom py-2" id="txtTel" name="telefono" placeholder="777 123 4567">
+            <label for="txtTel" class="form-label-custom">Número de teléfono <span class="text-danger">*</span></label>
+            <input value="${param.telefono}" type="tel" class="form-control input-custom py-2 calc-progress" id="txtTel" name="telefono" placeholder="(777)-123-4567" required>
           </div>
 
           <div class="mb-2">
-            <label for="txtCarrera" class="form-label-custom">Carrera *</label>
-            <select class="form-select input-custom py-2 calc-progress" id="txtCarrera" name="carrera" required>
-              <option value="" disabled selected>Selecciona tu carrera...</option>
-              <option value="Terapia Física" ${param.carrera == 'Terapia Física' ? 'selected' : ''}>Terapia Física</option>
+            <label for="txtCarrera" class="form-label-custom">División Académica<span class="text-danger">*</span></label>
+            <select class="form-select input-custom py-2 calc-progress" id="txtCarrera" name="idDivision" required>
+              <option value="" disabled selected>Selecciona tu División Académica...</option>
+              <option value="1">DATID</option>
+              <option value="2">DAMI</option>
+              <option value="3">DACEA</option>
+              <option value="4">DATEFI</option>
             </select>
           </div>
-        </div>
+        </div> <!-- AQUÍ VA EL CIERRE DEL SECTION-BOX QUE FALTABA -->
 
         <!-- Botón Siguiente -->
-        <button type="button" id="btnNext" class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3">
-        Siguiente <i class="bi bi-arrow-right ms-1"></i>
-      </button>
-      </div>
+        <button type="button" id="btnNext" class="btn btn-brown w-100 py-2 fw-semibold shadow-sm mb-3" disabled>
+          Siguiente <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div> <!-- AQUÍ SE CIERRA EL STEP-1 CORRECTAMENTE -->
 
       <!-- ================= PASO 2 ================= -->
       <div id="step-2" class="d-none">
@@ -108,13 +111,20 @@
           </div>
 
           <div class="mb-3">
-            <label for="txtCorreo" class="form-label-custom">Correo institucional *</label>
-            <input value="${param.email1}" type="email" class="form-control input-custom py-2 calc-progress" id="txtCorreo" name="email1" placeholder="Matricula@utez.edu.mx" required>
+            <label for="txtMatricula" class="form-label-custom">Matrícula Institucional <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input value="${param.matricula}" type="text" class="form-control input-custom py-2 calc-progress" id="txtMatricula" name="matricula" placeholder="Ej. 20223TN000" style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
+              <span class="input-group-text" style="background-color: #F3ECE8; border: none; color: #6c757d; border-top-right-radius: 6px; border-bottom-right-radius: 6px; font-weight: 500;">@utez.edu.mx</span>
+            </div>
+            <div class="form-text mt-1" style="font-size: 0.8rem;">Solo ingresa tu matrícula, nosotros agregamos el resto.</div>
           </div>
 
           <div class="mb-3">
-            <label for="txtPassword1" class="form-label-custom">Contraseña *</label>
-            <input type="password" class="form-control input-custom py-2 calc-progress" id="txtPassword1" name="contra1" placeholder="Contraseña" required>
+            <label for="txtPassword1" class="form-label-custom">Contraseña <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="password" class="form-control input-custom py-2 pe-5 calc-progress" id="txtPassword1" name="contra1" placeholder="Contraseña" required>
+              <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password" data-target="txtPassword1"></i>
+            </div>
 
             <div id="password-rules" class="small mt-1 d-none" style="font-size: 0.8rem;">
               <div id="rule-length" class="text-danger mb-1"><i class="bi bi-x-circle icon-rule"></i>Mínimo 8 caracteres</div>
@@ -125,30 +135,82 @@
           </div>
 
           <div class="mb-2">
-            <label for="txtPassword2" class="form-label-custom">Confirmar contraseña *</label>
-            <input type="password" class="form-control input-custom py-2 calc-progress" id="txtPassword2" name="contra2" placeholder="Repite tu contraseña" required>
+            <label for="txtPassword2" class="form-label-custom">Confirmar contraseña <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="password" class="form-control input-custom py-2 pe-5 calc-progress" id="txtPassword2" name="contra2" placeholder="Repite tu contraseña" required>
+              <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer toggle-password" data-target="txtPassword2"></i>
+            </div>
 
             <div id="match-rules" class="small mt-1 d-none" style="font-size: 0.8rem;">
               <div id="rule-match" class="text-danger"><i class="bi bi-x-circle icon-rule"></i>Las contraseñas deben coincidir</div>
             </div>
           </div>
+        </div> <!-- FIN DE LA SECTION-BOX DEL PASO 2 -->
+
+        <!-- Botones Atrás y Siguiente -->
+        <div class="d-flex gap-2 mb-3">
+          <button type="button" id="btnBack" class="btn btn-peach w-50 py-2 fw-semibold">
+            <i class="bi bi-arrow-left me-1"></i> Atrás
+          </button>
+          <button type="button" id="btnNext2" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm" disabled>
+            Siguiente <i class="bi bi-arrow-right ms-1"></i>
+          </button>
         </div>
+      </div> <!-- FIN DEL PASO 2 -->
+
+      <!-- ================= PASO 3 ================= -->
+      <div id="step-3" class="d-none">
+        <div class="section-box">
+          <div class="section-title">
+            <div class="icon-box"><i class="bi bi-card-image"></i></div>
+            Identificación escolar
+          </div>
+          <p class="text-muted mb-3" style="font-size: 0.85rem;">
+            Sube una foto de tu credencial escolar (frente y reverso). Esto nos ayuda a verificar que perteneces a la comunidad universitaria.
+          </p>
+
+          <div class="mb-3">
+            <label for="fileCredencialFrente" class="form-label-custom">Credencial escolar - Frente <span class="text-danger">*</span></label>
+            <input type="file" class="form-control input-custom py-2 calc-progress" id="fileCredencialFrente" name="credencialFrente" accept="image/png, image/jpeg, image/jpg" required>
+            <img id="previewFrente" src="#" alt="Vista previa frente" class="d-none mt-2" style="max-width: 100%; max-height: 160px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
+          </div>
+
+          <div class="mb-2">
+            <label for="fileCredencialReverso" class="form-label-custom">Credencial escolar - Reverso <span class="text-danger">*</span></label>
+            <input type="file" class="form-control input-custom py-2 calc-progress" id="fileCredencialReverso" name="credencialReverso" accept="image/png, image/jpeg, image/jpg" required>
+            <img id="previewReverso" src="#" alt="Vista previa reverso" class="d-none mt-2" style="max-width: 100%; max-height: 160px; border-radius: 10px; border: 1px solid #dee2e6; object-fit: cover;">
+          </div>
+        </div>
+        <div class="mb-3 mt-3">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="chkTerminos" name="aceptaTerminos" value="true" required disabled>
+            <label class="form-check-label" for="chkTerminos" style="font-size: 0.85rem;">
+              He leído y acepto los
+              <a href="#" id="linkTerminos" data-bs-toggle="modal" data-bs-target="#modalTerminos">Términos y Condiciones</a>
+              <span class="text-danger">*</span>
+            </label>
+          </div>
+          <div id="terminosHint" class="form-text text-muted" style="font-size: 0.75rem;">
+            <i class="bi bi-info-circle"></i> Debes abrir y leer los Términos y Condiciones antes de poder aceptarlos.
+          </div>
+        </div>
+        <!-- FIN DE LA SECTION-BOX DEL PASO 3 -->
 
         <!-- Botones Atrás y Crear Cuenta -->
         <div class="d-flex gap-2 mb-3">
-          <button type="button" id="btnBack" class="btn btn-outline-secondary w-50 py-2 fw-semibold shadow-sm">
+          <button type="button" id="btnBack2" class="btn btn-peach w-50 py-2 fw-semibold">
             <i class="bi bi-arrow-left me-1"></i> Atrás
           </button>
-          <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm">
+          <button type="submit" id="btnSubmit" class="btn btn-brown w-50 py-2 fw-semibold shadow-sm" disabled>
             Crear Cuenta
           </button>
         </div>
-      </div>
+      </div> <!-- FIN DEL PASO 3 -->
 
       <!-- Enlace Login -->
       <div class="text-center mt-2" style="font-size: 0.85rem;">
         <span class="text-muted">¿Ya tienes cuenta?</span>
-        <a href="login.jsp" class="text-muted text-decoration-underline">Inicia sesión</a>
+        <a href="login.jsp" class="login-link ms-1">Inicia sesión</a>
       </div>
 
     </form>
@@ -161,7 +223,65 @@
   </div>
 
 </div>
+<div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="modalTerminosLabel">Términos y Condiciones de Uso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" style="font-size: 0.88rem; line-height: 1.6;">
 
+        <p class="text-muted small">Última actualización: 18/08/26</p>
+        <p>Al registrarse y utilizar el presente sistema de Marketplace Universitario, el usuario declara haber leído, comprendido y aceptado los siguientes Términos y Condiciones de Uso.</p>
+
+        <h6 class="fw-bold mt-4">1. Objeto de la plataforma</h6>
+        <p>El Marketplace Universitario es una plataforma de uso interno cuyo objetivo es facilitar la publicación, búsqueda, compra y venta de productos entre estudiantes de la Universidad. La plataforma funciona únicamente como un medio de comunicación y publicación de productos entre los usuarios, por lo que no interviene como parte en las operaciones de compraventa.</p>
+
+        <h6 class="fw-bold mt-4">2. Responsabilidad de los usuarios</h6>
+        <p>Cada usuario será responsable de las publicaciones, productos, ofertas, compras y demás actividades que realice dentro de la plataforma. El usuario que publique un producto deberá proporcionar información veraz, clara y suficiente sobre el artículo que ofrece. El usuario que adquiera un producto será responsable de verificar las características, condiciones, precio y demás aspectos del artículo antes de realizar cualquier operación.</p>
+        <p>La Universidad y/o los administradores del sistema no garantizan la calidad, autenticidad, estado, funcionamiento, disponibilidad o legalidad de los productos publicados por los usuarios.</p>
+
+        <h6 class="fw-bold mt-4">3. Operaciones entre estudiantes</h6>
+        <p>Las operaciones de compra y venta se llevan a cabo exclusivamente entre los usuarios involucrados. La Universidad, sus autoridades, administradores, personal o responsables del sistema no forman parte de dichas operaciones y no se hacen responsables por pagos, entregas, incumplimientos, pérdidas, daños, fraudes, conflictos o cualquier otro inconveniente entre compradores y vendedores.</p>
+        <p>Se recomienda acordar previamente precio, condiciones de entrega, forma de pago y demás aspectos de la operación.</p>
+
+        <h6 class="fw-bold mt-4">4. Uso responsable de la plataforma</h6>
+        <p>Queda prohibido utilizar la plataforma para:</p>
+        <ul>
+          <li>Publicar productos ilegales, peligrosos, falsificados, robados o de procedencia ilícita.</li>
+          <li>Publicar contenido ofensivo, discriminatorio, amenazante o difamatorio.</li>
+          <li>Realizar actividades fraudulentas o engañosas.</li>
+          <li>Utilizar cuentas de otras personas o proporcionar información falsa en el registro.</li>
+          <li>Intentar alterar, vulnerar o manipular el funcionamiento del sistema.</li>
+        </ul>
+
+        <h6 class="fw-bold mt-4">5. Moderación y administración</h6>
+        <p>El administrador podrá revisar las publicaciones y, ante incumplimientos, podrá solicitar modificaciones, retirar publicaciones, restringir funciones o suspender/cancelar cuentas cuando exista un incumplimiento grave o reiterado.</p>
+
+        <h6 class="fw-bold mt-4">6. Productos y publicaciones</h6>
+        <p>La publicación de un producto no implica que la Universidad lo respalde, recomiende o garantice. La Universidad se reserva el derecho de retirar publicaciones que incumplan las reglas.</p>
+
+        <h6 class="fw-bold mt-4">7. Acuerdos y entregas</h6>
+        <p>Las condiciones de cada operación se acuerdan directamente entre comprador y vendedor. La plataforma no administra ni garantiza pagos, entregas, devoluciones ni el cumplimiento de los acuerdos entre usuarios.</p>
+
+        <h6 class="fw-bold mt-4">8. Seguridad y comportamiento dentro de la Universidad</h6>
+        <p>Se recomienda realizar entregas en lugares seguros y respetar en todo momento los reglamentos institucionales.</p>
+
+        <h6 class="fw-bold mt-4">9. Responsabilidad de la Universidad</h6>
+        <p>La Universidad proporciona el Marketplace como herramienta tecnológica y no se hace responsable de las operaciones comerciales, pagos, entregas o conflictos derivados entre usuarios. Tampoco garantiza disponibilidad permanente o ausencia de errores.</p>
+
+        <h6 class="fw-bold mt-4">10. Aceptación de los Términos y Condiciones</h6>
+        <p>Al aceptar estos Términos, el usuario confirma haberlos leído y comprendido, se compromete a usar la plataforma responsablemente, a proporcionar información verdadera, y reconoce que las operaciones son directamente entre usuarios y que podrán ser moderadas conforme a las reglas establecidas.</p>
+        <p>El incumplimiento podrá dar lugar a eliminación de publicaciones, suspensión de funciones o cancelación de la cuenta, según la gravedad del caso.</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-brown px-4" data-bs-dismiss="modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="assets/js/bootstrap.js"></script>
 <script src="static/js/registro.js"></script>
 </body>

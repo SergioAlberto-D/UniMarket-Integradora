@@ -30,9 +30,6 @@
             </button>
             <div>Administración &gt; <span style="color:#555;">Usuarios</span></div>
         </div>
-        <div class="right-avatar">
-            <c:out value="${fn:substring(sessionScope.adminLogueado.nombre, 0, 1)}${fn:substring(sessionScope.adminLogueado.apellidoPaterno, 0, 1)}" default="AD"/>
-        </div>
     </div>
 
     <div class="container">
@@ -74,14 +71,15 @@
                                     <td><c:out value="${usuario.numeroCelular}"/></td>
                                     <td>
                                         <span class="badge-categoria">
-                                            Div. <c:out value="${usuario.idDivisionAcademicaFk}"/>
+                                            <!-- Muestra el nombre real de la división obtenido desde el mapa de la base de datos -->
+                                            <c:out value="${mapaDivisiones[usuario.idDivisionAcademicaFk]}" default="Otra"/>
                                         </span>
                                     </td>
 
                                     <td style="text-align: right;">
-                                        <form action="AdminUsuarioServlet" method="POST" style="margin:0;">
+                                        <form action="${pageContext.request.contextPath}/adminusuarios" method="POST" style="margin:0;">
                                             <input type="hidden" name="accion" value="eliminar">
-                                            <input type="hidden" name="idUsuario" value="${usuario.idUsuario}">
+                                            <input type="hidden" name="matricula" value="${usuario.matricula}">
                                             <button type="submit" class="btn-delete" onclick="return confirm('¿Deseas dar de baja a este usuario?');">
                                                 Eliminar
                                             </button>
@@ -104,4 +102,4 @@
 <script src="${pageContext.request.contextPath}/assets/js/buscador.js"></script>
 
 </body>
-</html>
+</html>si

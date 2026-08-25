@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class categoriaDao {
+public class categoriaDao implements Dao<categoria, Integer> {
 
     public List<categoria> listarCategorias() throws SQLException {
         List<categoria> lista = new ArrayList<>();
@@ -49,8 +49,13 @@ public class categoriaDao {
                 psInsert.setString(2, categoria.getCategoria());
                 psInsert.executeUpdate();
             }
+
+            // 3. Reflejamos el ID generado en el objeto recibido, para que el llamador
+            //    (por ejemplo el servlet, al responder AJAX) pueda usarlo sin otra consulta.
+            categoria.setIdCategoria(siguienteId);
         }
     }
+
 
     public void editarCategoria(categoria categoria) throws SQLException {
         String sql = "UPDATE CATEGORIA SET CATEGORIA = ? WHERE ID_CATEGORIA = ?";
@@ -126,5 +131,101 @@ public class categoriaDao {
                 throw e;
             }
         }
+    }
+    @Override
+    public boolean create(categoria entidad) {
+        String sql = "INSERT INTO categoria (categoria) VALUES (?)";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, entidad.getCategoria());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al crear categoria: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<categoria> getAll() {
+        List<categoria> categorias = new ArrayList<>();
+        String sql = "SELECT * FROM categoria ORDER BY ID_CATEGORIA ASC";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                categoria cat = new categoria(rs.getString("categoria"));
+                cat.setIdCategoria(rs.getInt("id_categoria"));
+                categorias.add(cat);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener categorias: " + e.getMessage());
+        }
+        return categorias;
+    }
+
+    @Override
+    public categoria getById(Integer id) {
+        String sql = "SELECT * FROM categoria WHERE id_categoria = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    categoria cat = new categoria(rs.getString("categoria"));
+                    cat.setIdCategoria(rs.getInt("id_categoria"));
+                    return cat;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar categoria: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public boolean update(categoria entidad) {
+        String sql = "UPDATE categoria SET categoria = ? WHERE id_categoria = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, entidad.getCategoria());
+            ps.setInt(2, entidad.getIdCategoria());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar categoria: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Integer id) {
+        String sql = "DELETE FROM categoria WHERE id_categoria = ?";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar categoria: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean existeCategoria(String nombre, Integer idExcluir) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM CATEGORIA WHERE UPPER(CATEGORIA) = UPPER(?)"
+                + (idExcluir != null ? " AND ID_CATEGORIA <> ?" : "");
+
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, nombre.trim());
+            if (idExcluir != null) {
+                ps.setInt(2, idExcluir);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }
