@@ -41,9 +41,22 @@ import java.io.IOException;
         "/cambiar-password-perfil.jsp",
         "/articulos-fragment.jsp"
 })
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Usuario Filter.
+ *
+ * @author Equipo UniMarket
+ */
 public class UsuarioFilter implements Filter {
 
     @Override
+/**
+ * Intercepta y procesa una solicitud antes de continuar con la cadena del filtro.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @param chain Parámetro de entrada de la operación.
+ * @throws IOException Excepción declarada por la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 

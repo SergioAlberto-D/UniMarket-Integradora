@@ -24,9 +24,22 @@ import java.io.IOException;
         "/admin/publicaciones.jsp",
         "/admin/reportes.jsp"
 })
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Filter.
+ *
+ * @author Equipo UniMarket
+ */
 public class AdminFilter implements Filter {
 
     @Override
+/**
+ * Intercepta y procesa una solicitud antes de continuar con la cadena del filtro.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @param chain Parámetro de entrada de la operación.
+ * @throws IOException Excepción declarada por la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 

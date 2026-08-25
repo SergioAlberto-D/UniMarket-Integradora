@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/registro.js
+ * Propósito: Script de interfaz correspondiente al módulo registro.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 // ==========================================
 // NAVEGACIÓN POR PASOS Y BARRA DE PROGRESO
 // ==========================================

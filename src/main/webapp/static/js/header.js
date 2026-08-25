@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/header.js
+ * Propósito: Proporciona el modal universal de mensajes de MUA.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 // ==========================================
 // MODAL UNIVERSAL MUA
 // ==========================================

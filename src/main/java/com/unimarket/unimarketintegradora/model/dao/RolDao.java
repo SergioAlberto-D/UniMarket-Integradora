@@ -10,8 +10,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Rol.
+ *
+ * @author Sergio
+ */
+
 public class RolDao implements Dao<Rol, String> {
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(Rol entidad) {
         String sql = "INSERT INTO rol (nombre_rol) VALUES (?)";
@@ -25,6 +36,10 @@ public class RolDao implements Dao<Rol, String> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `Rol` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<Rol> getAll() {
         List<Rol> roles = new ArrayList<>();
@@ -42,6 +57,11 @@ public class RolDao implements Dao<Rol, String> {
         return roles;
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `Rol` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public Rol getById(String id) {
         String sql = "SELECT * FROM rol WHERE id_rol = ?";
@@ -61,6 +81,11 @@ public class RolDao implements Dao<Rol, String> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(Rol entidad) {
         String sql = "UPDATE rol SET nombre_rol = ? WHERE id_rol = ?";
@@ -75,6 +100,11 @@ public class RolDao implements Dao<Rol, String> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(String id) {
         String sql = "DELETE FROM rol WHERE id_rol = ?";

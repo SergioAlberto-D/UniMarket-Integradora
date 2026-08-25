@@ -10,8 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class categoriaDao implements Dao<categoria, Integer> {
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad categoria.
+ *
+ * @author Dulce
+ */
 
+public class categoriaDao implements Dao<categoria, Integer> {
+/**
+ * Consulta todas las categorías disponibles y las devuelve ordenadas por identificador.
+ * @return Devuelve una lista de objetos `categoria` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public List<categoria> listarCategorias() throws SQLException {
         List<categoria> lista = new ArrayList<>();
         String sql = "SELECT ID_CATEGORIA, CATEGORIA FROM CATEGORIA ORDER BY ID_CATEGORIA ASC";
@@ -29,7 +39,12 @@ public class categoriaDao implements Dao<categoria, Integer> {
         }
         return lista;
     }
-
+/**
+ * Registra una nueva categoría generando su identificador y almacenando su nombre.
+ * @param categoria Objeto categoría que contiene el identificador y el nombre de la categoría que se desea registrar o modificar.
+ * @return No devuelve un valor. La operación modifica la base de datos y, si ocurre un problema de acceso a datos, se propaga la excepción `SQLException` declarada por el método.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public void agregarCategoria(categoria categoria) throws SQLException {
         String sqlMaxId = "SELECT NVL(MAX(ID_CATEGORIA), 0) + 1 AS SIGUIENTE_ID FROM CATEGORIA";
         String sqlInsert = "INSERT INTO CATEGORIA (ID_CATEGORIA, CATEGORIA) VALUES (?, ?)";
@@ -55,8 +70,12 @@ public class categoriaDao implements Dao<categoria, Integer> {
             categoria.setIdCategoria(siguienteId);
         }
     }
-
-
+/**
+ * Actualiza el nombre de una categoría existente utilizando su identificador.
+ * @param categoria Objeto categoría que contiene el identificador y el nombre de la categoría que se desea registrar o modificar.
+ * @return No devuelve un valor. La operación modifica la base de datos y, si ocurre un problema de acceso a datos, se propaga la excepción `SQLException` declarada por el método.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public void editarCategoria(categoria categoria) throws SQLException {
         String sql = "UPDATE CATEGORIA SET CATEGORIA = ? WHERE ID_CATEGORIA = ?";
         try (Connection con = SQLConnector.getConnection();
@@ -66,7 +85,12 @@ public class categoriaDao implements Dao<categoria, Integer> {
             ps.executeUpdate();
         }
     }
-
+/**
+ * Elimina una categoría validando previamente la categoría de respaldo definida por el sistema.
+ * @param idCategoria Identificador de la categoría utilizado para filtrar, localizar o modificar la categoría correspondiente.
+ * @return No devuelve un valor. La operación modifica la base de datos y, si ocurre un problema de acceso a datos, se propaga la excepción `SQLException` declarada por el método.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public void eliminarCategoria(int idCategoria) throws SQLException {
         String sqlBuscarOtros = "SELECT ID_CATEGORIA FROM CATEGORIA WHERE UPPER(CATEGORIA) = 'OTROS'";
         String sqlDelete = "DELETE FROM CATEGORIA WHERE ID_CATEGORIA = ?";
@@ -132,6 +156,11 @@ public class categoriaDao implements Dao<categoria, Integer> {
             }
         }
     }
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(categoria entidad) {
         String sql = "INSERT INTO categoria (categoria) VALUES (?)";
@@ -145,6 +174,10 @@ public class categoriaDao implements Dao<categoria, Integer> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `categoria` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<categoria> getAll() {
         List<categoria> categorias = new ArrayList<>();
@@ -163,6 +196,11 @@ public class categoriaDao implements Dao<categoria, Integer> {
         return categorias;
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `categoria` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public categoria getById(Integer id) {
         String sql = "SELECT * FROM categoria WHERE id_categoria = ?";
@@ -182,6 +220,11 @@ public class categoriaDao implements Dao<categoria, Integer> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(categoria entidad) {
         String sql = "UPDATE categoria SET categoria = ? WHERE id_categoria = ?";
@@ -196,6 +239,11 @@ public class categoriaDao implements Dao<categoria, Integer> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(Integer id) {
         String sql = "DELETE FROM categoria WHERE id_categoria = ?";
@@ -208,6 +256,13 @@ public class categoriaDao implements Dao<categoria, Integer> {
             return false;
         }
     }
+/**
+ * Comprueba si existe una categoría con el mismo nombre, permitiendo excluir un identificador cuando se está editando.
+ * @param nombre Nombre de la categoría utilizado para comprobar si ya existe una categoría con el mismo nombre.
+ * @param idExcluir Identificador de una categoría que debe excluirse de la comprobación de duplicados; puede ser null al crear una categoría.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public boolean existeCategoria(String nombre, Integer idExcluir) throws SQLException {
         String sql = "SELECT COUNT(*) FROM CATEGORIA WHERE UPPER(CATEGORIA) = UPPER(?)"
                 + (idExcluir != null ? " AND ID_CATEGORIA <> ?" : "");

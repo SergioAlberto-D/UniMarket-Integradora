@@ -31,6 +31,11 @@ import java.io.IOException;
         maxFileSize = 1024 * 1024 * 10,      // 10MB máximo por archivo
         maxRequestSize = 1024 * 1024 * 50    // 50MB máximo por petición
 )
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Register Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class RegisterServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();
@@ -49,6 +54,13 @@ public class RegisterServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Configurar UTF-8 para acentos
         request.setCharacterEncoding("UTF-8");

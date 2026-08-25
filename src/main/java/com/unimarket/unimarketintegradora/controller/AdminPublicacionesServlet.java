@@ -18,6 +18,11 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet("/adminpublicaciones")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Publicaciones Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class AdminPublicacionesServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
@@ -33,6 +38,13 @@ public class AdminPublicacionesServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -54,6 +66,13 @@ public class AdminPublicacionesServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

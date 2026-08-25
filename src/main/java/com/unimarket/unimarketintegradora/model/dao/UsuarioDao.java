@@ -8,12 +8,23 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Usuario.
+ *
+ * @author Sergio
+ */
+
 public class UsuarioDao implements Dao<Usuario, String> {
 
     // =========================================================================
     // MÉTODOS OBLIGATORIOS DE LA INTERFAZ DAO (CRUD ESTÁNDAR)
     // =========================================================================
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param u Objeto Usuario con los datos del usuario que se desea registrar o actualizar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(Usuario u) {
         String sql = "INSERT INTO USUARIO (MATRICULA, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, NUMERO_CELULAR, " +
@@ -39,6 +50,10 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `Usuario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<Usuario> getAll() {
         List<Usuario> lista = new ArrayList<>();
@@ -53,6 +68,7 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return lista;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     // MÉTODO EXCLUSIVO PARA ADMINISTRACIÓN (Filtra inactivos y eliminados)
     public List<Usuario> getUsuariosActivosParaAdmin() {
@@ -88,6 +104,13 @@ public class UsuarioDao implements Dao<Usuario, String> {
         String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
 
 =======
+=======
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `Usuario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
+>>>>>>> origin/sergio
     @Override
     public Usuario getById(String id) {
         String sql = "SELECT * FROM USUARIO WHERE MATRICULA = ?";
@@ -105,6 +128,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param u Objeto Usuario con los datos del usuario que se desea registrar o actualizar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(Usuario u) {
         String sql = "UPDATE USUARIO SET NOMBRE = ?, APELLIDO_PATERNO = ?, APELLIDO_MATERNO = ?, NUMERO_CELULAR = ?, " +
@@ -129,6 +157,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     @Override
     public boolean delete(String id) {
 <<<<<<< HEAD
@@ -140,7 +173,13 @@ public class UsuarioDao implements Dao<Usuario, String> {
     // =========================================================================
     // MÉTODOS PARA EL LOGIN
     // =========================================================================
-
+/**
+ * Busca un usuario mediante su correo institucional y la contraseña proporcionada, comparando la contraseña transformada mediante hash.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @param contrasenaEnClaro Contraseña proporcionada por el usuario antes de aplicar el proceso de hash para compararla con la almacenada.
+ * @return Devuelve un objeto `Usuario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ * @throws SQLException Se produce cuando ocurre un error al establecer la conexión, preparar o ejecutar la consulta SQL.
+ */
     public Usuario buscarPorCorreoYContrasena(String correo, String contrasenaEnClaro) throws SQLException {
         String contrasenaHash = HashUtils.convertirSHA256(contrasenaEnClaro);
 
@@ -164,7 +203,12 @@ public class UsuarioDao implements Dao<Usuario, String> {
     // =========================================================================
     // MÉTODOS PARA PANEL DE USUARIOS DEL ADMIN
     // =========================================================================
-
+/**
+ * Actualiza el estado del registro indicado para reflejar su nueva situación dentro del flujo del sistema.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @param nuevoEstado Nuevo estado que se asignará al registro para reflejar el resultado de la operación.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean cambiarEstado(String matricula, String nuevoEstado) {
         String sql = "UPDATE USUARIO SET ESTADO = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -176,7 +220,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return false;
         }
     }
-
+/**
+ * Actualiza el estado del usuario indicado a verificado para habilitar su cuenta.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean activarUsuario(String matricula) {
         String sql = "UPDATE USUARIO SET ESTADO = 'verificado' WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -191,7 +239,10 @@ public class UsuarioDao implements Dao<Usuario, String> {
     // =========================================================================
     // MÉTODOS PARA PETICIONES DEL ADMIN (REGISTROS NUEVOS)
     // =========================================================================
-
+/**
+ * Obtiene los usuarios que ya tienen su cuenta verificada.
+ * @return Devuelve una lista de objetos `Usuario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Usuario> obtenerUsuariosVerificados() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM USUARIO WHERE ESTADO != 'unverificado'";
@@ -204,7 +255,10 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
         return lista;
     }
-
+/**
+ * Obtiene los usuarios que se encuentran pendientes de revisión o verificación por parte del administrador.
+ * @return Devuelve una lista de objetos `Usuario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Usuario> obtenerPeticiones() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM USUARIO WHERE ESTADO = 'unverificado'";
@@ -217,11 +271,19 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
         return lista;
     }
-
+/**
+ * Marca al usuario indicado como verificado después de completar el proceso de revisión.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     public boolean verificarUsuario(String matricula) {
         return activarUsuario(matricula);
     }
-
+/**
+ * Realiza la acción de rechazo definida para el usuario indicado, cambiando su estado según las reglas del sistema.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean rechazarUsuario(String matricula) {
         String sqlDeleteUsuario = "DELETE FROM USUARIO WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sqlDeleteUsuario)) {
@@ -236,7 +298,12 @@ public class UsuarioDao implements Dao<Usuario, String> {
     // =========================================================================
     // MÉTODOS DE ACTUALIZACIONES DE PERFIL
     // =========================================================================
-
+/**
+ * Actualiza la ruta de la fotografía de perfil asociada al usuario.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @param rutaFoto Ruta o ubicación de la fotografía de perfil que se asociará al usuario.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean actualizarFotoPerfil(String matricula, String rutaFoto) {
         String sql = "UPDATE USUARIO SET FOTO_PERFIL = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -248,7 +315,12 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return false;
         }
     }
-
+/**
+ * Actualiza el número telefónico asociado al usuario.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @param nuevoTelefono Número telefónico que sustituirá al teléfono actualmente registrado del usuario.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean actualizarTelefono(String matricula, String nuevoTelefono) {
         String sql = "UPDATE USUARIO SET NUMERO_CELULAR = ? WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -266,6 +338,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
     // =========================================================================
 
     // Faltante agregado 1: Comprobar si un correo está registrado
+/**
+ * Comprueba si el correo institucional ya se encuentra registrado en la base de datos.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     public boolean existeCorreo(String correo) {
         String sql = "SELECT 1 FROM USUARIO WHERE CORREO_INSTITUCIONAL = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -280,6 +357,12 @@ public class UsuarioDao implements Dao<Usuario, String> {
     }
 
     // Faltante agregado 2: Guardar el token de recuperación y darle tiempo de vida (15 minutos)
+/**
+ * Guarda el token de recuperación asociado al correo para permitir posteriormente la validación del proceso de recuperación.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @param token Token de recuperación o verificación asociado al correo del usuario.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean guardarTokenRecuperacion(String correo, String token) {
         // En Oracle SYSTIMESTAMP + INTERVAL '15' MINUTE sirve para dar 15 min de vida
         String sql = "UPDATE USUARIO SET TOKEN_RECUPERACION = ?, TOKEN_EXPIRACION = SYSTIMESTAMP + INTERVAL '15' MINUTE WHERE CORREO_INSTITUCIONAL = ?";
@@ -292,7 +375,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return false;
         }
     }
-
+/**
+ * Activa la cuenta asociada al correo cuando la operación de verificación es válida.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean activarCuenta(String correo) {
         String sql = "UPDATE USUARIO SET ESTADO = 'verificado' WHERE CORREO_INSTITUCIONAL = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -303,7 +390,12 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return false;
         }
     }
-
+/**
+ * Comprueba que el token proporcionado corresponda al correo y siga siendo válido.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @param token Token de recuperación o verificación asociado al correo del usuario.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     public boolean validarToken(String correo, String token) {
         String sql = "SELECT * FROM USUARIO WHERE CORREO_INSTITUCIONAL = ? AND TOKEN_RECUPERACION = ? AND TOKEN_EXPIRACION > SYSTIMESTAMP";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -317,7 +409,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
             return false;
         }
     }
-
+/**
+ * Busca y devuelve el usuario asociado al correo institucional proporcionado.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @return Devuelve un objeto `Usuario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     public Usuario buscarPorCorreo(String correo) {
         String sql = "SELECT * FROM USUARIO WHERE CORREO_INSTITUCIONAL = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -332,7 +428,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
         }
         return null;
     }
-
+/**
+ * Elimina o limpia el token de recuperación almacenado para el correo indicado.
+ * @param correo Correo institucional del usuario utilizado para localizar su cuenta o validar sus credenciales.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean limpiarToken(String correo) {
         String sql = "UPDATE USUARIO SET TOKEN_RECUPERACION = NULL, TOKEN_EXPIRACION = NULL WHERE CORREO_INSTITUCIONAL = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -367,6 +467,11 @@ public class UsuarioDao implements Dao<Usuario, String> {
         u.setFotoCredencialReverso(rs.getString("FOTO_CREDENCIAL_REVERSO"));
         return u;
     }
+/**
+ * Actualiza el rol o condición del usuario indicado para habilitar las funciones de vendedor.
+ * @param matricula Matrícula del usuario al que corresponde la operación.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean ascenderAVendedor(String matricula) {
         String sql = "UPDATE USUARIO SET ID_ROL_FK = 3 WHERE MATRICULA = ?";
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {

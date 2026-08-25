@@ -22,6 +22,11 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "MiPerfilServlet", value = "/mi-perfil")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Mi Perfil Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class MiPerfilServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();
@@ -40,6 +45,13 @@ public class MiPerfilServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         Usuario usuarioLogueado = (session != null) ? (Usuario) session.getAttribute("usuario") : null;

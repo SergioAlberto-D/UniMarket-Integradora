@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/admin-publicaciones.js
+ * Propósito: Script de interfaz correspondiente al módulo admin-publicaciones.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 document.querySelectorAll('.form-eliminar-publicacion').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault(); // Detiene la recarga de la página

@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/index.js
+ * Propósito: Aplica filtros asíncronos al catálogo de artículos.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const formFiltros = document.getElementById("formFiltros");
     const contenedorArticulos = document.getElementById("contenedorArticulos");

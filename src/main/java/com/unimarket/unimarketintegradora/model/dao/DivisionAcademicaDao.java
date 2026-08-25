@@ -6,8 +6,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Division Academica.
+ *
+ * @author Sergio
+ */
+
 public class DivisionAcademicaDao implements Dao<DivisionAcademica, Integer> {
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(DivisionAcademica entidad) {
         String sql = "INSERT INTO division_academica (division_academica) VALUES (?)";
@@ -20,6 +31,10 @@ public class DivisionAcademicaDao implements Dao<DivisionAcademica, Integer> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `DivisionAcademica` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<DivisionAcademica> getAll() {
         List<DivisionAcademica> lista = new ArrayList<>();
@@ -36,6 +51,11 @@ public class DivisionAcademicaDao implements Dao<DivisionAcademica, Integer> {
         return lista;
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `DivisionAcademica` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public DivisionAcademica getById(Integer id) {
         String sql = "SELECT * FROM division_academica WHERE id_division_academica = ?";
@@ -54,6 +74,11 @@ public class DivisionAcademicaDao implements Dao<DivisionAcademica, Integer> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(DivisionAcademica entidad) {
         String sql = "UPDATE division_academica SET division_academica = ? WHERE id_division_academica = ?";
@@ -67,6 +92,11 @@ public class DivisionAcademicaDao implements Dao<DivisionAcademica, Integer> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(Integer id) {
         String sql = "DELETE FROM division_academica WHERE id_division_academica = ?";

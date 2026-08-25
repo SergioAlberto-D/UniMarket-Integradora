@@ -22,6 +22,11 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "EliminarArticuloServlet", value = "/eliminar-articulo")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Eliminar Articulo Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class EliminarArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
@@ -38,6 +43,13 @@ public class EliminarArticuloServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
