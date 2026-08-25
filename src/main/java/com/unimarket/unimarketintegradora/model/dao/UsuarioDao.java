@@ -123,7 +123,7 @@ public class UsuarioDao implements Dao<Usuario, String> {
                         rs.getString("estado")
                 );
 
-                u.setIdUsuario(rs.getString("MATRICULA"));
+                u.setMatricula(rs.getString("MATRICULA"));
 
                 try {
                     u.setFotoPerfil(rs.getString("foto_perfil"));
