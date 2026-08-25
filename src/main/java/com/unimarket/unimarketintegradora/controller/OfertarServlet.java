@@ -22,11 +22,7 @@ import java.math.BigDecimal;
  * @date 2026-06-06
  */
 @WebServlet(name = "OfertarServlet", value = "/ofertar-articulo")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Ofertar Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class OfertarServlet extends HttpServlet {
     private final OfertaDao ofertaDao = new OfertaDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();

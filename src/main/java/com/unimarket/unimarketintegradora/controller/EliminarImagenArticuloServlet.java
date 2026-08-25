@@ -18,11 +18,7 @@ import java.io.PrintWriter;
  * @date 2026-06-06
  */
 @WebServlet(name = "EliminarImagenArticuloServlet", value = "/eliminar-imagen-articulo")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Eliminar Imagen Articulo Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class EliminarImagenArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
 

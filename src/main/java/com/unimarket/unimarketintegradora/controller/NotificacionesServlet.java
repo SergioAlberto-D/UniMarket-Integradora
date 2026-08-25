@@ -19,11 +19,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "NotificacionesServlet", urlPatterns = {"/api/notificaciones", "/api/notificaciones/marcar-leidas"})
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Notificaciones Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class NotificacionesServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 

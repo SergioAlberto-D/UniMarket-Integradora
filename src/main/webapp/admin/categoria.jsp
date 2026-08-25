@@ -44,7 +44,7 @@
 
         <!-- Formulario Agregar Categoría -->
         <div class="table-card" style="margin-bottom: 25px;">
-            <h2 class="table-title">Agregar Nueva Categoría</h2>
+            <h2 class="table-title">Agregar nueva categoría</h2>
             <form id="formAgregarCategoria" style="display: flex; gap: 15px; align-items: center; margin-top: 15px;">
                 <input type="hidden" name="accion" value="agregar">
 
@@ -58,7 +58,7 @@
                 <button type="submit"
                         class="btn-delete"
                         style="background-color: #8B5E3C; color: white; cursor: pointer; padding: 10px 20px;">
-                    <i class="fa-solid fa-plus"></i> Guardar
+                     Guardar
                 </button>
             </form>
         </div>
@@ -71,14 +71,14 @@
 
         <!-- Tabla de Categorías -->
         <div class="table-card">
-            <h2 class="table-title">Listado de Categorías</h2>
+            <h2 class="table-title">Listado de categorías</h2>
 
             <div class="table-responsive">
                 <table class="custom-table" id="tablaDatos">
                     <thead>
                     <tr>
                         <th style="width: 10%;">#</th>
-                        <th>Nombre de Categoría</th>
+                        <th>Nombre de categoría</th>
                         <th style="text-align: right; width: 30%;">Acciones</th>
                     </tr>
                     </thead>
@@ -131,8 +131,13 @@
 <div id="modalEditar" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
+<<<<<<< HEAD
+            <h3>Editar categoría</h3>
+            <button type="button" class="btn-close-modal" onclick="cerrarModal()">&times;</button>
+=======
             <h3>Editar Categoría</h3>
             <button type="button" class="btn-close-modal" id="btnCerrarModal">&times;</button>
+>>>>>>> sergio
         </div>
 
         <form id="formEditarCategoria">
@@ -140,7 +145,7 @@
             <input type="hidden" id="modalIdCategoria" name="idCategoria">
 
             <div class="modal-body-group">
-                <label for="modalNombreCategoria">Nombre de la Categoría</label>
+                <label for="modalNombreCategoria">Nombre de la categoría</label>
                 <input type="text" id="modalNombreCategoria" name="nombreCategoria" required>
             </div>
 

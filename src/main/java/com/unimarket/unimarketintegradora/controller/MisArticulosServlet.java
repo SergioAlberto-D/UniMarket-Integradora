@@ -17,11 +17,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "MisArticulosServlet", value = "/mis-articulos")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Mis Articulos Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class MisArticulosServlet extends HttpServlet {
 
     /**

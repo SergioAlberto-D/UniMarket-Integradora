@@ -68,14 +68,53 @@ public class UsuarioDao implements Dao<Usuario, String> {
         return lista;
     }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+    // MÉTODO EXCLUSIVO PARA ADMINISTRACIÓN (Filtra inactivos y eliminados)
+    public List<Usuario> getUsuariosActivosParaAdmin() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuario WHERE UPPER(estado) NOT IN ('INACTIVO', 'ELIMINADO') ORDER BY fecha_registro DESC";
+        try (Connection con = SQLConnector.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Usuario u = new Usuario(
+                        rs.getString("nombre"),
+                        rs.getString("apellido_paterno"),
+                        rs.getString("apellido_materno"),
+                        rs.getString("numero_celular"),
+                        rs.getInt("id_division_academica_fk"),
+                        rs.getDate("fecha_registro"),
+                        rs.getString("correo_institucional"),
+                        rs.getInt("id_rol_fk"),
+                        rs.getString("estado")
+                );
+                u.setIdUsuario(rs.getString("MATRICULA"));
+                try { u.setFotoPerfil(rs.getString("foto_perfil")); } catch (Exception ignored) {}
+                lista.add(u);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener usuarios activos: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public Usuario getById(String matricula) {
+        String sql = "SELECT * FROM usuario WHERE MATRICULA = ?";
+
+=======
+=======
 /**
  * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
  * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
  * @return Devuelve un objeto `Usuario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
  */
+>>>>>>> origin/sergio
     @Override
     public Usuario getById(String id) {
         String sql = "SELECT * FROM USUARIO WHERE MATRICULA = ?";
+>>>>>>> sergio
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -125,6 +164,9 @@ public class UsuarioDao implements Dao<Usuario, String> {
  */
     @Override
     public boolean delete(String id) {
+<<<<<<< HEAD
+        String sql = "UPDATE usuario SET estado = 'INACTIVO' WHERE MATRICULA = ?";
+=======
         return rechazarUsuario(id);
     }
 
@@ -145,6 +187,7 @@ public class UsuarioDao implements Dao<Usuario, String> {
                 "INNER JOIN CONTRASENA_USUARIO cu ON u.MATRICULA = cu.MATRICULA_USUARIO_FK " +
                 "WHERE u.CORREO_INSTITUCIONAL = ? AND cu.CONTRASENA_HASH = ?";
 
+>>>>>>> sergio
         try (Connection con = SQLConnector.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, correo);
             ps.setString(2, contrasenaHash);

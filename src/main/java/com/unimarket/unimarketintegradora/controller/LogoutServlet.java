@@ -17,11 +17,7 @@ import java.io.IOException;
  * @date 2026-06-06
  */
 @WebServlet(name = "LogoutServlet", value = "/logout")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Logout Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class LogoutServlet extends HttpServlet {
 
     /**

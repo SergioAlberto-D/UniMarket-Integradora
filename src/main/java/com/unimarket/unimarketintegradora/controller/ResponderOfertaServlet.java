@@ -20,11 +20,7 @@ import java.io.PrintWriter;
  * @date 2026-06-06
  */
 @WebServlet(name = "ResponderOfertaServlet", value = "/responder-oferta")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Responder Oferta Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ResponderOfertaServlet extends HttpServlet {
     private final OfertaDao ofertaDao = new OfertaDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();

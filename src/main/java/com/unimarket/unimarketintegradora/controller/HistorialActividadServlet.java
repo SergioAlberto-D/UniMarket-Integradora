@@ -21,11 +21,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "HistorialActividadServlet", value = "/historial")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Historial Actividad Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class HistorialActividadServlet extends HttpServlet {
 
     /**

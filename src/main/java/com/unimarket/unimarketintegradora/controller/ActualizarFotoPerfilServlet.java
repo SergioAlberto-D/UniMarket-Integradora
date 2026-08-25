@@ -23,11 +23,7 @@ import java.util.UUID;
  * @date 2026-06-06
  */
 @WebServlet(name = "ActualizarFotoPerfilServlet", value = "/actualizar-foto-perfil")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Foto Perfil Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ActualizarFotoPerfilServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();

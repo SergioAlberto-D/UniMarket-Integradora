@@ -17,11 +17,7 @@ import java.io.IOException;
  * @date 2026-06-06
  */
 @WebServlet(name = "VerificarCuentaServlet", value = "/verificar-cuenta")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Verificar Cuenta Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class VerificarCuentaServlet extends HttpServlet {
 
     /**

@@ -24,11 +24,7 @@ import java.util.Map;
  * @date 2026-06-06
  */
 @WebServlet(name = "AdminUsuarioServlet", value = "/adminusuarios")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Usuario Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class AdminUsuarioServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();
@@ -45,6 +41,44 @@ public class AdminUsuarioServlet extends HttpServlet {
      * @date 2026-06-06
      */
     @Override
+<<<<<<< HEAD
+<<<<<<< HEAD
+    public void init() {
+        usuarioDao = new UsuarioDao();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String accion = request.getParameter("accion");
+        String matricula = request.getParameter("matricula");
+        if (matricula == null || matricula.isEmpty()) {
+            matricula = request.getParameter("idUsuario");
+        }
+
+        // Acción para desactivar (borrado lógico)
+        if ("desactivar".equals(accion) || "eliminar".equals(accion)) {
+            if (matricula != null && !matricula.isEmpty()) {
+                usuarioDao.cambiarEstado(matricula, "INACTIVO");
+            }
+            response.sendRedirect(request.getContextPath() + "/adminusuarios");
+            return;
+        }
+        // Acción para activar desde GET
+        else if ("activar".equals(accion)) {
+            if (matricula != null && !matricula.isEmpty()) {
+                usuarioDao.activarUsuario(matricula);
+            }
+            response.sendRedirect(request.getContextPath() + "/adminusuarios");
+            return;
+        }
+
+        // Cargar lista filtrada de usuarios activos para el panel de administración
+        List<Usuario> listaUsuarios = usuarioDao.getUsuariosActivosParaAdmin();
+        request.setAttribute("listaUsuarios", listaUsuarios);
+=======
+=======
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
  * @param request Parámetro de entrada de la operación.
@@ -52,6 +86,7 @@ public class AdminUsuarioServlet extends HttpServlet {
  * @throws ServletException Excepción declarada por la operación.
  * @throws IOException Excepción declarada por la operación.
  */
+>>>>>>> origin/sergio
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Validar sesión del administrador por seguridad
         HttpSession session = request.getSession(false);
@@ -62,6 +97,7 @@ public class AdminUsuarioServlet extends HttpServlet {
 
         // 2. Obtener la lista de usuarios
         List<Usuario> listaUsuarios = usuarioDao.getAll();
+>>>>>>> sergio
 
         // 3. Obtener todas las divisiones académicas de la base de datos
         List<DivisionAcademica> listaDivisiones = divisionDao.getAll();

@@ -36,11 +36,7 @@ import java.util.UUID;
         maxFileSize = 10 * 1024 * 1024,
         maxRequestSize = 40 * 1024 * 1024
 )
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Publicar Articulo Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();

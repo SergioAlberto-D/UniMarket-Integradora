@@ -19,11 +19,7 @@ import java.io.PrintWriter;
  * @date 2026-06-06
  */
 @WebServlet(name = "ComprarArticuloServlet", value = "/comprar-articulo")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Comprar Articulo Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ComprarArticuloServlet extends HttpServlet {
 
     /**
