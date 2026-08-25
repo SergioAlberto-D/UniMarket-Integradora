@@ -21,11 +21,7 @@ import java.io.IOException;
  * @date 2026-06-06
  */
 @WebServlet(name = "ActualizarPasswordServlet", value = "/ActualizarPasswordServlet")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Password Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ActualizarPasswordServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ContrasenaUsuarioDao contrasenaDao = new ContrasenaUsuarioDao();

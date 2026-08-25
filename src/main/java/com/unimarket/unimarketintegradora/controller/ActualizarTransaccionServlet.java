@@ -16,11 +16,7 @@ import java.sql.PreparedStatement;
  * @date 2026-06-06
  */
 @WebServlet(name = "ActualizarTransaccionServlet", value = "/actualizar-transaccion")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Transaccion Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ActualizarTransaccionServlet extends HttpServlet {
 
     /**

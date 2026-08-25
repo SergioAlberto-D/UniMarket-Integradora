@@ -22,11 +22,7 @@ import java.text.MessageFormat;
  * @date 2026-06-06
  */
 @WebServlet(name = "SolicitarRecuperacionServlet", value = "/SolicitarRecuperacionServlet")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Solicitar Recuperacion Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class SolicitarRecuperacionServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
 

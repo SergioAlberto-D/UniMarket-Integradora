@@ -21,11 +21,7 @@ import java.security.NoSuchAlgorithmException;
  * @date 2026-06-06
  */
 @WebServlet(name = "CambiarPasswordPerfilServlet", value = "/CambiarPasswordPerfilServlet")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Cambiar Password Perfil Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class CambiarPasswordPerfilServlet extends HttpServlet {
 
     /**

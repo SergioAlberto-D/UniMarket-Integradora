@@ -31,11 +31,7 @@ import java.io.IOException;
         maxFileSize = 1024 * 1024 * 10,      // 10MB máximo por archivo
         maxRequestSize = 1024 * 1024 * 50    // 50MB máximo por petición
 )
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Register Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class RegisterServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();

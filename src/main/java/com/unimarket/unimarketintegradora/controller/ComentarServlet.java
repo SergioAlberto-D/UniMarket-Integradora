@@ -19,11 +19,7 @@ import java.io.PrintWriter;
  * @date 2026-06-06
  */
 @WebServlet(name = "ComentarServlet", value = "/comentar-vendedor")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Comentar Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ComentarServlet extends HttpServlet {
     private final ComentarioDao comentarioDao = new ComentarioDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();

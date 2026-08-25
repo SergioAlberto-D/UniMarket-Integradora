@@ -19,11 +19,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet("/admincategorias")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Categoria Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class AdminCategoriaServlet extends HttpServlet {
 
     private categoriaDao categoriaDao;

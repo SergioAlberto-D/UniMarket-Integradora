@@ -25,11 +25,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "AdminActividadServlet", value = "/adminactividad")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Actividad Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class AdminActividadServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();

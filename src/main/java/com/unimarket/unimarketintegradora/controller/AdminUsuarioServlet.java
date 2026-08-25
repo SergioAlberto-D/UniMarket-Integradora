@@ -24,11 +24,7 @@ import java.util.Map;
  * @date 2026-06-06
  */
 @WebServlet(name = "AdminUsuarioServlet", value = "/adminusuarios")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Usuario Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class AdminUsuarioServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();

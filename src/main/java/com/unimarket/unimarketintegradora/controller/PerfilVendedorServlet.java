@@ -20,11 +20,7 @@ import java.util.List;
  * @date 2026-06-06
  */
 @WebServlet(name = "PerfilVendedorServlet", value = "/perfil-vendedor")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Perfil Vendedor Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class PerfilVendedorServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();

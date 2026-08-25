@@ -19,11 +19,7 @@ import java.io.IOException;
  * @date 2026-06-06
  */
 @WebServlet(name = "ActualizarTelefonoServlet", value = "/ActualizarTelefonoServlet")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Telefono Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class ActualizarTelefonoServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 

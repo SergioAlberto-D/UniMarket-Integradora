@@ -22,11 +22,7 @@ import java.sql.SQLException;
  * @date 2026-06-06
  */
 @WebServlet(name = "LoginServlet", value = "/login")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Login Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class LoginServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();

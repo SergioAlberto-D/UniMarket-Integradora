@@ -32,11 +32,7 @@ import java.util.UUID;
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 30
 )
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Editar Articulo Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class EditarArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();

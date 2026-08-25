@@ -17,11 +17,7 @@ import java.io.IOException;
  * @date 2026-06-06
  */
 @WebServlet(name = "VerificarTokenServlet", value = "/VerificarTokenServlet")
-/**
- * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Verificar Token Servlet.
- *
- * @author Equipo UniMarket
- */
+
 public class VerificarTokenServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
