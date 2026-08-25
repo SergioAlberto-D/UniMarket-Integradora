@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/**girt
  * Objeto de acceso a datos (DAO) de MUA para la entidad Contrasena Admin.
  *
  * @author Sergio
