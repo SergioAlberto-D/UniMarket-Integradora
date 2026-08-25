@@ -13,6 +13,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet encargado de procesar la actualización de contraseña del usuario
+ * mediante un flujo de recuperación con token.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ActualizarPasswordServlet", value = "/ActualizarPasswordServlet")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Password Servlet.
@@ -23,6 +30,16 @@ public class ActualizarPasswordServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ContrasenaUsuarioDao contrasenaDao = new ContrasenaUsuarioDao();
 
+    /**
+     * Maneja las peticiones POST para validar el token y actualizar la contraseña en el sistema.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la petición (correo, token y contraseñas).
+     * @param response Objeto HttpServletResponse para redirigir según el resultado del proceso.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
@@ -46,9 +63,9 @@ public class ActualizarPasswordServlet extends HttpServlet {
         if (usuarioDao.validarToken(correo, token)) {
             Usuario usuario = usuarioDao.buscarPorCorreo(correo);
             String passwordHasheada = HashUtils.convertirSHA256(contra1);
-            
+
             ContrasenaUsuario passModel = new ContrasenaUsuario(usuario.getMatricula(), passwordHasheada);
-            
+
             // Actualizamos en la tabla de contraseñas
             if (contrasenaDao.update(passModel)) {
                 // Limpiamos el token del usuario

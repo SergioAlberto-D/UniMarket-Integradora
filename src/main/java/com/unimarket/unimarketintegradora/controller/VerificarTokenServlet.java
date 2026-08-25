@@ -8,6 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet encargado de procesar y validar el token de recuperación de contraseña ingresado por el usuario,
+ * verificando su autenticidad y vigencia a través del DAO, redirigiendo a la vista para establecer una nueva contraseña
+ * o retornando un mensaje de error en caso de que el código sea inválido o haya caducado.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "VerificarTokenServlet", value = "/VerificarTokenServlet")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Verificar Token Servlet.
@@ -17,6 +25,17 @@ import java.io.IOException;
 public class VerificarTokenServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
+    /**
+     * Maneja las peticiones POST para recibir el correo y el token de recuperación, validar su validez mediante el DAO,
+     * redirigir a la página de cambio de contraseña o reenviar al formulario de verificación con el mensaje de error correspondiente.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de correo y token de recuperación.
+     * @param response Objeto HttpServletResponse para redirigir al cambio de contraseña o reenviar al JSP de verificación.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

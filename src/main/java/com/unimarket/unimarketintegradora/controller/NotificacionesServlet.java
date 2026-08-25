@@ -11,6 +11,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet encargado de gestionar las notificaciones del usuario autenticado vía API,
+ * permitiendo consultar las notificaciones no leídas en formato JSON y marcar todas como leídas.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "NotificacionesServlet", urlPatterns = {"/api/notificaciones", "/api/notificaciones/marcar-leidas"})
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Notificaciones Servlet.
@@ -20,6 +27,17 @@ import java.util.List;
 public class NotificacionesServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
+    /**
+     * Maneja las peticiones GET para validar la sesión del usuario, consultar sus notificaciones no leídas
+     * mediante la matrícula y construir una respuesta JSON con la lista de notificaciones.
+     *
+     * @param request  Objeto HttpServletRequest para gestionar la sesión y los parámetros de la petición.
+     * @param response Objeto HttpServletResponse para enviar la respuesta JSON con la codificación adecuada.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -56,6 +74,16 @@ public class NotificacionesServlet extends HttpServlet {
         out.print(json.toString());
     }
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario y marcar todas sus notificaciones pendientes como leídas.
+     *
+     * @param request  Objeto HttpServletRequest para gestionar la sesión del usuario.
+     * @param response Objeto HttpServletResponse para enviar la respuesta JSON confirmando el éxito de la operación.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

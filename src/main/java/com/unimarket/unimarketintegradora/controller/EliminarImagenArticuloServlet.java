@@ -10,6 +10,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet encargado de procesar la eliminación individual de una imagen asociada a un artículo,
+ * borrando tanto el archivo físico del disco del servidor como su registro correspondiente en la base de datos.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "EliminarImagenArticuloServlet", value = "/eliminar-imagen-articulo")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Eliminar Imagen Articulo Servlet.
@@ -19,6 +26,17 @@ import java.io.PrintWriter;
 public class EliminarImagenArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
 
+    /**
+     * Maneja las peticiones POST para buscar la imagen por su ID, eliminar su archivo físico del almacenamiento local,
+     * borrar el registro en la base de datos y retornar el resultado en formato JSON.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro del ID de la imagen a eliminar.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

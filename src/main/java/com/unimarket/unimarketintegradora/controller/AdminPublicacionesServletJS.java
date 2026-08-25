@@ -16,6 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Servlet encargado de administrar las publicaciones con soporte JavaScript/JSON,
+ * realizando bajas lógicas y notificando a los usuarios afectados.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet("/adminpublicacionesJS")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Publicaciones Servlet J S.
@@ -29,6 +36,16 @@ public class AdminPublicacionesServletJS extends HttpServlet {
     private final OfertaDao ofertaDao = new OfertaDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
+    /**
+     * Maneja las peticiones GET para obtener y listar las publicaciones en el panel de administración.
+     *
+     * @param request  Objeto HttpServletRequest para enviar los artículos a la vista.
+     * @param response Objeto HttpServletResponse para reenviar la solicitud al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -44,6 +61,16 @@ public class AdminPublicacionesServletJS extends HttpServlet {
         request.getRequestDispatcher("/admin/publicaciones.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para procesar la baja lógica de publicaciones y notificar tanto al vendedor como a los compradores.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la acción y el ID del artículo.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

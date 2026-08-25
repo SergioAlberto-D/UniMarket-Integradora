@@ -14,6 +14,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Servlet encargado de gestionar el proceso de inicio de sesión tanto para administradores como para usuarios normales,
+ * validando credenciales, verificando estados de cuenta y estableciendo las sesiones correspondientes.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "LoginServlet", value = "/login")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Login Servlet.
@@ -25,6 +32,17 @@ public class LoginServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final AdministradorDao adminDao = new AdministradorDao();
 
+    /**
+     * Maneja las peticiones POST para autenticar las credenciales del usuario o administrador,
+     * validar si la cuenta se encuentra verificada y redirigir al panel o página principal según corresponda.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de correo y contraseña del formulario de acceso.
+     * @param response Objeto HttpServletResponse para redireccionar tras un login exitoso o reenviar al JSP en caso de error.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

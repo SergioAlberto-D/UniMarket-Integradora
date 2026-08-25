@@ -12,6 +12,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet encargado de gestionar la respuesta a las ofertas realizadas sobre los artículos (aceptar, rechazar o cancelar),
+ * creando transacciones pendientes, actualizando estados de oferta, enviando notificaciones y generando enlaces de contacto e imágenes para el chat.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ResponderOfertaServlet", value = "/responder-oferta")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Responder Oferta Servlet.
@@ -23,6 +30,17 @@ public class ResponderOfertaServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
     private final TransaccionDao transaccionDao = new TransaccionDao();
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario, procesar la decisión sobre una oferta (rechazada, cancelada o aceptada),
+     * registrar transacciones correspondientes, notificar a la contraparte y retornar los datos de contacto y mensaje estructurado en JSON.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la oferta (idOferta, estado y mensaje opcional).
+     * @param response Objeto HttpServletResponse para enviar la respuesta JSON con la codificación y tipo adecuados.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

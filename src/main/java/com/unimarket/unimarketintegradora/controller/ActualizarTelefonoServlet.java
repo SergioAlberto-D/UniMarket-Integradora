@@ -12,6 +12,12 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * Servlet encargado de procesar la actualización del número de teléfono celular del usuario.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ActualizarTelefonoServlet", value = "/ActualizarTelefonoServlet")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Telefono Servlet.
@@ -21,6 +27,16 @@ import java.io.IOException;
 public class ActualizarTelefonoServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
+    /**
+     * Maneja las peticiones POST para actualizar el teléfono del usuario en la base de datos y la sesión.
+     *
+     * @param request  Objeto HttpServletRequest con los datos de la petición (incluyendo el nuevo teléfono).
+     * @param response Objeto HttpServletResponse para redireccionar al usuario.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

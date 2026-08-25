@@ -11,6 +11,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de administrar las publicaciones de artículos dentro del panel de control.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet("/adminpublicaciones")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Publicaciones Servlet.
@@ -21,6 +27,16 @@ public class AdminPublicacionesServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
 
+    /**
+     * Maneja las peticiones GET para obtener y listar las publicaciones destinadas a la vista de administración.
+     *
+     * @param request  Objeto HttpServletRequest para enviar los artículos a la vista.
+     * @param response Objeto HttpServletResponse para reenviar la solicitud al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -39,6 +55,16 @@ public class AdminPublicacionesServlet extends HttpServlet {
         request.getRequestDispatcher("/admin/publicaciones.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para procesar acciones administrativas sobre las publicaciones, como eliminar artículos.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la acción y el ID del artículo.
+     * @param response Objeto HttpServletResponse para redireccionar al panel de publicaciones.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

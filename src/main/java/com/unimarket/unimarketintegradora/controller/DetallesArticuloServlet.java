@@ -13,6 +13,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de obtener y procesar todos los detalles de un artículo específico,
+ * incluyendo sus imágenes adicionales, comentarios del vendedor, cálculo de calificaciones y categorización para mostrarlos en la vista.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "DetallesArticuloServlet", value = "/detalles-articulo")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Detalles Articulo Servlet.
@@ -24,6 +31,17 @@ public class DetallesArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();
 
+    /**
+     * Maneja las peticiones GET para buscar el artículo por ID, cargar sus imágenes, calcular el promedio de calificaciones del vendedor,
+     * determinar la categoría correspondiente y reenviar la información al JSP de detalles.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro del ID del artículo.
+     * @param response Objeto HttpServletResponse para reenviar al JSP o redirigir al inicio en caso de error.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

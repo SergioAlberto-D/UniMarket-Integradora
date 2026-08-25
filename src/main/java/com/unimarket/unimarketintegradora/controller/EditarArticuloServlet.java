@@ -19,6 +19,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Servlet encargado de gestionar la edición y actualización de artículos existentes,
+ * incluyendo la modificación de sus datos generales y el reemplazo opcional de sus imágenes asociadas.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "EditarArticuloServlet", value = "/editar-articulo")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
@@ -35,6 +42,16 @@ public class EditarArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final categoriaDao categoriaDao = new categoriaDao();
 
+    /**
+     * Maneja las peticiones GET para cargar los datos del artículo a editar, sus imágenes actuales y la lista de categorías disponibles.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro del ID del artículo.
+     * @param response Objeto HttpServletResponse para reenviar al JSP o redirigir en caso de no encontrar el artículo.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -71,6 +88,16 @@ public class EditarArticuloServlet extends HttpServlet {
         request.getRequestDispatcher("editar-articulo.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para guardar los cambios en el artículo y reemplazar sus imágenes en el servidor y base de datos si se subieron nuevas.
+     *
+     * @param request  Objeto HttpServletRequest con los datos actualizados del formulario y los archivos multimedia.
+     * @param response Objeto HttpServletResponse para redireccionar tras el éxito o recargar la vista en caso de error.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     // POST: Guardar cambios y reemplazar imágenes si se subieron nuevas
     @Override
 /**

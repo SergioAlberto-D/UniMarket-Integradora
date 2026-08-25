@@ -11,6 +11,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet encargado de procesar la creación de comentarios y calificaciones para los perfiles de los vendedores,
+ * así como de generar las notificaciones correspondientes.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ComentarServlet", value = "/comentar-vendedor")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Comentar Servlet.
@@ -21,6 +28,17 @@ public class ComentarServlet extends HttpServlet {
     private final ComentarioDao comentarioDao = new ComentarioDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario, verificar los datos del comentario,
+     * guardarlo en la base de datos y enviar una notificación al vendedor receptor.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros del receptor, comentario y calificación.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

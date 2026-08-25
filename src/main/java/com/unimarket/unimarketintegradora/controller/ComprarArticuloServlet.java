@@ -11,6 +11,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet encargado de procesar la solicitud de compra de un artículo,
+ * registrando la transacción pendiente y generando los datos de contacto y mensaje estructurado para el chat.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ComprarArticuloServlet", value = "/comprar-articulo")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Comprar Articulo Servlet.
@@ -19,6 +26,17 @@ import java.io.PrintWriter;
  */
 public class ComprarArticuloServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del comprador, verificar la disponibilidad del artículo,
+     * registrar la transacción pendiente y retornar los datos y mensaje estructurado en formato JSON.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros del artículo y el mensaje opcional del comprador.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

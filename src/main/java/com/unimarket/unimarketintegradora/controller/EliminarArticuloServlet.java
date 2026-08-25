@@ -14,6 +14,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet encargado de procesar la eliminación de un artículo publicado,
+ * borrando tanto sus archivos multimedia asociados del disco del servidor como sus registros en la base de datos.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "EliminarArticuloServlet", value = "/eliminar-articulo")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Eliminar Articulo Servlet.
@@ -24,6 +31,17 @@ public class EliminarArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario, verificar la propiedad del artículo,
+     * eliminar sus archivos físicos y registros correspondientes, y retornar el resultado en formato JSON.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro del ID del artículo a eliminar.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

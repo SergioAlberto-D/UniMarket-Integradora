@@ -8,6 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet encargado de procesar la verificación y activación de cuentas de usuario mediante un enlace por correo electrónico,
+ * validando el parámetro de correo proporcionado, invocando al DAO para cambiar el estado de activación en la base de datos
+ * y reenviando el resultado a la vista de inicio de sesión.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "VerificarCuentaServlet", value = "/verificar-cuenta")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Verificar Cuenta Servlet.
@@ -16,6 +24,17 @@ import java.io.IOException;
  */
 public class VerificarCuentaServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones GET para extraer el correo electrónico de los parámetros de la URL, validar su existencia,
+     * activar la cuenta correspondiente en la base de datos y establecer los mensajes de éxito o error para la vista de login.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro de correo electrónico.
+     * @param response Objeto HttpServletResponse para reenviar al JSP de inicio de sesión con los atributos de estado.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

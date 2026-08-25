@@ -17,6 +17,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Servlet encargado de administrar los usuarios y sus divisiones académicas en el panel de control.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "AdminUsuarioServlet", value = "/adminusuarios")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Usuario Servlet.
@@ -28,6 +34,16 @@ public class AdminUsuarioServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final DivisionAcademicaDao divisionDao = new DivisionAcademicaDao();
 
+    /**
+     * Maneja las peticiones GET para validar la sesión del administrador, cargar los usuarios y el mapa de divisiones académicas.
+     *
+     * @param request  Objeto HttpServletRequest para enviar los atributos a la vista.
+     * @param response Objeto HttpServletResponse para redirigir al login o al JSP de administración.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -66,6 +82,16 @@ public class AdminUsuarioServlet extends HttpServlet {
         request.getRequestDispatcher("/admin/usuarios.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para procesar acciones administrativas sobre los usuarios, como la eliminación por matrícula.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la acción y la matrícula.
+     * @param response Objeto HttpServletResponse para redireccionar al panel de usuarios.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.

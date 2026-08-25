@@ -11,6 +11,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Servlet encargado de servir y mostrar archivos subidos por los usuarios (como imágenes de perfil o productos) desde el disco del servidor.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 // Se intercepta cualquier petición que empiece con /uploads/
 @WebServlet(name = "ArchivosServlet", urlPatterns = {"/uploads/*"})
 /**
@@ -20,6 +26,16 @@ import java.io.OutputStream;
  */
 public class ArchivosServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones GET para buscar y transmitir el archivo solicitado al cliente.
+     *
+     * @param request  Objeto HttpServletRequest con la ruta solicitada del archivo.
+     * @param response Objeto HttpServletResponse para enviar el contenido binario y tipo MIME del archivo.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

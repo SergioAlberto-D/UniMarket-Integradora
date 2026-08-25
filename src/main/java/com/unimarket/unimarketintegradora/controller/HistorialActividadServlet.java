@@ -13,6 +13,13 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de obtener y gestionar el historial de actividad y transacciones del usuario logueado,
+ * consultando los datos correspondientes y reenviándolos a la vista para su visualización.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "HistorialActividadServlet", value = "/historial")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Historial Actividad Servlet.
@@ -21,6 +28,17 @@ import java.util.List;
  */
 public class HistorialActividadServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones GET para validar la sesión del usuario, consultar su historial de transacciones
+     * mediante la matrícula y reenviar los datos al JSP correspondiente.
+     *
+     * @param request  Objeto HttpServletRequest para gestionar la sesión y atributos de la vista.
+     * @param response Objeto HttpServletResponse para reenviar al JSP o redirigir al login en caso de no haber sesión.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

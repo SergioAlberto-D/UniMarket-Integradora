@@ -12,6 +12,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de gestionar la visualización del perfil público de un vendedor,
+ * consultando su información, comentarios y calificaciones, calculando porcentajes de estrellas y traduciendo su división académica.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "PerfilVendedorServlet", value = "/perfil-vendedor")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Perfil Vendedor Servlet.
@@ -23,6 +30,17 @@ public class PerfilVendedorServlet extends HttpServlet {
     private final ComentarioDao comentarioDao = new ComentarioDao();
     private final ArticuloDao articuloDao = new ArticuloDao();
 
+    /**
+     * Maneja las peticiones GET para obtener la matrícula del vendedor, validar su existencia,
+     * procesar sus valoraciones y estadísticas de publicaciones, y reenviar los datos a la vista de perfil de vendedor.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro de matrícula del vendedor.
+     * @param response Objeto HttpServletResponse para redirigir al inicio en caso de no encontrarse o reenviar al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

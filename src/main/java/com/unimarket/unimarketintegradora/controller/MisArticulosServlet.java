@@ -9,6 +9,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de gestionar la visualización de los artículos publicados por el usuario autenticado,
+ * clasificándolos en artículos disponibles y artículos en proceso de venta o negociación, y reenviándolos a la vista correspondiente.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "MisArticulosServlet", value = "/mis-articulos")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Mis Articulos Servlet.
@@ -17,6 +24,17 @@ import java.util.List;
  */
 public class MisArticulosServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones GET para validar la sesión del usuario, consultar los artículos publicados
+     * separados por su estado (disponibles vs. en proceso) mediante la matrícula, y reenviar los datos al JSP.
+     *
+     * @param request  Objeto HttpServletRequest para gestionar la sesión y enviar atributos a la vista.
+     * @param response Objeto HttpServletResponse para redirigir al login si no hay sesión activa o reenviar al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.

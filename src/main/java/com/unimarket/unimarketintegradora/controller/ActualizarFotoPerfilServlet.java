@@ -14,6 +14,14 @@ import java.io.PrintWriter;
 import java.util.Base64;
 import java.util.UUID;
 
+/**
+ * Servlet encargado de procesar y actualizar la foto de perfil de los usuarios.
+ * Recibe la imagen en formato Base64, la decodifica, la almacena en el servidor
+ * y actualiza la base de datos y la sesión del usuario.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ActualizarFotoPerfilServlet", value = "/actualizar-foto-perfil")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Foto Perfil Servlet.
@@ -21,9 +29,20 @@ import java.util.UUID;
  * @author Equipo UniMarket
  */
 public class ActualizarFotoPerfilServlet extends HttpServlet {
+
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
+    /**
+     * Maneja las peticiones POST para actualizar la imagen de perfil.
+     *
+     * @param request  Objeto HttpServletRequest con los datos de la petición (incluyendo la foto en Base64).
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
@@ -92,7 +111,6 @@ public class ActualizarFotoPerfilServlet extends HttpServlet {
                 if (actualizado) {
                     session.setAttribute("usuario", usuario);
 
-                    // Alerta del sistema para la campana de notificaciones
                     String mensaje = "Has actualizado tu foto de perfil de manera exitosa.";
                     notificacionDao.crearNotificacion(usuario.getMatricula(), mensaje, "SISTEMA");
 

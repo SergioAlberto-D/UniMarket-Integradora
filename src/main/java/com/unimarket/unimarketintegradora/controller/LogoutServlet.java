@@ -9,6 +9,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * Servlet encargado de gestionar el cierre de sesión de los usuarios y administradores,
+ * invalidando la sesión activa y redirigiendo a la vista de inicio de sesión.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "LogoutServlet", value = "/logout")
 /**
  * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Logout Servlet.
@@ -16,6 +23,17 @@ import java.io.IOException;
  * @author Equipo UniMarket
  */
 public class LogoutServlet extends HttpServlet {
+
+    /**
+     * Maneja las peticiones GET para invalidar la sesión actual si existe y redirigir al formulario de acceso (login.jsp).
+     *
+     * @param request  Objeto HttpServletRequest con la información de la petición.
+     * @param response Objeto HttpServletResponse para redirigir al login.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
@@ -32,6 +50,16 @@ public class LogoutServlet extends HttpServlet {
         response.sendRedirect("login.jsp");
     }
 
+    /**
+     * Maneja las peticiones POST delegando la lógica al método doGet para invalidar la sesión de forma unificada.
+     *
+     * @param request  Objeto HttpServletRequest con la información de la petición.
+     * @param response Objeto HttpServletResponse para redirigir al login.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
 /**
  * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
