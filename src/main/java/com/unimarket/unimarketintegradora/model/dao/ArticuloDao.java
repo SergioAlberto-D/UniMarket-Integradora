@@ -8,11 +8,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Articulo.
+ *
+ * @author Sergio
+ */
+
 public class ArticuloDao implements Dao<Articulo, String> {
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(Articulo entidad) {
-
         /*
          * IMPORTANTE:
          * Todo artículo nuevo comienza en estado "espera".
@@ -44,6 +54,10 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `Articulo` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<Articulo> getAll() {
 
@@ -95,6 +109,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return lista;
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `Articulo` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public Articulo getById(String id) {
 
@@ -133,6 +152,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(Articulo entidad) {
 
@@ -161,6 +185,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(String id) {
 
@@ -181,12 +210,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
             return false;
         }
     }
-
-    /*
-     * ============================================================
-     * OBTENER ÚLTIMO ARTÍCULO DEL USUARIO
-     * ============================================================
-     */
+/**
+ * Obtiene el identificador del artículo más reciente publicado por el usuario indicado.
+ * @param matriculaUsuario Matrícula del usuario cuyos artículos, historial o datos se desean consultar.
+ * @return Devuelve el valor entero obtenido de la consulta, correspondiente al identificador o cantidad solicitada por la operación.
+ */
     public int obtenerUltimoIdPorUsuario(String matriculaUsuario) {
 
         String sql =
@@ -213,13 +241,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return -1;
     }
 
-    /*
-     * ============================================================
-     * DETALLES DE ARTÍCULO
-     * ============================================================
-     *
-     * Solo permite obtener artículos ACTIVOS para el catálogo.
-     */
+/**
+ * Obtiene el artículo junto con la información relacionada necesaria para mostrar sus detalles completos.
+ * @param idArticulo Identificador único del artículo sobre el que se realizará la consulta, validación, eliminación o modificación.
+ * @return Devuelve un objeto `Articulo` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     public Articulo getDetallesCompletos(String idArticulo) {
 
         String sql =
@@ -268,11 +294,11 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return null;
     }
 
-    /*
-     * ============================================================
-     * CONTAR ARTÍCULOS DEL USUARIO
-     * ============================================================
-     */
+/**
+ * Cuenta los artículos asociados al usuario indicado.
+ * @param matriculaUsuario Matrícula del usuario cuyos artículos, historial o datos se desean consultar.
+ * @return Devuelve el número de registros que cumplen la condición de la consulta; si no existen registros que coincidan, el resultado es `0`.
+ */
     public int contarPorUsuario(String matriculaUsuario) {
 
         String sql =
@@ -299,21 +325,16 @@ public class ArticuloDao implements Dao<Articulo, String> {
         return 0;
     }
 
-    /*
-     * ============================================================
-     * FILTRAR ARTÍCULOS DEL INICIO
-     * ============================================================
-     *
-     * IMPORTANTE:
-     * Aquí está la protección principal del catálogo.
-     *
-     * Solo:
-     *     estado = Activo
-     *
-     * Nunca:
-     *     espera
-     *     ELIMINADO
-     */
+/**
+ * Consulta artículos aplicando los filtros opcionales de orden, categoría, división y rango de precio, además de las reglas de visibilidad del usuario.
+ * @param orden Criterio de ordenamiento solicitado para organizar los artículos devueltos.
+ * @param idCategoria Identificador de la categoría utilizado para filtrar, localizar o modificar la categoría correspondiente.
+ * @param idDivision Identificador de la división académica utilizada como filtro de los artículos.
+ * @param minPrecio Precio mínimo del rango de búsqueda; se utiliza para excluir artículos con un precio inferior cuando se proporciona.
+ * @param maxPrecio Precio máximo del rango de búsqueda; se utiliza para excluir artículos con un precio superior cuando se proporciona.
+ * @param matriculaUsuarioLogueado Matrícula del usuario que tiene la sesión iniciada; se utiliza para aplicar las reglas de visibilidad de sus propios artículos.
+ * @return Devuelve una lista de objetos `Articulo` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Articulo> filtrarArticulos(
             String orden,
             Integer idCategoria,
@@ -427,6 +448,12 @@ public class ArticuloDao implements Dao<Articulo, String> {
      * ARTÍCULOS DEL USUARIO
      * ============================================================
      */
+/**
+ * Obtiene los artículos pertenecientes al usuario indicado, diferenciando si se encuentran o no en proceso.
+ * @param matriculaUsuario Matrícula del usuario cuyos artículos, historial o datos se desean consultar.
+ * @param enProceso Indicador que determina si se consultan artículos del usuario que están en proceso de venta o los que no están en ese estado.
+ * @return Devuelve una lista de objetos `Articulo` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Articulo> obtenerPorUsuarioYEstado(
             String matriculaUsuario,
             boolean enProceso) {
@@ -504,6 +531,10 @@ public class ArticuloDao implements Dao<Articulo, String> {
      * ARTÍCULOS PARA ADMINISTRACIÓN
      * ============================================================
      */
+/**
+ * Obtiene las publicaciones que el panel de administración necesita para su gestión y moderación.
+ * @return Devuelve una lista de objetos `Articulo` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Articulo> listarParaAdmin() {
 
         List<Articulo> lista = new ArrayList<>();
@@ -566,6 +597,10 @@ public class ArticuloDao implements Dao<Articulo, String> {
      * ARTÍCULOS EN ESPERA DE VERIFICACIÓN
      * ============================================================
      */
+/**
+ * Obtiene las publicaciones que se encuentran pendientes de revisión o aprobación.
+ * @return Devuelve una lista de objetos `Articulo` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Articulo> obtenerArticulosEnEspera() {
 
         List<Articulo> lista = new ArrayList<>();
@@ -627,7 +662,12 @@ public class ArticuloDao implements Dao<Articulo, String> {
 
         return lista;
     }
-
+/**
+ * Actualiza el estado del registro indicado para reflejar su nueva situación dentro del flujo del sistema.
+ * @param idArticulo Identificador único del artículo sobre el que se realizará la consulta, validación, eliminación o modificación.
+ * @param nuevoEstado Nuevo estado que se asignará al registro para reflejar el resultado de la operación.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     public boolean cambiarEstado(int idArticulo, String nuevoEstado) {
 
         String sql =
@@ -648,12 +688,20 @@ public class ArticuloDao implements Dao<Articulo, String> {
             return false;
         }
     }
-
+/**
+ * Cambia el estado del artículo a Activo para permitir que la publicación sea visible según las reglas del sistema.
+ * @param idArticulo Identificador único del artículo sobre el que se realizará la consulta, validación, eliminación o modificación.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     public boolean verificarArticulo(int idArticulo) {
 
         return cambiarEstado(idArticulo, "Activo");
     }
-
+/**
+ * Cambia el estado del artículo a ELIMINADO para retirarlo de la publicación activa.
+ * @param idArticulo Identificador único del artículo sobre el que se realizará la consulta, validación, eliminación o modificación.
+ * @return Devuelve un valor booleano que indica si la operación se realizó correctamente; `true` representa éxito y `false` representa que no se pudo completar la operación.
+ */
     public boolean rechazarArticulo(int idArticulo) {
 
         return cambiarEstado(idArticulo, "ELIMINADO");

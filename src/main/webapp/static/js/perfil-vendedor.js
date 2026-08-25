@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/perfil-vendedor.js
+ * Propósito: Gestiona selección de estrellas y envío de comentarios al vendedor.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 let calificacionActual = 0;
 
 function abrirModalComentario() { document.getElementById('modalComentar').style.display = 'flex'; }

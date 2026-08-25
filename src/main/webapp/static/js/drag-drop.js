@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/drag-drop.js
+ * Propósito: Gestiona arrastrar/soltar imágenes y la vista previa de archivos.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const inputImagenes = document.getElementById("imagenes");
     const previewGrid = document.getElementById("previewGrid");

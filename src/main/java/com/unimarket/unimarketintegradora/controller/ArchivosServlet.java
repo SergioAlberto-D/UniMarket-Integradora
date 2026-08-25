@@ -13,9 +13,21 @@ import java.io.OutputStream;
 
 // Se intercepta cualquier petición que empiece con /uploads/
 @WebServlet(name = "ArchivosServlet", urlPatterns = {"/uploads/*"})
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Archivos Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class ArchivosServlet extends HttpServlet {
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // 1. Saber qué archivo pide el JSP (ej. /perfiles/perfil_1.jpg)

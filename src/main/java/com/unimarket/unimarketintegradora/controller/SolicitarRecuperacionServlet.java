@@ -13,10 +13,22 @@ import java.security.SecureRandom;
 import java.text.MessageFormat;
 
 @WebServlet(name = "SolicitarRecuperacionServlet", value = "/SolicitarRecuperacionServlet")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Solicitar Recuperacion Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class SolicitarRecuperacionServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String correo = request.getParameter("correo");
         

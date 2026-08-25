@@ -13,12 +13,24 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "PerfilVendedorServlet", value = "/perfil-vendedor")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Perfil Vendedor Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class PerfilVendedorServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();
     private final ArticuloDao articuloDao = new ArticuloDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String matricula = request.getParameter("matricula");
         if (matricula == null || matricula.isEmpty()) {

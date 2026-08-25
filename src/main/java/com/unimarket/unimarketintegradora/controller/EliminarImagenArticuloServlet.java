@@ -11,10 +11,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(name = "EliminarImagenArticuloServlet", value = "/eliminar-imagen-articulo")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Eliminar Imagen Articulo Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class EliminarImagenArticuloServlet extends HttpServlet {
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

@@ -12,10 +12,22 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name = "NotificacionesServlet", urlPatterns = {"/api/notificaciones", "/api/notificaciones/marcar-leidas"})
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Notificaciones Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class NotificacionesServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -45,6 +57,13 @@ public class NotificacionesServlet extends HttpServlet {
     }
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         HttpSession session = request.getSession(false);

@@ -14,11 +14,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "ActualizarPasswordServlet", value = "/ActualizarPasswordServlet")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Password Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class ActualizarPasswordServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ContrasenaUsuarioDao contrasenaDao = new ContrasenaUsuarioDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String correo = request.getParameter("correo");
         String token = request.getParameter("token");

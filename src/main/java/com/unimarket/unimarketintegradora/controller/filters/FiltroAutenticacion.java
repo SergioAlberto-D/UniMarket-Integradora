@@ -12,9 +12,22 @@ import java.io.IOException;
 
 // El filtro se aplicará a todas las URLs de tu app
 @WebFilter("/*")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Filtro Autenticacion.
+ *
+ * @author Equipo UniMarket
+ */
 public class FiltroAutenticacion extends HttpFilter {
 
     @Override
+/**
+ * Intercepta y procesa una solicitud antes de continuar con la cadena del filtro.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @param chain Parámetro de entrada de la operación.
+ * @throws IOException Excepción declarada por la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ */
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 

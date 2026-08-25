@@ -1,3 +1,11 @@
+/*
+ * DOCUMENTACIÓN TÉCNICA — MUA
+ * Archivo: src/main/webapp/static/js/login.js
+ * Propósito: Gestiona mostrar/ocultar contraseña y el modal de verificación de cuenta.
+ * Dependencias/Integración: elementos DOM definidos por la vista JSP asociada y, cuando corresponde, endpoints HTTP de los Servlets.
+ * @author Sergio
+ * @date 25/08/2025
+ */
 // ==========================================
 // MOSTRAR / OCULTAR CONTRASEÑA
 // ==========================================

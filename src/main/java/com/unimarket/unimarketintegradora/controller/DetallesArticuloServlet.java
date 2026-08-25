@@ -14,12 +14,24 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "DetallesArticuloServlet", value = "/detalles-articulo")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Detalles Articulo Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class DetallesArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final ComentarioDao comentarioDao = new ComentarioDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idArticuloParam = request.getParameter("id");
         if (idArticuloParam == null || idArticuloParam.isEmpty()) {

@@ -6,8 +6,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Contrasena Usuario.
+ *
+ * @author Sergio
+ */
+
 public class ContrasenaUsuarioDao implements Dao<ContrasenaUsuario, String> {
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(ContrasenaUsuario entidad) {
         String sql = "INSERT INTO CONTRASENA_USUARIO (MATRICULA_USUARIO_FK, CONTRASENA_HASH) VALUES (?, ?)";
@@ -21,11 +32,20 @@ public class ContrasenaUsuarioDao implements Dao<ContrasenaUsuario, String> {
         }
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `ContrasenaUsuario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<ContrasenaUsuario> getAll() {
         return new ArrayList<>(); // No deberías listar contraseñas por seguridad
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `ContrasenaUsuario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public ContrasenaUsuario getById(String id) {
         // Se cambiaron las columnas explícitas para evitar errores con ResultSet
@@ -49,6 +69,11 @@ public class ContrasenaUsuarioDao implements Dao<ContrasenaUsuario, String> {
         return null;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param entidad Objeto de la entidad que contiene los datos que se almacenarán o actualizarán en la base de datos.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(ContrasenaUsuario entidad) {
         String sql = "UPDATE CONTRASENA_USUARIO SET CONTRASENA_HASH = ? WHERE MATRICULA_USUARIO_FK = ?";
@@ -62,6 +87,11 @@ public class ContrasenaUsuarioDao implements Dao<ContrasenaUsuario, String> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(String id) {
         String sql = "DELETE FROM CONTRASENA_USUARIO WHERE MATRICULA_USUARIO_FK = ?";

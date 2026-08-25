@@ -18,12 +18,24 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @WebServlet(name = "InicioServlet", value = "/inicio")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Inicio Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class InicioServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Obtener la sesión y la matrícula del usuario actual (si ha iniciado sesión)
         HttpSession session = request.getSession(false);

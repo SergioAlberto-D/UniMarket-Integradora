@@ -6,8 +6,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Objeto de acceso a datos (DAO) de MUA para la entidad Comentario.
+ *
+ * @author Segio
+ */
+
 public class ComentarioDao implements Dao<Comentario, Integer> {
 
+/**
+ * Registra una nueva entidad en la tabla correspondiente mediante una sentencia INSERT.
+ * @param c Objeto Comentario con la información del comentario que se desea registrar o actualizar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean create(Comentario c) {
         // Usamos SEQ_COMENTARIO.NEXTVAL y SYSDATE, omitiendo totalmente el artículo
@@ -26,6 +37,11 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
         }
     }
 
+/**
+ * Busca un registro específico utilizando su identificador y, si existe, lo convierte a la entidad correspondiente.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve un objeto `Comentario` con los datos recuperados de la base de datos cuando existe un registro que coincide con el identificador o criterio recibido. Si no se encuentra ningún registro, devuelve `null`.
+ */
     @Override
     public Comentario getById(Integer id) {
         String sql = "SELECT * FROM comentario WHERE id_comentario = ?";
@@ -43,6 +59,10 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
         return null;
     }
 
+/**
+ * Consulta y obtiene todos los registros disponibles de la entidad, mapeando cada fila de la base de datos a su objeto correspondiente.
+ * @return Devuelve una lista de objetos `Comentario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     @Override
     public List<Comentario> getAll() {
         List<Comentario> lista = new ArrayList<>();
@@ -59,6 +79,11 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
         return lista;
     }
 
+/**
+ * Actualiza los datos de una entidad existente utilizando su identificador como referencia.
+ * @param c Objeto Comentario con la información del comentario que se desea registrar o actualizar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean update(Comentario c) {
         String sql = "UPDATE comentario SET comentario = ?, calificacion = ?, matricula_remitente_fk = ?, matricula_receptor_fk = ? WHERE id_comentario = ?";
@@ -76,6 +101,11 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
         }
     }
 
+/**
+ * Elimina o realiza la baja lógica del registro identificado, de acuerdo con las reglas definidas para la entidad.
+ * @param id Identificador único del registro que se desea consultar, actualizar o eliminar.
+ * @return Devuelve `true` porque la sentencia SQL afectó al menos un registro, lo que indica que la operación se realizó correctamente. Devuelve `false` cuando no se modificó ningún registro o cuando ocurre una excepción de base de datos.
+ */
     @Override
     public boolean delete(Integer id) {
         String sql = "DELETE FROM comentario WHERE id_comentario = ?";
@@ -88,7 +118,11 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
             return false;
         }
     }
-
+/**
+ * Obtiene los comentarios asociados al vendedor indicado para mostrar sus opiniones y calificaciones.
+ * @param matriculaVendedor Matrícula del usuario que actúa como vendedor.
+ * @return Devuelve una lista de objetos `Comentario` construida a partir de los registros encontrados. Si no existen registros o ocurre un error durante la consulta, se conserva una lista vacía para evitar devolver `null`.
+ */
     public List<Comentario> obtenerPorVendedor(String matriculaVendedor) {
         List<Comentario> lista = new ArrayList<>();
         String sql = "SELECT c.*, u.nombre AS nombre_remitente, u.apellido_paterno, u.foto_perfil AS foto_remitente " +
@@ -112,7 +146,11 @@ public class ComentarioDao implements Dao<Comentario, Integer> {
         }
         return lista;
     }
-
+/**
+ * Cuenta la cantidad de comentarios realizados por el usuario indicado.
+ * @param matriculaRemitente Matrícula del usuario que realizó los comentarios.
+ * @return Devuelve el número de registros que cumplen la condición de la consulta; si no existen registros que coincidan, el resultado es `0`.
+ */
     public int contarComentariosRealizados(String matriculaRemitente) {
         String sql = "SELECT COUNT(*) FROM comentario WHERE matricula_remitente_fk = ?";
         try (Connection con = SQLConnector.getConnection();

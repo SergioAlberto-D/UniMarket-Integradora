@@ -14,9 +14,21 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "HistorialActividadServlet", value = "/historial")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Historial Actividad Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class HistorialActividadServlet extends HttpServlet {
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 

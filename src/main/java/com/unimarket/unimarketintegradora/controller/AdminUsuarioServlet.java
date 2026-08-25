@@ -18,12 +18,24 @@ import java.util.List;
 import java.util.Map;
 
 @WebServlet(name = "AdminUsuarioServlet", value = "/adminusuarios")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Usuario Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class AdminUsuarioServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final DivisionAcademicaDao divisionDao = new DivisionAcademicaDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Validar sesión del administrador por seguridad
         HttpSession session = request.getSession(false);
@@ -55,6 +67,13 @@ public class AdminUsuarioServlet extends HttpServlet {
     }
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getParameter("accion");
         String matricula = request.getParameter("matricula");

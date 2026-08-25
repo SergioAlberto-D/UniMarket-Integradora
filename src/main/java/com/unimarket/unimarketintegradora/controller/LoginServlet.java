@@ -15,12 +15,24 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet(name = "LoginServlet", value = "/login")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Login Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class LoginServlet extends HttpServlet {
 
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final AdministradorDao adminDao = new AdministradorDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");

@@ -9,9 +9,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(name = "VerificarCuentaServlet", value = "/verificar-cuenta")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Verificar Cuenta Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class VerificarCuentaServlet extends HttpServlet {
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Obtenemos el correo desde la URL del enlace (ej. /verificar-cuenta?correo=matricula@utez.edu.mx)
         String correo = request.getParameter("correo");

@@ -25,12 +25,24 @@ import java.util.UUID;
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 30
 )
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Editar Articulo Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class EditarArticuloServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ImagenArticuloDao imagenDao = new ImagenArticuloDao();
     private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idParam = request.getParameter("id");
         if (idParam == null || idParam.isEmpty()) {
@@ -61,6 +73,13 @@ public class EditarArticuloServlet extends HttpServlet {
 
     // POST: Guardar cambios y reemplazar imágenes si se subieron nuevas
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);

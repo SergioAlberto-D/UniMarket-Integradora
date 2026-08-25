@@ -28,6 +28,11 @@ import java.util.UUID;
         maxFileSize = 10 * 1024 * 1024,
         maxRequestSize = 40 * 1024 * 1024
 )
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Publicar Articulo Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class PublicarArticuloServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
@@ -37,6 +42,13 @@ public class PublicarArticuloServlet extends HttpServlet {
     private final categoriaDao categoriaDao = new categoriaDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
@@ -51,6 +63,13 @@ public class PublicarArticuloServlet extends HttpServlet {
     }
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(
             HttpServletRequest request,
             HttpServletResponse response)

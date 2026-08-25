@@ -13,16 +13,32 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/adminreportes")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Admin Reportes Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class AdminReportesServlet extends HttpServlet {
 
     private ReportesDao reporteDao;
 
     @Override
+/**
+ * Ejecuta la operación 'init' del componente.
+ * @throws ServletException Excepción declarada por la operación.
+ */
     public void init() throws ServletException {
         this.reporteDao = new ReportesDao();
     }
 
     @Override
+/**
+ * Procesa una solicitud HTTP GET y prepara la respuesta correspondiente.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -38,6 +54,13 @@ public class AdminReportesServlet extends HttpServlet {
     }
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

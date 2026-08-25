@@ -1,9 +1,12 @@
 <%--
+  DOCUMENTACIÓN TÉCNICA — MUA
+  Archivo: src/main/webapp/registro.jsp
+  Propósito: Recurso de vista JSP para el módulo registro. Integra HTML, JSTL y/o expresiones JSP según el contenido fuente.
+  Integración: la vista recibe datos desde Servlets mediante request/session y utiliza recursos CSS/JS del proyecto.
   Created by IntelliJ IDEA.
-  User: sheuko
+  User: sergio
   Date: 7/2/26
   Time: 9:51 PM
-  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>

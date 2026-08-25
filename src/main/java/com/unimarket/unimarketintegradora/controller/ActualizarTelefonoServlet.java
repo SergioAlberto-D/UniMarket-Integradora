@@ -13,10 +13,22 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "ActualizarTelefonoServlet", value = "/ActualizarTelefonoServlet")
+/**
+ * Controlador web de MUA. Gestiona la interacción HTTP correspondiente a Actualizar Telefono Servlet.
+ *
+ * @author Equipo UniMarket
+ */
 public class ActualizarTelefonoServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
 
     @Override
+/**
+ * Procesa una solicitud HTTP POST y ejecuta la operación solicitada.
+ * @param request Parámetro de entrada de la operación.
+ * @param response Parámetro de entrada de la operación.
+ * @throws ServletException Excepción declarada por la operación.
+ * @throws IOException Excepción declarada por la operación.
+ */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 
