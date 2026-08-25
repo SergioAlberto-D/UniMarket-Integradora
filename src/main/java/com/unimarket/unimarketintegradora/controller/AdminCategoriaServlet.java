@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Servlet encargado de administrar las categorías dentro del panel de control.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet("/admincategorias")
 public class AdminCategoriaServlet extends HttpServlet {
 
@@ -22,6 +28,16 @@ public class AdminCategoriaServlet extends HttpServlet {
         this.categoriaDao = new categoriaDao();
     }
 
+    /**
+     * Maneja las peticiones GET para listar las categorías y mostrarlas en la vista de administración.
+     *
+     * @param request  Objeto HttpServletRequest para enviar atributos a la vista.
+     * @param response Objeto HttpServletResponse para redirigir al JSP correspondiente.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -36,6 +52,16 @@ public class AdminCategoriaServlet extends HttpServlet {
         request.getRequestDispatcher("/admin/categoria.jsp").forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para agregar, editar o eliminar categorías (tanto vía AJAX como tradicional).
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la acción.
+     * @param response Objeto HttpServletResponse para responder con JSON o redireccionar.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -77,8 +103,6 @@ public class AdminCategoriaServlet extends HttpServlet {
                 categoriaDao.agregarCategoria(nuevaCat);
 
                 if (esAjax) {
-                    // NOTA: asume que agregarCategoria() setea el id generado en nuevaCat.
-                    // Si tu DAO no hace esto, avísame y ajustamos para recuperar el id.
                     String json = "{\"success\": true, \"idCategoria\": " + nuevaCat.getIdCategoria()
                             + ", \"nombreCategoria\": \"" + escapeJson(nuevaCat.getCategoria()) + "\"}";
                     response.getWriter().write(json);

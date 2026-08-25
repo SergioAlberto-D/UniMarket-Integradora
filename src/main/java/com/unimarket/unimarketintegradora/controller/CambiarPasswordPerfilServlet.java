@@ -14,9 +14,25 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Servlet encargado de procesar y validar el cambio de contraseña desde la sección de perfil del usuario.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "CambiarPasswordPerfilServlet", value = "/CambiarPasswordPerfilServlet")
 public class CambiarPasswordPerfilServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones POST para validar la contraseña actual, aplicar requisitos de seguridad y actualizar la contraseña del usuario.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de las contraseñas actual, nueva y de confirmación.
+     * @param response Objeto HttpServletResponse para redirigir o reenviar a la vista de perfil.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);

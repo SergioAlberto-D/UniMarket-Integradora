@@ -14,6 +14,13 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet encargado de gestionar el perfil del usuario autenticado, calculando métricas de vendedor y comprador,
+ * cargando ofertas enviadas y recibidas, determinando la división académica y reenviando los datos a la vista correspondiente.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "MiPerfilServlet", value = "/mi-perfil")
 public class MiPerfilServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
@@ -21,6 +28,17 @@ public class MiPerfilServlet extends HttpServlet {
     private final OfertaDao ofertaDao = new OfertaDao();
     private final TransaccionDao transaccionDao = new TransaccionDao();
 
+    /**
+     * Maneja las peticiones GET para validar la sesión del usuario, consultar sus ofertas, calcular estadísticas
+     * de publicaciones, calificaciones, comentarios y transacciones según su rol, y reenviar la información al JSP de perfil.
+     *
+     * @param request  Objeto HttpServletRequest para gestionar la sesión y los atributos enviados a la vista.
+     * @param response Objeto HttpServletResponse para redirigir al login si no hay sesión activa o reenviar al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);

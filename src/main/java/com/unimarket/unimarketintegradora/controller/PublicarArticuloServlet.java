@@ -22,6 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Servlet encargado de gestionar la publicación de nuevos artículos por parte de los usuarios,
+ * manejando la carga de datos del formulario, validación de campos y precios, subida y almacenamiento de imágenes con restricciones,
+ * actualización de roles de vendedor, y registro de notificaciones del sistema.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "PublicarArticuloServlet", value = "/publicar-articulo")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024,
@@ -36,6 +44,16 @@ public class PublicarArticuloServlet extends HttpServlet {
     private final NotificacionDao notificacionDao = new NotificacionDao();
     private final categoriaDao categoriaDao = new categoriaDao();
 
+    /**
+     * Maneja las peticiones GET para cargar las categorías disponibles y reenviar a la vista del formulario de publicación de artículos.
+     *
+     * @param request  Objeto HttpServletRequest para establecer atributos enviados a la vista.
+     * @param response Objeto HttpServletResponse para reenviar al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -50,6 +68,18 @@ public class PublicarArticuloServlet extends HttpServlet {
                 .forward(request, response);
     }
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario, procesar la información del artículo y su precio,
+     * registrarlo en la base de datos en estado de espera, guardar las imágenes asociadas, actualizar el rol del usuario a vendedor si es necesario,
+     * crear la notificación correspondiente y redirigir al catálogo de inicio.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros del artículo y las partes multiparte de las imágenes.
+     * @param response Objeto HttpServletResponse para redireccionar o reenviar en caso de error.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(
             HttpServletRequest request,

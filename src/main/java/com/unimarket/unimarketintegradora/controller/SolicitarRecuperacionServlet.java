@@ -12,14 +12,35 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.MessageFormat;
 
+/**
+ * Servlet encargado de procesar la solicitud de recuperación de contraseña de los usuarios,
+ * verificando la existencia del correo, generando un token seguro con formato personalizado,
+ * construyendo la plantilla HTML corporativa con el código y enlace de restablecimiento,
+ * y enviando el correo electrónico previniendo la enumeración de cuentas.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "SolicitarRecuperacionServlet", value = "/SolicitarRecuperacionServlet")
 public class SolicitarRecuperacionServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
 
+    /**
+     * Maneja las peticiones POST para recibir el correo electrónico de recuperación, validar su registro en el sistema,
+     * generar un token de seguridad, enviar el correo con las instrucciones de restablecimiento de contraseña
+     * y retornar una respuesta neutral para proteger la privacidad del usuario.
+     *
+     * @param request  Objeto HttpServletRequest con el parámetro de correo electrónico del usuario.
+     * @param response Objeto HttpServletResponse para redirigir o reenviar al formulario de login con mensajes estandarizados.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String correo = request.getParameter("correo");
-        
+
         // 1. Definimos el mensaje estándar que SIEMPRE se mostrará
         String mensajeSeguridad = "Si el correo está registrado, recibirás un código y un enlace para recuperar tu cuenta.";
 
@@ -29,12 +50,12 @@ public class SolicitarRecuperacionServlet extends HttpServlet {
                 String token = generarToken();
 
                 if (usuarioDao.guardarTokenRecuperacion(correo, token)) {
-                    
+
                     // Construimos la URL dinámica incluyendo el correo y el token automáticamente
-                    String urlVerificacion = request.getScheme() + "://" + request.getServerName() + ":" + 
-                                             request.getServerPort() + request.getContextPath() + 
-                                             "/verificar-token.jsp?correo=" + correo + "&token=" + token;
-                    
+                    String urlVerificacion = request.getScheme() + "://" + request.getServerName() + ":" +
+                            request.getServerPort() + request.getContextPath() +
+                            "/verificar-token.jsp?correo=" + correo + "&token=" + token;
+
                     String plantillaHtml = """
                     <!DOCTYPE html>
                     <html lang="es">
@@ -89,12 +110,12 @@ public class SolicitarRecuperacionServlet extends HttpServlet {
                     </html>
                     """;
                     String cuerpo = MessageFormat.format(plantillaHtml, token, urlVerificacion);
-                    
+
                     // Se envía el correo de forma asíncrona o protegida
                     EmailSender.sendMail(correo, "Código de Recuperación - MUA", cuerpo);
                 }
             }
-            
+
             // 3. LA CLAVE DE SEGURIDAD: 
             // Sin importar si el correo existía o no, o si el if anterior se ejecutó, 
             // SIEMPRE redirigimos al login con el mensaje de "éxito".
@@ -112,7 +133,7 @@ public class SolicitarRecuperacionServlet extends HttpServlet {
         SecureRandom random = new SecureRandom();
         String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder token = new StringBuilder(9);
-        
+
         for (int i = 0; i < 8; i++) {
             if (i == 4) token.append("-");
             token.append(caracteres.charAt(random.nextInt(caracteres.length())));

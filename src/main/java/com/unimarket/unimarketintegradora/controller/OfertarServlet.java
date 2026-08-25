@@ -14,12 +14,30 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 
+/**
+ * Servlet encargado de gestionar el envío y registro de ofertas sobre los artículos publicados,
+ * validando sesión, restricciones de compra propia, duplicidad de ofertas y generando la notificación correspondiente al vendedor.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "OfertarServlet", value = "/ofertar-articulo")
 public class OfertarServlet extends HttpServlet {
     private final OfertaDao ofertaDao = new OfertaDao();
     private final NotificacionDao notificacionDao = new NotificacionDao();
     private final ArticuloDao articuloDao = new ArticuloDao();
 
+    /**
+     * Maneja las peticiones POST para validar la sesión del usuario, verificar los datos de la oferta enviada,
+     * registrarla en la base de datos, notificar al vendedor y devolver una respuesta en formato JSON con el resultado.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la oferta (matrícula del vendedor, ID del artículo y monto).
+     * @param response Objeto HttpServletResponse para enviar la respuesta JSON con la codificación y tipo adecuados.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");

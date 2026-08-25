@@ -9,9 +9,25 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+/**
+ * Servlet encargado de actualizar el estado de una transacción (completar o cancelar/eliminar pendiente).
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "ActualizarTransaccionServlet", value = "/actualizar-transaccion")
 public class ActualizarTransaccionServlet extends HttpServlet {
 
+    /**
+     * Maneja las peticiones POST para actualizar o eliminar la transacción de un artículo según su estado.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de la petición (idArticulo y estado).
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");

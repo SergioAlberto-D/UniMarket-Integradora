@@ -17,6 +17,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * Servlet encargado de administrar la actividad del panel de control,
+ * gestionando las peticiones pendientes de usuarios y artículos en espera.
+ *
+ * @author Dulce Yazmin Canseco Juárez
+ * @date 2026-06-06
+ */
 @WebServlet(name = "AdminActividadServlet", value = "/adminactividad")
 public class AdminActividadServlet extends HttpServlet {
 
@@ -24,9 +31,16 @@ public class AdminActividadServlet extends HttpServlet {
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final ActividadDao actividadDao = new ActividadDao();
 
-    // ============================================================
-    // GET - Cargar peticiones pendientes
-    // ============================================================
+    /**
+     * Maneja las peticiones GET para cargar y mostrar el panel de actividad administrativa.
+     *
+     * @param request  Objeto HttpServletRequest para establecer los atributos de la vista.
+     * @param response Objeto HttpServletResponse para reenviar la solicitud al JSP.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -39,15 +53,22 @@ public class AdminActividadServlet extends HttpServlet {
 
         request.setAttribute("listaPeticiones", peticiones);
         request.setAttribute("listaArticulosEspera", articulosEspera);
-        request.setAttribute("totalPublicaciones", totalPublicaciones); // NUEVO
-        request.setAttribute("totalUsuarios", totalUsuarios);           // NUEVO
+        request.setAttribute("totalPublicaciones", totalPublicaciones);
+        request.setAttribute("totalUsuarios", totalUsuarios);
 
         request.getRequestDispatcher("/admin/actividad.jsp").forward(request, response);
     }
 
-    // ============================================================
-    // POST - Procesar acciones de usuarios y artículos
-    // ============================================================
+    /**
+     * Maneja las peticiones POST para procesar la aceptación o rechazo de usuarios y artículos.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de tipo, acción, matrícula o ID de artículo.
+     * @param response Objeto HttpServletResponse para enviar la respuesta en formato JSON.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Dulce Yazmin Canseco Juárez
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -67,9 +88,6 @@ public class AdminActividadServlet extends HttpServlet {
             return;
         }
 
-        // ========================================================
-        // USUARIO
-        // ========================================================
         if ("usuario".equalsIgnoreCase(tipo)) {
 
             String matricula = request.getParameter("matricula");
@@ -127,9 +145,6 @@ public class AdminActividadServlet extends HttpServlet {
             return;
         }
 
-        // ========================================================
-        // ARTÍCULO
-        // ========================================================
         if ("articulo".equalsIgnoreCase(tipo)) {
 
             String idArticuloTexto = request.getParameter("idArticulo");
@@ -188,9 +203,6 @@ public class AdminActividadServlet extends HttpServlet {
             return;
         }
 
-        // ========================================================
-        // TIPO NO VÁLIDO
-        // ========================================================
         out.print("{\"exito\":false,\"mensaje\":\"Tipo de petición no válido.\"}");
     }
 }

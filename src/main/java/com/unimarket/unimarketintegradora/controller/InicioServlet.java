@@ -17,12 +17,30 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Servlet encargado de gestionar la página principal y el catálogo de artículos,
+ * permitiendo filtrar por orden, categoría, división y rangos de precio, además de soportar peticiones AJAX para fragmentos de vista.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "InicioServlet", value = "/inicio")
 public class InicioServlet extends HttpServlet {
 
     private final ArticuloDao articuloDao = new ArticuloDao();
     private final categoriaDao categoriaDao = new categoriaDao();
 
+    /**
+     * Maneja las peticiones GET para obtener la sesión del usuario, procesar los filtros del catálogo (orden, categorías, precios),
+     * consultar los artículos disponibles y decidir si se responde con la página completa o con un fragmento vía AJAX.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de filtrado y cabeceras de la petición.
+     * @param response Objeto HttpServletResponse para reenviar al JSP correspondiente o fragmento de artículos.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Obtener la sesión y la matrícula del usuario actual (si ha iniciado sesión)

@@ -17,6 +17,14 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Servlet encargado de gestionar el proceso de registro de nuevos usuarios en el sistema,
+ * configurando codificación, validando campos y contraseñas, procesando y almacenando físicamente las credenciales universitarias (frente y reverso),
+ * registrando el usuario y su contraseña cifrada en la base de datos con control de errores.
+ *
+ * @author Luis Fernando Rodriguez Rayo
+ * @date 2026-06-06
+ */
 @WebServlet(name = "RegisterServlet", value = "/register")
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
@@ -28,6 +36,18 @@ public class RegisterServlet extends HttpServlet {
     private final UsuarioDao usuarioDao = new UsuarioDao();
     private final ContrasenaUsuarioDao contrasenaDao = new ContrasenaUsuarioDao();
 
+    /**
+     * Maneja las peticiones POST para extraer los datos del formulario de registro, validar campos obligatorios y coincidencia de contraseñas,
+     * almacenar las imágenes de las credenciales de identificación, registrar al usuario y su hash de contraseña en la base de datos,
+     * y redireccionar al login o retornar al formulario de registro en caso de errores.
+     *
+     * @param request  Objeto HttpServletRequest con los parámetros de registro y las partes multiparte de los archivos de credenciales.
+     * @param response Objeto HttpServletResponse para reenviar al JSP correspondiente según el resultado de la operación.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException      Si ocurre un error de E/S.
+     * @author Luis Fernando Rodriguez Rayo
+     * @date 2026-06-06
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. Configurar UTF-8 para acentos
