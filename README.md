@@ -1,8 +1,12 @@
 # UniMarket MUA
+Sergio Alberto-D-20253ds104 
+dulcecanseco-20253ds119
+Aioros2806-20243ds092
+luisfernandorodriguezrayo-20253ds118
 
 > Marketplace universitario para la publicación, búsqueda y gestión de artículos entre usuarios de la comunidad universitaria.
 
-## 📌 Descripción
+##  Descripción
 
 **UniMarket MUA** es una aplicación web desarrollada como proyecto integrador. La plataforma permite a los usuarios registrarse, iniciar sesión, publicar artículos, consultar publicaciones, realizar ofertas, comprar artículos y gestionar su perfil.
 
@@ -10,9 +14,9 @@ El sistema también incluye funciones administrativas para la gestión de usuari
 
 La aplicación está construida como una aplicación web Java con **Maven**, empaquetada como **WAR**, y utiliza **JSP, Servlets, JSTL, Oracle Database y HikariCP**. El proyecto utiliza Java 21 y Jakarta Servlet 6.1.0.
 
-## ✨ Funcionalidades principales
+##  Funcionalidades principales
 
-### 👤 Usuarios
+###  Usuarios
 - Registro de nuevos usuarios.
 - Inicio y cierre de sesión.
 - Verificación de cuenta.
@@ -22,7 +26,7 @@ La aplicación está construida como una aplicación web Java con **Maven**, emp
 - Consulta del historial de actividad.
 - Sistema de notificaciones.
 
-### 🛒 Marketplace
+###  Marketplace
 - Visualización de artículos publicados.
 - Búsqueda de artículos.
 - Consulta de detalles de productos.
@@ -34,7 +38,7 @@ La aplicación está construida como una aplicación web Java con **Maven**, emp
 - Registro de transacciones.
 - Comentarios y respuestas.
 
-### 🔐 Administración
+###  Administración
 - Gestión de usuarios.
 - Gestión de categorías.
 - Gestión de publicaciones.
@@ -42,7 +46,7 @@ La aplicación está construida como una aplicación web Java con **Maven**, emp
 - Generación y consulta de reportes.
 - Filtros de acceso para proteger las funciones administrativas.
 
-## 🧱 Arquitectura
+##  Arquitectura
 
 El proyecto está organizado siguiendo una separación por capas:
 
@@ -68,7 +72,7 @@ src/
 
 Los Servlets gestionan las peticiones HTTP y la lógica de cada funcionalidad, mientras que los DAO encapsulan las operaciones con la base de datos. La conexión se administra mediante un pool de conexiones HikariCP.
 
-## 🛠️ Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 | Tecnología | Uso |
 |---|---|
@@ -87,7 +91,7 @@ Los Servlets gestionan las peticiones HTTP y la lógica de cada funcionalidad, m
 
 El `pom.xml` define Java 21, empaquetado `WAR`, Jakarta Servlet 6.1.0, Oracle JDBC 23.4.0.24.05, HikariCP 6.0.0 y Jakarta Mail 2.1.3/2.0.4.
 
-## 📋 Requisitos
+##  Requisitos
 
 Antes de ejecutar el proyecto se recomienda contar con:
 
@@ -99,7 +103,7 @@ Antes de ejecutar el proyecto se recomienda contar con:
 - Credenciales de base de datos configuradas mediante variables de entorno o `credentials.properties`.
 - Credenciales SMTP si se utilizan las funciones de correo.
 
-## ⚙️ Configuración
+## Configuración
 
 ### 1. Clonar el repositorio
 
@@ -172,7 +176,7 @@ mvnw.cmd clean package
 
 El proyecto genera un archivo **WAR** para su despliegue.
 
-## 🚀 Ejecución
+##  Ejecución
 
 Después de construir el proyecto, despliega el WAR generado en un servidor compatible con Jakarta Servlet.
 
@@ -184,7 +188,7 @@ http://localhost:8080/UniMarket-Integradora/
 
 > La URL exacta puede cambiar dependiendo del nombre con el que el servidor despliegue el archivo WAR.
 
-## 🔒 Seguridad
+##  Seguridad
 
 El proyecto incorpora varias medidas relacionadas con autenticación y protección de información:
 
@@ -195,7 +199,7 @@ El proyecto incorpora varias medidas relacionadas con autenticación y protecci�
 - Las operaciones con base de datos utilizan `PreparedStatement`.
 - Las contraseñas nuevas cuentan con validaciones de complejidad.
 
-## 📁 Módulos principales
+##  Módulos principales
 
 ### Controladores
 
@@ -236,13 +240,13 @@ La capa DAO contiene clases para trabajar con entidades como:
 - Imágenes de artículos
 - Reportes
 
-## 🗃️ Base de datos
+##  Base de datos
 
 La aplicación utiliza **Oracle Database** y una conexión JDBC administrada por **HikariCP**.
 
 La clase `SQLConnector` obtiene las credenciales desde variables de entorno o `credentials.properties`, configura el controlador Oracle y crea un pool de conexiones.
 
-## 📧 Sistema de correo
+##  Sistema de correo
 
 `EmailSender` utiliza Jakarta Mail para enviar correos mediante:
 
@@ -254,7 +258,7 @@ TLS: habilitado
 
 Las credenciales se obtienen desde variables de entorno o desde `credentials.properties`.
 
-## 🧪 Pruebas y construcción
+##  Pruebas y construcción
 
 Para limpiar y construir el proyecto:
 
@@ -268,7 +272,7 @@ Para omitir pruebas durante una construcción:
 mvn clean package -DskipTests
 ```
 
-## ⚠️ Consideraciones
+##  Consideraciones
 
 - No publicar `credentials.properties` con credenciales reales.
 - No publicar contraseñas, tokens ni información sensible.
@@ -276,11 +280,11 @@ mvn clean package -DskipTests
 - La aplicación requiere una base de datos Oracle correctamente preparada.
 - La URL de despliegue depende del servidor y del nombre final del WAR.
 
-## 📚 Documentación
+##  Documentación
 
 La documentación técnica del proyecto incluye documentación JavaDoc, documentación de las vistas JSP y JavaScript, además del mapa técnico del sitio.
 
-## 👥 Proyecto
+##  Proyecto
 
 **UniMarket MUA — Proyecto Integrador**
 
@@ -288,6 +292,6 @@ Aplicación web orientada a facilitar el intercambio y comercialización de art�
 
 ---
 
-### 📄 Licencia
+###  Licencia
 
 Este proyecto fue desarrollado con fines académicos.
